@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Marcelo &amp; Clovis</Authors>
+    <Company>Codout</Company>
+    <Description>Bundle with libraries to facilitate use of ADO.Net and its most commonly used classes such as DBConnection, DBCommand and DataReader</Description>
+    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+    <PackageTags>ADO .Net DBCommand DBConnection DataReader</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

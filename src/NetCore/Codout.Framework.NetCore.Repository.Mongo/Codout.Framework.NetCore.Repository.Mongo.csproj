@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Marcelo &amp; Clovis</Authors>
+    <Company>Codout</Company>
+    <Description>Generic Repository Deployment Package for MongoDB in .Net Projects</Description>
+    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+    <PackageTags>MonboDB repository generic .net core</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

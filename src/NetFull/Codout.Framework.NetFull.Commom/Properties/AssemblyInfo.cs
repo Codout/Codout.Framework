@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Codout.Framework.NetFull.Commom")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Miscellaneous utility library package (CPF / CNPJ Validation, Range of Dates, Converters and etc) for .Net Full Framework development")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Codout")]
 [assembly: AssemblyProduct("Codout.Framework.NetFull.Commom")]
-[assembly: AssemblyCopyright("Copyright ©  2017")]
+[assembly: AssemblyCopyright("Copyright Codout ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
