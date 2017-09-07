@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>a494d36e-af26-408d-92db-797511d60588</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Codout.Framework.Shared.Commom</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Email\Configuration\Configuration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Email\Configuration\EmailConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Email\Email.cs" />
+  </ItemGroup>
+</Project>

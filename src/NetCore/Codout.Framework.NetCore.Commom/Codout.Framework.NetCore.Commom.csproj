@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\NetStandard\Codout.Framework.NetStandard.Commom\Codout.Framework.NetStandard.Commom.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\..\Shared\Codout.Framework.Shared.Commom\Codout.Framework.Shared.Commom.projitems" Label="Shared" />
+
+</Project>
