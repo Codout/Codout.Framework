@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>Interface da Biblioteca de persistência do Framework da Codout</Description>
+    <Copyright>Codout</Copyright>
+    <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+    <PackageTags>Codout</PackageTags>
+    <RepositoryType>Git</RepositoryType>
+    <Authors>Clovis Coli Jr &amp; Marcelo Paiva</Authors>
+  </PropertyGroup>
+
+</Project>

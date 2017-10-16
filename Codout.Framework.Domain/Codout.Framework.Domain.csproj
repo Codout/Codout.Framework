@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Description>Camada de Domínio do Framework da Codout</Description>
+    <Copyright>Codout</Copyright>
+    <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>Codout</PackageTags>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Authors>Clovis Coli Jr &amp; Marcelo Paiva</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Codout.Framework.DAL\Codout.Framework.DAL.csproj" />
+  </ItemGroup>
+
+</Project>

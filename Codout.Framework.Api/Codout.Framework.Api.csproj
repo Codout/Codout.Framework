@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Clovis Coli Jr &amp; Marcelo Paiva</Authors>
+    <Copyright>Codout</Copyright>
+    <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>Codout</PackageTags>
+    <Description>Biblioteca de funções para WebApi do Framework da Codout</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+  </ItemGroup>
+
+</Project>

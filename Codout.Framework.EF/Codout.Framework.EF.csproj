@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>Biblioteca de persistência do Framework da Codout para Entity Framework Core</Description>
+    <Copyright>Codout</Copyright>
+    <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>Codout</PackageTags>
+    <Authors>Clovis Coli Jr &amp; Marcelo Paiva</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Codout.Framework.Domain\Codout.Framework.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

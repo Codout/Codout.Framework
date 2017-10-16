@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>Biblioteca de persistência do Framework da Codout para MongoDB</Description>
+    <Copyright>Codout</Copyright>
+    <PackageTags>Codout</PackageTags>
+    <RepositoryType>Git</RepositoryType>
+    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
+    <Authors>Clovis Coli Jr &amp; Marcelo Paiva</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.4.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Codout.Framework.DAL\Codout.Framework.DAL.csproj" />
+  </ItemGroup>
+
+</Project>
