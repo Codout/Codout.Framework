@@ -10,6 +10,7 @@ using Codout.Framework.Api.Helpers;
 namespace Codout.Framework.Api.Client
 {
 
+    /// <inheritdoc />
     /// <summary>
     /// Classe genérica para operações CRUD em WebAPI
     /// </summary>
@@ -28,6 +29,16 @@ namespace Codout.Framework.Api.Client
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
+        public GenericWebApi(string uriService, string baseUrl, string apiKey)
+        {
+            _uriService = uriService;
+            _client = new HttpClient { BaseAddress = new Uri(baseUrl) };
+            _client.DefaultRequestHeaders.Accept.Clear();
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client.DefaultRequestHeaders.Add("ApiKey", apiKey);
+        }
+
+        /// <inheritdoc />
         /// <summary>
         /// Retorma um IEnumerable do objeto tipado
         /// </summary>
@@ -47,6 +58,31 @@ namespace Codout.Framework.Api.Client
         }
 
         /// <summary>
+        /// Busca os resultados com paginação
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public async Task<PagedResultsDto<T>> Get(int page, int size)
+        {
+            PagedResultsDto<T> itens = null;
+
+            page = page < 0 ? 0 : page;
+
+            size = size < 1 ? 1 : size;
+
+            var response = await _client.GetAsync($"{_uriService}?page={page}&size={size}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                itens = await response.Content.ReadAsAsync<PagedResultsDto<T>>();
+            }
+
+            return itens;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
         /// Retorna um objeto de acordo com o id
         /// </summary>
         /// <param name="id">Id do objeto</param>
@@ -65,6 +101,7 @@ namespace Codout.Framework.Api.Client
             return obj;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Recebe e retorna o objeto tipado
         /// </summary>
@@ -81,6 +118,7 @@ namespace Codout.Framework.Api.Client
             return obj;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Recebe e retorna o objeto tipado
         /// </summary>
@@ -97,6 +135,7 @@ namespace Codout.Framework.Api.Client
             return obj;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Deleta o objeto identitificado pelo id
         /// </summary>
@@ -104,6 +143,7 @@ namespace Codout.Framework.Api.Client
         /// <returns>StatusCode da operação</returns>
         public async Task<HttpStatusCode> Delete(TId id)
         {
+
             var response = await _client.DeleteAsync($"{_uriService}/{id}");
             return response.StatusCode;
         }

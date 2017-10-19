@@ -21,6 +21,14 @@ namespace Codout.Framework.Api.Client
         Task<IEnumerable<T>> Get();
 
         /// <summary>
+        /// Retorna uma lista de resultados com paginação
+        /// </summary>
+        /// <param name="page">Página</param>
+        /// <param name="size">Tamanho</param>
+        /// <returns></returns>
+        Task<PagedResultsDto<T>> Get(int page, int size);
+
+        /// <summary>
         /// Retorna um objeto de acordo com o id
         /// </summary>
         /// <param name="id">Id do objeto</param>

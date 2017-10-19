@@ -10,6 +10,10 @@
     <RepositoryType>Git</RepositoryType>
     <PackageTags>Codout</PackageTags>
     <Description>Biblioteca de funções para WebApi do Framework da Codout</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
