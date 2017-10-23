@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Clovis Coli Jr &amp; Marcelo Paiva</Authors>
+    <Company>Clovis Coli Jr &amp; Marcelo Paiva</Company>
+    <Description>Biblioteca de persistência do Framework da Codout para NHibernate Core</Description>
+    <Copyright>Codout</Copyright>
+    <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>Codout</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NHibernate" Version="5.0.0-ci-00140-dbg-NH-3807" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Codout.Framework.DAL\Codout.Framework.DAL.csproj" />
+  </ItemGroup>
+
+</Project>
