@@ -126,7 +126,7 @@ namespace Codout.Framework.Api.Client
         /// <returns>Objeto</returns>
         public async Task<T> Put(T obj)
         {
-            var response = await _client.PostAsJsonAsync($"{_uriService}/{obj.Id}", obj);
+            var response = await _client.PutAsJsonAsync($"{_uriService}/{obj.Id}", obj);
 
             response.EnsureSuccessStatusCode();
 
