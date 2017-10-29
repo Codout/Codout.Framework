@@ -68,13 +68,13 @@ namespace Codout.Framework.EF
         }
 
         /// <summary>
-        /// Retorna um objeto do repositório de acordo com o filtro (não usar para ID nullabe)
+        /// Retorna um objeto do repositório de acordo com o filtro
         /// </summary>
         /// <param name="predicate">Filtro</param>
         /// <returns>objeto</returns>
         public T Get(Expression<Func<T, bool>> predicate)
         {
-            return DbSet.Find(predicate);
+            return DbSet.SingleOrDefault(predicate);
         }
 
         /// <summary>
