@@ -10,6 +10,7 @@
     <RepositoryType>Git</RepositoryType>
     <PackageTags>Codout</PackageTags>
     <Authors>Clovis Coli Jr &amp; Marcelo Paiva</Authors>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
