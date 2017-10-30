@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Codout.Framework.Api.Dto;
 
@@ -45,13 +46,13 @@ namespace Codout.Framework.Api.Client
         /// </summary>
         /// <param name="obj">Objeto a ser tratado</param>
         /// <returns>Objeto</returns>
-        Task<T> Put(T obj);
+        Task<HttpStatusCode> Put(T obj);
 
         /// <summary>
         /// Deleta o objeto identitificado pelo id
         /// </summary>
         /// <param name="id">Id do objeto</param>
         /// <returns>StatusCode da operação</returns>
-        void Delete(TId id);
+        Task<HttpStatusCode> Delete(TId id);
     }
 }

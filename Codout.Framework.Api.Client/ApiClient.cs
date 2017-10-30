@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -120,21 +121,16 @@ namespace Codout.Framework.Api.Client
             return obj;
         }
 
-        /// <inheritdoc />
         /// <summary>
         /// Recebe e retorna o objeto tipado
         /// </summary>
         /// <param name="obj">Objeto a ser tratado</param>
         /// <returns>Objeto</returns>
-        public async Task<T> Put(T obj)
+        public async Task<HttpStatusCode> Put(T obj)
         {
             var response = await Client.PutAsJsonAsync($"{_uriService}/{obj.Id}", obj);
-
             response.EnsureSuccessStatusCode();
-
-            obj = await response.Content.ReadAsAsync<T>();
-
-            return obj;
+            return response.StatusCode;
         }
 
         /// <summary>
@@ -142,9 +138,10 @@ namespace Codout.Framework.Api.Client
         /// </summary>
         /// <param name="id">Id do objeto</param>
         /// <returns>StatusCode da operação</returns>
-        public async void Delete(TId id)
+        public async Task<HttpStatusCode> Delete(TId id)
         {
-            await Client.DeleteAsync($"{_uriService}/{id}");
+            var response = await Client.DeleteAsync($"{_uriService}/{id}");
+            return response.StatusCode;
         }
     }
 }

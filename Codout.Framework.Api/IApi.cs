@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using Codout.Framework.Api.Dto;
 
 namespace Codout.Framework.Api
@@ -30,14 +29,14 @@ namespace Codout.Framework.Api
         /// </summary>
         /// <param name="id">Id do objeto</param>
         /// <returns>Objeto</returns>
-        Task<TDto> Get(TId id);
+        TDto Get(TId id);
 
         /// <summary>
         /// Recebe e retorna o objeto tipado
         /// </summary>
         /// <param name="obj">Objeto a ser salvo</param>
         /// <returns>Objeto</returns>
-        Task<TDto> Post(TDto obj);
+        TDto Post(TDto obj);
 
         /// <summary>
         /// Recebe e retorna o objeto tipado
@@ -45,7 +44,7 @@ namespace Codout.Framework.Api
         /// <param name="id">Id do Objeto</param>
         /// <param name="obj">Objeto a ser atualizado</param>
         /// <returns>Objeto</returns>
-        Task<TDto> Put(TId id, TDto obj);
+        TDto Put(TId id, TDto obj);
 
         /// <summary>
         /// Deleta o objeto identitificado pelo id
