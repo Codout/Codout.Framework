@@ -3,13 +3,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Codout.Framework.Api.Helpers
+namespace Codout.Framework.Api.Client.Helpers
 {
-
     /// <summary>
     /// Classe de extensão para tratamento de pacotes Json
     /// </summary>
-    public static class Formatting
+    public static class JsonExtensions
     {
         public static async Task<TModel> ReadAsAsync<TModel>(this HttpContent httpContent)
         {

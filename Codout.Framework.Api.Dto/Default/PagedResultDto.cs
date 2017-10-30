@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Codout.Framework.Api.Dto
+namespace Codout.Framework.Api.Dto.Default
 {
-    public class PagedResultsDto<TDto> : IPagedResult<TDto>
+    public class PagedResultDto<TDto> : IPagedResult<TDto>
     {
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
