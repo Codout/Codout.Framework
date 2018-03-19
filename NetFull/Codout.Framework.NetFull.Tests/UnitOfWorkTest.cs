@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 using Codout.Framework.EF6;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Codout.Framework.NetFull.Tests
 {
@@ -20,7 +21,9 @@ namespace Codout.Framework.NetFull.Tests
 
     public class UnitTesteContext : DbContext
     {
-        public UnitTesteContext() : base("Server=.\\SQL2014;Database=FrameworkTeste;Integrated Security=true;MultipleActiveResultSets=true")
+        // string conexão LocalDB   
+        //data source=(LocalDb)\MSSQLLocalDB;initial catalog=CodoutFameworkTeste;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework
+        public UnitTesteContext() : base("data source=(LocalDb)\\MSSQLLocalDB;initial catalog=CodoutFameworkTeste;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework")
         {
         }
 
