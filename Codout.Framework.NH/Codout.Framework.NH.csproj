@@ -11,10 +11,12 @@
     <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>Codout</PackageTags>
+    <Version>1.1.0</Version>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NHibernate" Version="5.0.0-ci-00140-dbg-NH-3807" />
+    <PackageReference Include="NHibernate" Version="5.1.0" />
   </ItemGroup>
 
   <ItemGroup>

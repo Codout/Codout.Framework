@@ -18,11 +18,11 @@ namespace Codout.Framework.Api.Client
     /// <typeparam name="TId">Tipo do Id do objeto</typeparam>
     public class ApiClient<T, TId> : IApiClient<T, TId> where T : IDto<TId>
     {
-        private readonly string _uriService;
+        public string UriService { get; }
 
         public ApiClient(string uriService, string baseUrl)
         {
-            _uriService = uriService;
+            UriService = uriService;
             Client = new HttpClient { BaseAddress = new Uri(baseUrl) };
             Client.DefaultRequestHeaders.Accept.Clear();
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -31,7 +31,7 @@ namespace Codout.Framework.Api.Client
 
         public ApiClient(string uriService, string baseUrl, string apiKey)
         {
-            _uriService = uriService;
+            UriService = uriService;
             Client = new HttpClient { BaseAddress = new Uri(baseUrl) };
             Client.DefaultRequestHeaders.Accept.Clear();
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -50,7 +50,7 @@ namespace Codout.Framework.Api.Client
         {
             IEnumerable<T> itens = null;
 
-            var response = await Client.GetAsync(_uriService);
+            var response = await Client.GetAsync(UriService);
 
             if (response.IsSuccessStatusCode)
             {
@@ -74,7 +74,7 @@ namespace Codout.Framework.Api.Client
 
             size = size < 1 ? 1 : size;
 
-            var response = await Client.GetAsync($"{_uriService}?page={page}&size={size}");
+            var response = await Client.GetAsync($"{UriService}?page={page}&size={size}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -94,7 +94,7 @@ namespace Codout.Framework.Api.Client
         {
             T obj = default(T);
 
-            var response = await Client.GetAsync($"{_uriService}/{id}");
+            var response = await Client.GetAsync($"{UriService}/{id}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -112,7 +112,7 @@ namespace Codout.Framework.Api.Client
         /// <returns>Objeto</returns>
         public async Task<T> Post(T obj)
         {
-            var response = await Client.PostAsJsonAsync($"{_uriService}", obj);
+            var response = await Client.PostAsJsonAsync($"{UriService}", obj);
 
             response.EnsureSuccessStatusCode();
 
@@ -128,7 +128,7 @@ namespace Codout.Framework.Api.Client
         /// <returns>Objeto</returns>
         public async Task<HttpStatusCode> Put(T obj)
         {
-            var response = await Client.PutAsJsonAsync($"{_uriService}/{obj.Id}", obj);
+            var response = await Client.PutAsJsonAsync($"{UriService}/{obj.Id}", obj);
             response.EnsureSuccessStatusCode();
             return response.StatusCode;
         }
@@ -140,7 +140,7 @@ namespace Codout.Framework.Api.Client
         /// <returns>StatusCode da operação</returns>
         public async Task<HttpStatusCode> Delete(TId id)
         {
-            var response = await Client.DeleteAsync($"{_uriService}/{id}");
+            var response = await Client.DeleteAsync($"{UriService}/{id}");
             return response.StatusCode;
         }
     }
