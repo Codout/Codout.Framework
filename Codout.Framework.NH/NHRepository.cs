@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using Codout.Framework.DAL.Entity;
 using Codout.Framework.DAL.Repository;
 using NHibernate;
-using NHibernate.Linq;
 
 namespace Codout.Framework.NH
 {

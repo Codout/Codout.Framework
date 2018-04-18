@@ -14,21 +14,17 @@ namespace Codout.Framework.NH
         private static readonly SessionFactory _sessionFactory = new SessionFactory();
         private ISession _session;
         private IStatelessSession _statelessSession;
-        private readonly IInterceptor _interceptor;
         private readonly ITenant _tenant;
         private bool _disposed;
 
-        public NHUnitOfWork(IInterceptor interceptor = null, ITenant tenant = null)
+        public NHUnitOfWork(ITenant tenant = null)
         {
-            _interceptor = interceptor;
             _tenant = tenant;
         }
 
-        public ISession Session => _session ?? (_session = _interceptor != null
-                                       ? _sessionFactory.CreateSession(_interceptor, _tenant)
-                                       : _sessionFactory.CreateSession(tenant: _tenant));
+        public ISession Session => _session ?? (_session = _sessionFactory.OpenSession(_tenant));
 
-        public IStatelessSession StatelessSession => _statelessSession ?? (_statelessSession = _sessionFactory.CreateStatelessSession(_tenant));
+        public IStatelessSession StatelessSession => _statelessSession ?? (_statelessSession = _sessionFactory.OpenStatelessSession(_tenant));
 
         public SessionFactory SessionFactory => _sessionFactory;
 

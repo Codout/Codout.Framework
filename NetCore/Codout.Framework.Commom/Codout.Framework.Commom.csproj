@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.4.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.4.1" />
   </ItemGroup>
 
   <Import Project="..\..\Shared\Codout.Framework.Shared.Commom\Codout.Framework.Shared.Commom.projitems" Label="Shared" />

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
+using System.Reflection;
 using System.Xml;
 using Codout.Framework.DAL;
+using FluentNHibernate.Cfg;
 using NHibernate;
 using Configuration = NHibernate.Cfg.Configuration;
 
@@ -19,7 +20,7 @@ namespace Codout.Framework.NH
 
         private static readonly Dictionary<string, ISessionFactory> SessionFactories = new Dictionary<string, ISessionFactory>();
 
-        public Configuration GetConfiguration(ITenant tenant)
+        public FluentConfiguration GetConfiguration(ITenant tenant)
         {
             var assemblyMappingName = tenant.AssemblyMappingName;
 
@@ -42,7 +43,9 @@ namespace Codout.Framework.NH
                     configuration.Properties.Remove("connection.connection_string_name");
             }
 
-            return configuration;
+            var fluentlyCfg = Fluently.Configure(configuration).Mappings(m => m.FluentMappings.AddFromAssembly(Assembly.Load(assemblyMappingName)));
+
+            return fluentlyCfg;
         }
 
         public ISessionFactory GetSessionFactory(ITenant tenant)
@@ -62,24 +65,22 @@ namespace Codout.Framework.NH
             }
         }
 
-        public ISession CreateSession(IInterceptor interceptor = null, ITenant tenant = null)
+        public ISession OpenSession(ITenant tenant)
         {
             if (tenant == null)
-                tenant = new DefaultTenant(ConfigurationManager.AppSettings["AssemblyMappingName"], DefaultFactoryKey, null);
+                throw new Exception("O objeto tenant não pode ser nulo");
 
-            var session = interceptor != null
-                ? GetSessionFactory(tenant).OpenSession(interceptor)
-                : GetSessionFactory(tenant).OpenSession();
+            var session = GetSessionFactory(tenant).OpenSession();
 
             session.FlushMode = FlushMode.Commit;
 
             return session;
         }
 
-        public IStatelessSession CreateStatelessSession(ITenant tenant = null)
+        public IStatelessSession OpenStatelessSession(ITenant tenant)
         {
             if (tenant == null)
-                tenant = new DefaultTenant(ConfigurationManager.AppSettings["AssemblyMappingName"], DefaultFactoryKey, null);
+                throw new Exception("O objeto tenant não pode ser nulo");
 
             var session = GetSessionFactory(tenant).OpenStatelessSession();
 
