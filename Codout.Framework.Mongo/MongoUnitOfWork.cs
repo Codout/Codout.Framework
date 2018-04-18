@@ -34,7 +34,7 @@ namespace Codout.Framework.Mongo
         /// <summary>
         /// Repositório Genérico que será controlado
         /// </summary>
-        /// <typeparam name="T">Tipo do objeto</typeparam>
+        /// <typeparam name="TEntity">Tipo do objeto</typeparam>
         /// <returns>Repositório concreto</returns>
         public IRepository<TEntity> Repository<TEntity>() where TEntity : class, IEntity
         {

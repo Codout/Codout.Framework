@@ -1,14 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Marcelo &amp; Clovis</Authors>
-    <Company>Codout</Company>
+    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
+    <NoWarn>1591</NoWarn>
+    <PlatformTarget>AnyCpu</PlatformTarget>
+    <OutputType>Library</OutputType>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <Description>Miscellaneous utility library package (CPF / CNPJ Validation, Range of Dates, Converters and etc) for .Net Core development</Description>
-    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-    <PackageTags>Validation CPF .net core Date utils</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

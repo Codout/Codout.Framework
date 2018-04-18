@@ -1,10 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>    
-    <TargetFramework>netcoreapp2.0</TargetFramework>    
-    <ApplicationIcon />    
-    <OutputType>Library</OutputType>    
-    <StartupObject />
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
+    <NoWarn>1591</NoWarn>
+    <PlatformTarget>AnyCpu</PlatformTarget>
+    <OutputType>Library</OutputType>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

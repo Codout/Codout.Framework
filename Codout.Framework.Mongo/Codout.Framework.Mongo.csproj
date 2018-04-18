@@ -1,15 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <NoWarn>1591</NoWarn>
+    <PlatformTarget>AnyCpu</PlatformTarget>
+    <OutputType>Library</OutputType>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <Description>Biblioteca de persistência do Framework da Codout para MongoDB</Description>
-    <Copyright>Codout</Copyright>
-    <PackageTags>Codout</PackageTags>
-    <RepositoryType>Git</RepositoryType>
-    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
-    <Authors>Clovis Coli Jr &amp; Marcelo Paiva</Authors>
   </PropertyGroup>
 
   <ItemGroup>
