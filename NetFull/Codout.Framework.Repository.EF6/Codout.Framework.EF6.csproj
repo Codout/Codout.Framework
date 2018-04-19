@@ -54,6 +54,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <Import Project="$(MSBuildThisFileDirectory)..\..\Shared.msbuild" />
   <ItemGroup>
     <ProjectReference Include="..\..\Codout.Framework.DAL\Codout.Framework.DAL.csproj">
       <Project>{decef05f-6f17-448e-a850-38a0977db5bc}</Project>
