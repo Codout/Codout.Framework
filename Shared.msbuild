@@ -2,14 +2,14 @@
 
   <PropertyGroup>
     <PackageId>$(AssemblyName)</PackageId>
-    <Copyright>Copyright (c) Codout and contributors (Clovis Coli Jr, Marcelo Paiva).</Copyright>
+	<Copyright>Copyright (c) Codout and contributors (Clovis Coli Jr, Marcelo Paiva).</Copyright>
     <Authors>Clovis Coli Jr, Marcelo Paiva</Authors>
     <Company>Codout Solutions http://codout.com</Company>
     <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
     <PackageIconUrl>https://github.com/Codout/Codout.Framework/raw/master/logo-nuget.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>Framework;ORM;DAL;NHibernate;</PackageTags>
+    <PackageTags>Codout;Framework;ORM;DAL;NHibernate;</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup>

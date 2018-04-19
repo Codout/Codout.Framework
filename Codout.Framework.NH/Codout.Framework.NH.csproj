@@ -7,10 +7,12 @@
     <OutputType>Library</OutputType>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <PropertyGroup>
     <Description>Biblioteca de persistência do Framework da Codout para NHibernate Core</Description>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)..\Shared.msbuild" />
