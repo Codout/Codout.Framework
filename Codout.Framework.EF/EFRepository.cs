@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Codout.Framework.DAL.Entity;
 using Codout.Framework.DAL.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -54,9 +55,7 @@ namespace Codout.Framework.EF
         {
             var skipCount = index * size;
 
-            var resetSet = filter != null
-                ? DbSet.Where(filter).AsQueryable()
-                : DbSet.AsQueryable();
+            var resetSet = DbSet.Where(filter);
 
             resetSet = skipCount == 0
                 ? resetSet.Take(size)
@@ -64,7 +63,7 @@ namespace Codout.Framework.EF
 
             total = resetSet.Count();
 
-            return resetSet.AsQueryable();
+            return resetSet;
         }
 
         /// <summary>
@@ -160,8 +159,59 @@ namespace Codout.Framework.EF
         /// <returns>Retorna o mesmo objeto, para o caso de retornar algum Id gerado</returns>
         public T Merge(T entity)
         {
-            DbSet.Update(entity);
+            return DbSet.Update(entity).Entity;
+        }
+
+        public async Task<T> GetAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await All().SingleOrDefaultAsync(predicate);
+        }
+
+        public async Task<T> GetAsync(object key)
+        {
+            return await DbSet.FindAsync(key);
+        }
+
+        public async Task<T> LoadAsync(object key)
+        {
+            return await DbSet.FindAsync(key);
+        }
+
+        public async Task DeleteAsync(T entity)
+        {
+            await Task.Run(() => DbSet.Remove(entity));
+        }
+
+        public async Task DeleteAsync(Expression<Func<T, bool>> predicate)
+        {
+            var entities = Find(predicate);
+            foreach (var entity in entities)
+                await DeleteAsync(entity);
+        }
+
+        public async Task<T> SaveAsync(T entity)
+        {
+            return (await DbSet.AddAsync(entity)).Entity;
+        }
+
+        public async Task<T> SaveOrUpdateAsync(T entity)
+        {
+            if (entity.IsTransient())
+                await DbSet.AddAsync(entity);
+            else
+                await UpdateAsync(entity);
+
             return entity;
+        }
+
+        public async Task UpdateAsync(T entity)
+        {
+            await Task.Run(() => DbSet.Update(entity));
+        }
+
+        public async Task<T> MergeAsync(T entity)
+        {
+            return (await Task.Run(() => DbSet.Update(entity))).Entity;
         }
 
         private bool _disposed;

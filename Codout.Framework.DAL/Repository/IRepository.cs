@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Codout.Framework.DAL.Entity;
 
 namespace Codout.Framework.DAL.Repository
@@ -19,5 +20,15 @@ namespace Codout.Framework.DAL.Repository
         T SaveOrUpdate(T entity);
         void Update(T entity);
         T Merge(T entity);
+        
+        Task<T> GetAsync(Expression<Func<T, bool>> predicate);
+        Task<T> GetAsync(object key);
+        Task<T> LoadAsync(object key);
+        Task DeleteAsync(T entity);
+        Task DeleteAsync(Expression<Func<T, bool>> predicate);
+        Task<T> SaveAsync(T entity);
+        Task<T> SaveOrUpdateAsync(T entity);
+        Task UpdateAsync(T entity);
+        Task<T> MergeAsync(T entity);
     }
 }

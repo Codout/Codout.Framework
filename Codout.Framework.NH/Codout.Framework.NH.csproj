@@ -1,25 +1,24 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <NoWarn>1591</NoWarn>
-    <PlatformTarget>AnyCpu</PlatformTarget>
-    <OutputType>Library</OutputType>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>1.2.0</Version>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <Description>Biblioteca de persistência do Framework da Codout para NHibernate Core</Description>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>2.0.0</Version>
+    <Authors>Clovis Coli Jr, Marcelo Paiva</Authors>
+    <Description>Implementação da interface Codout.Framework.DAL para NHibernate
+</Description>
+    <Copyright>Codout</Copyright>
+    <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+    <PackageIconUrl>https://github.com/Codout/Codout.Framework/raw/master/logo-nuget.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Codout;Framework;ORM;DAL;NHibernate;</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
-  <Import Project="$(MSBuildThisFileDirectory)..\Shared.msbuild" />
-
   <ItemGroup>
     <PackageReference Include="FluentNHibernate" Version="2.1.2" />
-    <PackageReference Include="NHibernate" Version="5.1.1" />
+    <PackageReference Include="NHibernate" Version="5.2.3" />
   </ItemGroup>
 
   <ItemGroup>

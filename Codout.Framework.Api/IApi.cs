@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Threading.Tasks;
 using Codout.Framework.Api.Dto;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Codout.Framework.Api
 {
@@ -14,7 +15,7 @@ namespace Codout.Framework.Api
         /// Retorma um IEnumerable do objeto tipado
         /// </summary>
         /// <returns>Lista com todos os objetos</returns>
-        IEnumerable<TDto> Get();
+        Task<IActionResult> Get();
 
         /// <summary>
         /// Retorna uma lista de resultados com paginação
@@ -22,21 +23,21 @@ namespace Codout.Framework.Api
         /// <param name="page">Página</param>
         /// <param name="size">Tamanho</param>
         /// <returns>Lista paginada dos objetos</returns>
-        IPagedResult<TDto> Get(int page, int size);
+        Task<IActionResult> Get(int page, int size);
 
         /// <summary>
         /// Retorna um objeto de acordo com o id
         /// </summary>
         /// <param name="id">Id do objeto</param>
         /// <returns>Objeto</returns>
-        TDto Get(TId id);
+        Task<IActionResult> Get(TId id);
 
         /// <summary>
         /// Recebe e retorna o objeto tipado
         /// </summary>
         /// <param name="obj">Objeto a ser salvo</param>
         /// <returns>Objeto</returns>
-        TDto Post(TDto obj);
+        Task<IActionResult> Post(TDto obj);
 
         /// <summary>
         /// Recebe e retorna o objeto tipado
@@ -44,18 +45,12 @@ namespace Codout.Framework.Api
         /// <param name="id">Id do Objeto</param>
         /// <param name="obj">Objeto a ser atualizado</param>
         /// <returns>Objeto</returns>
-        TDto Put(TId id, TDto obj);
+        Task<IActionResult> Put(TId id, TDto obj);
 
         /// <summary>
         /// Deleta o objeto identitificado pelo id
         /// </summary>
         /// <param name="id">Id do objeto a ser excluído</param>
-        void Delete(TId id);
-
-        /// <summary>
-        /// Realiza o sincronismo dos objetos enviados
-        /// </summary>
-        /// <param name="value"></param>
-        void Sync(IEnumerable<TDto> value);
+        Task<IActionResult> Delete(TId id);
     }
 }

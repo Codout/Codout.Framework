@@ -46,13 +46,13 @@ namespace Codout.Framework.Api.Client
         /// </summary>
         /// <param name="obj">Objeto a ser tratado</param>
         /// <returns>Objeto</returns>
-        Task<HttpStatusCode> Put(T obj);
+        Task<T> Put(T obj);
 
         /// <summary>
         /// Deleta o objeto identitificado pelo id
         /// </summary>
         /// <param name="id">Id do objeto</param>
         /// <returns>StatusCode da operação</returns>
-        Task<HttpStatusCode> Delete(TId id);
+        Task Delete(TId id);
     }
 }

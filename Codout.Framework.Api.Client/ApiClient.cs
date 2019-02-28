@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -48,16 +47,7 @@ namespace Codout.Framework.Api.Client
         /// <returns>IEnumerable</returns>
         public async Task<IEnumerable<T>> Get()
         {
-            IEnumerable<T> itens = null;
-
-            var response = await Client.GetAsync(UriService);
-
-            if (response.IsSuccessStatusCode)
-            {
-                itens = await response.Content.ReadAsAsync<IEnumerable<T>>();
-            }
-
-            return itens;
+            return await Result<IEnumerable<T>>(await Client.GetAsync(UriService));
         }
 
         /// <summary>
@@ -68,20 +58,7 @@ namespace Codout.Framework.Api.Client
         /// <returns></returns>
         public async Task<IPagedResult<T>> Get(int page, int size)
         {
-            PagedResultDto<T> itens = null;
-
-            page = page < 0 ? 0 : page;
-
-            size = size < 1 ? 1 : size;
-
-            var response = await Client.GetAsync($"{UriService}?page={page}&size={size}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                itens = await response.Content.ReadAsAsync<PagedResultDto<T>>();
-            }
-
-            return itens;
+            return await Result<PagedResultDto<T>>(await Client.GetAsync($"{UriService}?page={(page < 0 ? 0 : page)}&size={(size < 1 ? 1 : size)}"));
         }
 
         /// <inheritdoc />
@@ -92,16 +69,7 @@ namespace Codout.Framework.Api.Client
         /// <returns>Objeto</returns>
         public async Task<T> Get(TId id)
         {
-            T obj = default(T);
-
-            var response = await Client.GetAsync($"{UriService}/{id}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                obj = await response.Content.ReadAsAsync<T>();
-            }
-
-            return obj;
+            return await Result<T>(await Client.GetAsync($"{UriService}/{id}"));
         }
 
         /// <inheritdoc />
@@ -112,13 +80,7 @@ namespace Codout.Framework.Api.Client
         /// <returns>Objeto</returns>
         public async Task<T> Post(T obj)
         {
-            var response = await Client.PostAsJsonAsync($"{UriService}", obj);
-
-            response.EnsureSuccessStatusCode();
-
-            obj = await response.Content.ReadAsAsync<T>();
-
-            return obj;
+            return await Result<T>(await Client.PostAsJsonAsync($"{UriService}", obj));
         }
 
         /// <summary>
@@ -126,11 +88,9 @@ namespace Codout.Framework.Api.Client
         /// </summary>
         /// <param name="obj">Objeto a ser tratado</param>
         /// <returns>Objeto</returns>
-        public async Task<HttpStatusCode> Put(T obj)
+        public async Task<T> Put(T obj)
         {
-            var response = await Client.PutAsJsonAsync($"{UriService}/{obj.Id}", obj);
-            response.EnsureSuccessStatusCode();
-            return response.StatusCode;
+            return await Result<T>(await Client.PutAsJsonAsync($"{UriService}/{obj.Id}", obj));
         }
 
         /// <summary>
@@ -138,10 +98,20 @@ namespace Codout.Framework.Api.Client
         /// </summary>
         /// <param name="id">Id do objeto</param>
         /// <returns>StatusCode da operação</returns>
-        public async Task<HttpStatusCode> Delete(TId id)
+        public async Task Delete(TId id)
         {
             var response = await Client.DeleteAsync($"{UriService}/{id}");
-            return response.StatusCode;
+
+            if (!response.IsSuccessStatusCode)
+                throw new ApiException(await response.Content.ReadAsStringAsync());
+        }
+
+        private async Task<TResult> Result<TResult>(HttpResponseMessage response)
+        {
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsAsync<TResult>();
+            
+            throw new ApiException(await response.Content.ReadAsStringAsync());
         }
     }
 }

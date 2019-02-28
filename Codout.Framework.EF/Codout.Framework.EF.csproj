@@ -1,24 +1,28 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
-    <NoWarn>1591</NoWarn>
-    <PlatformTarget>AnyCpu</PlatformTarget>
-    <OutputType>Library</OutputType>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup>
-    <Description>Biblioteca de persistência do Framework da Codout para Entity Framework Core</Description>
+    <Description>Implementação da interface Codout.Framework.DAL para EntityFrameworkCore
+</Description>
+    <Version>2.0.0</Version>
+    <Authors>Clovis Coli Jr, Marcelo Paiva</Authors>
+    <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageIconUrl>https://github.com/Codout/Codout.Framework/raw/master/logo-nuget.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Codout;Framework;ORM;DAL;EnityFrameworkCore;</PackageTags>
+    <Copyright>Codout</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Codout.Framework.Domain\Codout.Framework.Domain.csproj" />
+    <ProjectReference Include="..\Codout.Framework.DAL\Codout.Framework.DAL.csproj" />
   </ItemGroup>
 
 </Project>

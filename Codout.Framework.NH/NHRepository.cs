@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Codout.Framework.DAL.Entity;
 using Codout.Framework.DAL.Repository;
 using NHibernate;
+using NHibernate.Linq;
 
 namespace Codout.Framework.NH
 {
@@ -72,8 +74,7 @@ namespace Codout.Framework.NH
 
         public T Save(T entity)
         {
-            Session.Save(entity);
-            return entity;
+            return Session.Save(entity) as T;
         }
 
         public T SaveOrUpdate(T entity)
@@ -90,6 +91,54 @@ namespace Codout.Framework.NH
         public T Merge(T entity)
         {
             return Session.Merge(entity);
+        }
+
+        public async Task<T> GetAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await All().SingleOrDefaultAsync(predicate);
+        }
+
+        public async Task<T> GetAsync(object key)
+        {
+            return await Session.GetAsync<T>(key);
+        }
+
+        public async Task<T> LoadAsync(object key)
+        {
+            return await Session.LoadAsync<T>(key);
+        }
+
+        public async Task DeleteAsync(T entity)
+        {
+            await Session.DeleteAsync(entity);
+        }
+
+        public async Task DeleteAsync(Expression<Func<T, bool>> predicate)
+        {
+            var entities = Find(predicate);
+            foreach (var entity in entities)
+                await DeleteAsync(entity);
+        }
+
+        public async Task<T> SaveAsync(T entity)
+        {
+            return await Session.SaveAsync(entity) as T;
+        }
+
+        public async Task<T> SaveOrUpdateAsync(T entity)
+        {
+            await Session.SaveOrUpdateAsync(entity);
+            return entity;
+        }
+
+        public async Task UpdateAsync(T entity)
+        {
+            await Session.UpdateAsync(entity);
+        }
+
+        public async Task<T> MergeAsync(T entity)
+        {
+            return await Session.MergeAsync(entity);
         }
 
         private bool _disposed;
