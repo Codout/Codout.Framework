@@ -1,34 +1,33 @@
-﻿using MongoDB.Bson;
-using MongoDB.Driver;
-using System;
+﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using Codout.Framework.DAL.Entity;
 using Codout.Framework.DAL.Repository;
-using Codout.Framework.Mongo;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
-namespace Codout.Framework.NetCore.Repository.Mongo
+namespace Codout.Framework.Mongo
 {
 
     /// <summary>
     /// Repositório genérico de dados para MongoDB
     /// </summary>
     /// <typeparam name="T">Classe que define o tipo do repositório</typeparam>
-    public class MongoRepository<T> : IRepository<T> where T : class, IEntity
+    public class MongoCollection<T> : IRepository<T> where T : class, IEntity
     {
 
-        public MongoDbContext MongoDbContext;
+        public MongoContext MongoContext;
 
-        public MongoRepository(MongoDbContext mongoDbContext)
+        public MongoCollection(MongoContext mongoContext)
         {
-            MongoDbContext = mongoDbContext;
+            MongoContext = mongoContext;
         }
 
         public IMongoCollection<TEntity> GetCollection<TEntity>()
         {
-            return MongoDbContext.Database.GetCollection<TEntity>(typeof(TEntity).Name.ToLower() + "s");
+            return MongoContext.Database.GetCollection<TEntity>(typeof(TEntity).Name.ToLower() + "s");
         }
 
         /// <summary>

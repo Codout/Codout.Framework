@@ -9,36 +9,22 @@ using Codout.Framework.Api.Dto.Default;
 
 namespace Codout.Framework.Api.Client
 {
-    /// <inheritdoc />
     /// <summary>
     /// Classe genérica para operações CRUD em WebAPI
     /// </summary>
     /// <typeparam name="T">Tipo do objeto a ser tratado</typeparam>
     /// <typeparam name="TId">Tipo do Id do objeto</typeparam>
-    public class ApiClient<T, TId> : IApiClient<T, TId> where T : IDto<TId>
+    public class ApiClient<T, TId> : ApiClientBase, IApiClient<T, TId> where T : IDto<TId>
     {
-        public string UriService { get; }
-
         public ApiClient(string uriService, string baseUrl)
+        : base(uriService, baseUrl)
         {
-            UriService = uriService;
-            Client = new HttpClient { BaseAddress = new Uri(baseUrl) };
-            Client.DefaultRequestHeaders.Accept.Clear();
-            Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            Client.Timeout = new TimeSpan(0, 0, 1, 0);
         }
 
         public ApiClient(string uriService, string baseUrl, string apiKey)
+            : base(uriService, baseUrl, apiKey)
         {
-            UriService = uriService;
-            Client = new HttpClient { BaseAddress = new Uri(baseUrl) };
-            Client.DefaultRequestHeaders.Accept.Clear();
-            Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            Client.DefaultRequestHeaders.Add("ApiKey", apiKey);
-            Client.Timeout = new TimeSpan(0, 0, 1, 0);
         }
-
-        public HttpClient Client { get; }
 
         /// <inheritdoc />
         /// <summary>
@@ -104,14 +90,6 @@ namespace Codout.Framework.Api.Client
 
             if (!response.IsSuccessStatusCode)
                 throw new ApiException(await response.Content.ReadAsStringAsync());
-        }
-
-        private async Task<TResult> Result<TResult>(HttpResponseMessage response)
-        {
-            if (response.IsSuccessStatusCode)
-                return await response.Content.ReadAsAsync<TResult>();
-            
-            throw new ApiException(await response.Content.ReadAsStringAsync());
         }
     }
 }

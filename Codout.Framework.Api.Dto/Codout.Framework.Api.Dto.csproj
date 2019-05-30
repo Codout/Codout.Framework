@@ -6,7 +6,7 @@
 
   <PropertyGroup>
     <Description>Biblioteca de funções para classes DTO da Api do Framework da Codout</Description>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
 </Project>
