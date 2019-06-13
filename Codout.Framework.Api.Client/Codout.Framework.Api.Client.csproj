@@ -6,7 +6,7 @@
 
   <PropertyGroup>
     <Description>Biblioteca de funções para Cliente Api do Framework da Codout</Description>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Authors>Clovis Coli Jr, Marcelo Paiva</Authors>
     <Copyright>Codout</Copyright>
