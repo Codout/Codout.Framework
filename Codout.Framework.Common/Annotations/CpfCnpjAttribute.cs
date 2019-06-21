@@ -2,12 +2,12 @@
 using System.ComponentModel.DataAnnotations;
 using Codout.Framework.Common.Extensions;
 
-namespace Codout.Framework.Common.Validators
+namespace Codout.Framework.Common.Annotations
 {
     /// <summary>
     /// Valida um CPF ou CNPJ.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class CpfCnpjAttribute : ValidationAttribute
     {
         #region IsValid
@@ -25,7 +25,6 @@ namespace Codout.Framework.Common.Validators
             if (string.IsNullOrEmpty(cpfCnpj))
                 return true;
 
-            if (cpfCnpj == null) return false;
             cpfCnpj = cpfCnpj.Replace(".", string.Empty)
                 .Replace("/", string.Empty)
                 .Replace("-", string.Empty)

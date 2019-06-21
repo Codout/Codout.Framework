@@ -27,24 +27,21 @@ namespace Codout.Framework.Common.Extensions
         }
         #endregion
 
+        #region RemoveAcentos
         /// <summary>
         /// Remove os acentos do texto.
         /// </summary>
         /// <param name="texto"></param>
         /// <returns></returns>
-
-        #region [ RemoveAcentos ]
-
         public static string RemoveAcentos(this string texto)
         {
             if (string.IsNullOrEmpty(texto))
-                return String.Empty;
+                return string.Empty;
 
-            byte[] bytes = Encoding.GetEncoding("iso-8859-8").GetBytes(texto);
+            var bytes = Encoding.GetEncoding("iso-8859-8").GetBytes(texto);
             return Encoding.UTF8.GetString(bytes);
         }
-
-        #endregion [ RemoveAcentos ]
+        #endregion RemoveAcentos
 
         #region Matches
         /// <summary>
@@ -159,8 +156,8 @@ namespace Codout.Framework.Common.Extensions
         public static string Pluralize(this int number, string sourceString)
         {
             if (number == 1)
-                return String.Concat(number, " ", sourceString.MakeSingular());
-            return String.Concat(number, " ", sourceString.MakePlural());
+                return string.Concat(number, " ", sourceString.MakeSingular());
+            return $"{number} {sourceString.MakePlural()}";
         }
         #endregion
 

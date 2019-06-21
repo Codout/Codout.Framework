@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Codout.Framework.Common.Validators
+namespace Codout.Framework.Common.Annotations
 {
     /// <summary>
     /// Valida um data entre os dias especificados.

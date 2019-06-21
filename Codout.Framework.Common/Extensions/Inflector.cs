@@ -23,66 +23,66 @@ namespace Codout.Framework.Common.Extensions
         static Inflector()
         {
             AddPluralRule("$", "s");
-            AddPluralRule("s$", "s");
-            AddPluralRule("(ax|test)is$", "$1es");
-            AddPluralRule("(octop|vir)us$", "$1i");
-            AddPluralRule("(alias|status)$", "$1es");
-            AddPluralRule("(bu)s$", "$1ses");
-            AddPluralRule("(buffal|tomat)o$", "$1oes");
-            AddPluralRule("([ti])um$", "$1a");
-            AddPluralRule("sis$", "ses");
-            AddPluralRule("(?:([^f])fe|([lr])f)$", "$1$2ves");
-            AddPluralRule("(hive)$", "$1s");
-            AddPluralRule("([^aeiouy]|qu)y$", "$1ies");
-            AddPluralRule("(x|ch|ss|sh)$", "$1es");
-            AddPluralRule("(matr|vert|ind)ix|ex$", "$1ices");
-            AddPluralRule("([m|l])ouse$", "$1ice");
-            AddPluralRule("^(ox)$", "$1en");
-            AddPluralRule("(quiz)$", "$1zes");
-            AddPluralRule("mês$", "$1es");
+            AddPluralRule("()r$", "$1res");
+            AddPluralRule("()ão$", "$1ões");
+            AddPluralRule("()um$", "$1uns");
+            AddPluralRule("()s$", "$1ses");
+            AddPluralRule("()il$", "$1is");
+            AddPluralRule("()m$", "$1ns");
+            AddPluralRule("()ol$", "$1óis");
+            AddPluralRule("()x$", "$1xes");
+            AddPluralRule("()al$", "$1ais");
+            AddPluralRule("()el$", "$1éis");
+            AddPluralRule("(ul)$", "$1es");
+            AddPluralRule("()zul$", "$1zuis");
+            AddPluralRule("()ês$", "$1eses");
+            AddPluralRule("()z$", "$1zes");
 
-            AddSingularRule("s$", String.Empty);
-            AddSingularRule("ss$", "ss");
-            AddSingularRule("(n)ews$", "$1ews");
-            AddSingularRule("([ti])a$", "$1um");
-            AddSingularRule("((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$", "$1$2sis");
-            AddSingularRule("(^analy)ses$", "$1sis");
-            AddSingularRule("([^f])ves$", "$1fe");
-            AddSingularRule("(hive)s$", "$1");
-            AddSingularRule("(tive)s$", "$1");
-            AddSingularRule("([lr])ves$", "$1f");
-            AddSingularRule("([^aeiouy]|qu)ies$", "$1y");
-            AddSingularRule("(s)eries$", "$1eries");
-            AddSingularRule("(m)ovies$", "$1ovie");
-            AddSingularRule("(x|ch|ss|sh)es$", "$1");
-            AddSingularRule("([m|l])ice$", "$1ouse");
-            AddSingularRule("(bus)es$", "$1");
-            AddSingularRule("(o)es$", "$1");
-            AddSingularRule("(shoe)s$", "$1");
-            AddSingularRule("(cris|ax|test)es$", "$1is");
-            AddSingularRule("(octop|vir)i$", "$1us");
-            AddSingularRule("(alias|status)$", "$1");
-            AddSingularRule("(alias|status)es$", "$1");
-            AddSingularRule("^(ox)en", "$1");
-            AddSingularRule("(vert|ind)ices$", "$1ex");
-            AddSingularRule("(matr)ices$", "$1ix");
-            AddSingularRule("(quiz)zes$", "$1");
+            AddSingularRule("s$", "");
+            AddSingularRule("(xul)es$", "$1");
+            AddSingularRule("()res$", "$1r");
+            AddSingularRule("()ões", "$1ão");
+            AddSingularRule("()uns", "$1um");
+            AddSingularRule("()ses$", "$1s");
+            AddSingularRule("()is$", "$1il");
+            AddSingularRule("()ns$", "$1m");
+            AddSingularRule("(s|ç)óis$", "$1ol");
+            AddSingularRule("()xes$", "$1x");
+            AddSingularRule("(ei)xes$", "$1xe");
+            AddSingularRule("()ais$", "$1al");
+            AddSingularRule("()éis$", "$1el");
+            AddSingularRule("()zuis$", "$1zul");
+            AddSingularRule("()eses$", "$1ês");
+            AddSingularRule("()zes$", "$1z");
 
-            AddIrregularRule("person", "people");
-            AddIrregularRule("man", "men");
-            AddIrregularRule("child", "children");
-            AddIrregularRule("sex", "sexes");
-            AddIrregularRule("tax", "taxes");
-            AddIrregularRule("move", "moves");
 
-            AddUnknownCountRule("equipment");
-            AddUnknownCountRule("information");
-            AddUnknownCountRule("rice");
-            AddUnknownCountRule("money");
-            AddUnknownCountRule("species");
-            AddUnknownCountRule("series");
-            AddUnknownCountRule("fish");
-            AddUnknownCountRule("sheep");
+            AddIrregularRule("catalão", "catalães");
+            AddIrregularRule("alemão", "alemães");
+            AddIrregularRule("cão", "cães");
+            AddIrregularRule("capitão", "capitães");
+            AddIrregularRule("escrivão", "escrivães");
+            AddIrregularRule("pão", "pães");
+            AddIrregularRule("cidadão", "cidadãos");
+            AddIrregularRule("cortesão", "cortesãos");
+            AddIrregularRule("cristão", "cristãos");
+            AddIrregularRule("irmão", "irmãos");
+            AddIrregularRule("pagão", "pagãos");
+            AddIrregularRule("acórdão", "acórdãos");
+            AddIrregularRule("bênção", "bênçãos");
+            AddIrregularRule("órfão", "órfãos");
+            AddIrregularRule("órgão", "órgãos");
+            AddIrregularRule("sótão", "sótãos");
+            AddIrregularRule("qualquer", "quaisquer");
+            AddIrregularRule("palavra-chave", "palavras-chave");
+            AddIrregularRule("segunda-feira", "segundas-feiras");
+            AddIrregularRule("terça-feira", "terças-feiras");
+            AddIrregularRule("quarta-feira", "quartas-feiras");
+            AddIrregularRule("quinta-feira", "quintas-feiras");
+            AddIrregularRule("sexta-feira", "sextas-feiras");
+
+            AddUnknownCountRule("toráx");
+            AddUnknownCountRule("fénix");
+            AddUnknownCountRule("louva-a-deus");
         }
         #endregion
 
@@ -169,12 +169,14 @@ namespace Codout.Framework.Common.Extensions
         /// <returns></returns>
         private static string ApplyRules(IList<InflectorRule> rules, string word)
         {
-            string result = word;
+            var result = word;
+
             if (!Uncountables.Contains(word.ToLower()))
             {
-                for (int i = rules.Count - 1; i >= 0; i--)
+                for (var i = rules.Count - 1; i >= 0; i--)
                 {
-                    string currentPass = rules[i].Apply(word);
+                    var currentPass = rules[i].Apply(word);
+
                     if (currentPass != null)
                     {
                         result = currentPass;

@@ -243,12 +243,12 @@ namespace Codout.Framework.Common.Extensions
         {
             string result;
 
-            int seconds = endTime.Second - startTime.Second;
-            int minutes = endTime.Minute - startTime.Minute;
-            int hours = endTime.Hour - startTime.Hour;
-            int days = endTime.Day - startTime.Day;
-            int months = endTime.Month - startTime.Month;
-            int years = endTime.Year - startTime.Year;
+            var seconds = endTime.Second - startTime.Second;
+            var minutes = endTime.Minute - startTime.Minute;
+            var hours = endTime.Hour - startTime.Hour;
+            var days = endTime.Day - startTime.Day;
+            var months = endTime.Month - startTime.Month;
+            var years = endTime.Year - startTime.Year;
 
             if (seconds < 0)
             {

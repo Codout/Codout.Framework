@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
-namespace Codout.Framework.Common.Validators
+namespace Codout.Framework.Common.Annotations
 {
 
     /// <summary>

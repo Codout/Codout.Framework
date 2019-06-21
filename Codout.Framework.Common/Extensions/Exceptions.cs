@@ -19,9 +19,7 @@ namespace Codout.Framework.Common.Extensions
                 return string.Empty;
 
             if (exception.InnerException != null)
-                return string.Format("{0}\r\n > {1} ",
-                    exception.Message,
-                    GetMessage(exception.InnerException));
+                return $"{exception.Message}\r\n > {GetMessage(exception.InnerException)} ";
 
             return exception.Message;
         }

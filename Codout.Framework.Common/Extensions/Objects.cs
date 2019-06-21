@@ -31,7 +31,7 @@ namespace Codout.Framework.Common.Extensions
         /// 
         public static object ChangeTypeTo<T>(this object value)
         {
-            Type conversionType = typeof(T);
+            var conversionType = typeof(T);
             return ChangeTypeTo(value, conversionType);
         }
         #endregion
