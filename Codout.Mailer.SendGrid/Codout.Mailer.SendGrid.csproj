@@ -10,13 +10,13 @@
     <PackageIconUrl>https://github.com/Codout/Codout.Framework/raw/master/logo-nuget.png</PackageIconUrl>
     <PackageTags>Codout;Framework;Mail;Email;Mailer;SendGrid;</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.0.0-beta2</Version>
+    <Version>1.0.0-beta3</Version>
     <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Sendgrid" Version="9.10.0" />
+    <PackageReference Include="Sendgrid" Version="9.12.0" />
   </ItemGroup>
 
   <ItemGroup>
