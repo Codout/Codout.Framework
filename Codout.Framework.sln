@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codout.Framework.Common", "Codout.Framework.Common\Codout.Framework.Common.csproj", "{281F92E8-F224-4036-858E-F04203D9107B}"
 EndProject
@@ -24,6 +24,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codout.Mailer", "Codout.Mailer\Codout.Mailer.csproj", "{DA7E9861-F5C1-45DF-8509-EC1D76F0EA9C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codout.Mailer.SendGrid", "Codout.Mailer.SendGrid\Codout.Mailer.SendGrid.csproj", "{1B24E7A5-880C-431E-B859-C77037F4CF00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codout.Multitenancy", "Codout.Multitenancy\Codout.Multitenancy.csproj", "{5D77842D-DD96-4927-976A-FFFD8207ED70}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{1B24E7A5-880C-431E-B859-C77037F4CF00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B24E7A5-880C-431E-B859-C77037F4CF00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B24E7A5-880C-431E-B859-C77037F4CF00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D77842D-DD96-4927-976A-FFFD8207ED70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D77842D-DD96-4927-976A-FFFD8207ED70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D77842D-DD96-4927-976A-FFFD8207ED70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D77842D-DD96-4927-976A-FFFD8207ED70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
