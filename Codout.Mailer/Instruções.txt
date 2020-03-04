@@ -1,0 +1,43 @@
+1 - Depois de adaptar o projeto em anexo.
+2 - Fazer a injeção de dependência em ConfigureServices
+
+	services.AddScoped<IEManagerMailer>(provider =>
+                new EManagerMailer(Configuration.GetSection("CodoutMailer").Get<CodoutMailerSettings>(),
+                    new SendGridDispatcher(Configuration.GetSection("SendGrid").Get<SendGridSettings>())));
+
+3 - Adicionar as configurações em appSettings.json
+
+ "SendGrid": {
+    "ApiKey": "SUA API KEY DO SENDGRID",
+    "StandBoxMode": false
+  },
+  "CodoutMailer": {
+    "DefaultFromName": "Padrão Carvalho",
+    "DefaultFromEmail": "contato@padraocarvalho.com.br"
+  },
+
+
+4 - Consumindo o Serviço
+
+ 4.1 - Injetando no Controller
+
+	public SubscriptionController(IEManagerMailer mailer) : Controller
+        {
+            _mailer = mailer;
+        }
+
+ 4.2 - Enviando o E-mail
+
+	 try
+	 {
+         	await _mailer.Welcome(new WelcomeModel
+                {
+                        Name = user.Name,
+                        To = new MailAddress(user.Email, user.Name),
+                        Link = $"{Request.Scheme}://{Request.Host.ToUriComponent()}" + _linkGenerator.GetPathByAction(HttpContext, "Login", "Home", new { area = "" }),
+                 });
+          }
+          catch (Exception)
+          {
+          	//Ignore
+	  }
