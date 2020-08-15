@@ -335,6 +335,18 @@ namespace Codout.Framework.Common.Extensions
         }
         #endregion
 
+        #region OnlyNumbers
+        /// <summary>
+        /// Return only numbers of string
+        /// </summary>
+        /// <param name="sourceString">The source string.</param>
+        /// <returns></returns>
+        public static string OnlyNumbers(this string sourceString)
+        {
+            return !string.IsNullOrWhiteSpace(sourceString) ? string.Concat(sourceString.Where(char.IsDigit)) : string.Empty;
+        }
+        #endregion
+
         #region ToWords
         /// <summary>
         /// Creates a string array based on the words in a sentence

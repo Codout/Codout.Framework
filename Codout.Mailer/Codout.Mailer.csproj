@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Description>Biblioteca para envio de e-mails</Description>
     <Copyright>Codout</Copyright>
     <PackageTags>Codout;Framework;Mail;Email;Mailer;</PackageTags>
@@ -11,13 +11,13 @@
     <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
     <Authors>Clovis Coli Jr, Marcelo Paiva</Authors>
     <Company>Codout</Company>
-    <Version>1.0.0-beta2</Version>
+    <Version>1.0.1-beta4</Version>
     <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RazorLight" Version="2.0.0-beta1" />
+    <PackageReference Include="RazorLight" Version="2.0.0-beta7" />
   </ItemGroup>
 
 </Project>
