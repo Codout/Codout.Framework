@@ -6,23 +6,34 @@
 
   <PropertyGroup>
     <Description>Biblioteca de funções para Cliente Api do Framework da Codout</Description>
-    <Version>2.0.2</Version>
+    <Version>2.0.4</Version>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Authors>Clovis Coli Jr, Marcelo Paiva</Authors>
+    <Authors>Clovis Coli Jr</Authors>
     <Copyright>Codout</Copyright>
     <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageIconUrl>https://github.com/Codout/Codout.Framework/raw/master/logo-nuget.png</PackageIconUrl>
+    <PackageIconUrl></PackageIconUrl>
     <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+    <AssemblyVersion>2.0.4.0</AssemblyVersion>
+    <FileVersion>2.0.4.0</FileVersion>
+    <Company>Codout</Company>
+    <PackageIcon>logo-nuget.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Codout.Framework.Api.Dto\Codout.Framework.Api.Dto.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\logo-nuget.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

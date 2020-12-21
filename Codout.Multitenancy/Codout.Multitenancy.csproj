@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Authors>Clovis Coli Jr, Marcelo Paiva</Authors>
-    <Company>Clovis Coli Jr, Marcelo Paiva</Company>
-    <Product>Clovis Coli Jr, Marcelo Paiva</Product>
+    <Authors>Clovis Coli Jr</Authors>
+    <Company>Codout</Company>
+    <Product></Product>
     <Description>Modulo Multitenancy da Codout para aplicações Asp.net Core</Description>
     <Copyright>Codout</Copyright>
     <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
@@ -15,12 +15,13 @@
     <PackageIconUrl />
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Version>1.0.4</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.2" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>

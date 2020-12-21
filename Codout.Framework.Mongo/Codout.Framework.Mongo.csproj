@@ -7,27 +7,35 @@
   <PropertyGroup>
     <Description>Implementação da interface Codout.Framework.DAL para MongoDB
 </Description>
-    <Version>2.1.1</Version>
-    <Authors>Clovis Coli Jr, Marcelo Paiva</Authors>
-    <Company>Clovis Coli Jr, Marcelo Paiva</Company>
+    <Version>2.1.4</Version>
+    <Authors>Clovis Coli Jr</Authors>
+    <Company>Codout</Company>
     <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageIconUrl>https://github.com/Codout/Codout.Framework/raw/master/logo-nuget.png</PackageIconUrl>
+    <PackageIconUrl></PackageIconUrl>
     <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Codout;Framework;ORM;DAL;MongoDB;</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Copyright>Codout</Copyright>
     <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-    <AssemblyVersion>2.1.1.0</AssemblyVersion>
-    <FileVersion>2.1.1.0</FileVersion>
+    <AssemblyVersion>2.1.4.0</AssemblyVersion>
+    <FileVersion>2.1.4.0</FileVersion>
+    <PackageIcon>logo-nuget.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MongoDB.Driver" Version="2.7.3" />
+    <PackageReference Include="MongoDB.Driver" Version="2.11.5" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Codout.Framework.DAL\Codout.Framework.DAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\logo-nuget.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

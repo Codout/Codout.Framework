@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
-        <Version>1.0.0-beta1</Version>
+        <Version>1.0.1-rc.3</Version>
         <Authors>Clovis Coli Jr</Authors>
         <Company>Codout</Company>
         <Description>Sender da Amazon Simple Email Service para envio de E-mails utilizando a biblioteca Codout.Mailer</Description>
@@ -17,7 +17,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AWSSDK.SimpleEmailV2" Version="3.3.103.14" />
+        <PackageReference Include="AWSSDK.SimpleEmailV2" Version="3.5.1.19" />
     </ItemGroup>
 
     <ItemGroup>

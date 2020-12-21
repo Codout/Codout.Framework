@@ -6,8 +6,8 @@
 
   <PropertyGroup>
     <Description>Biblioteca de funcões comuns do Framework da Codout</Description>
-    <Version>2.0.3</Version>
-    <Authors>Clovis Coli Jr, Marcelo Paiva</Authors>
+    <Version>2.0.4</Version>
+    <Authors>Clovis Coli Jr</Authors>
     <Copyright>Codout</Copyright>
     <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
     <PackageIconUrl></PackageIconUrl>
@@ -16,12 +16,13 @@
     <PackageTags>Codout;Framework</PackageTags>
     <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
     <PackageIcon>logo-nuget.png</PackageIcon>
-    <AssemblyVersion>2.0.3.0</AssemblyVersion>
-    <FileVersion>2.0.3.0</FileVersion>
+    <AssemblyVersion>2.0.4.0</AssemblyVersion>
+    <FileVersion>2.0.4.0</FileVersion>
+    <Company>Codout</Company>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>

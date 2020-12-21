@@ -6,8 +6,10 @@ using NHibernate;
 
 namespace Codout.Framework.NH
 {
-    public class RepositoryFactory
+    public class RepositoryFactory : IDisposable
     {
+        private bool _disposed = false;
+
         private static readonly IDictionary<Type, Type> RegisteredRepositories = new Dictionary<Type, Type>();
 
         private readonly IDictionary<Type, object> _repositories = new Dictionary<Type, object>();
@@ -40,7 +42,7 @@ namespace Codout.Framework.NH
             if (RegisteredRepositories.ContainsKey(key))
             {
                 var instanceType = RegisteredRepositories[key];
-                var instance     = (TInterface)Activator.CreateInstance(instanceType, Session);
+                var instance = (TInterface)Activator.CreateInstance(instanceType, Session);
                 _repositories.Add(key, instance);
             }
             else
@@ -49,6 +51,24 @@ namespace Codout.Framework.NH
             }
 
             return (TInterface)_repositories[key];
+        }
+
+        public void Dispose() => Dispose(true);
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                _repositories?.Clear();
+                Session?.Dispose();
+            }
+
+            _disposed = true;
         }
     }
 }

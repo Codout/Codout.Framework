@@ -7,22 +7,33 @@
   <PropertyGroup>
     <Description>Implementação da interface Codout.Framework.DAL para EntityFrameworkCore
 </Description>
-    <Version>2.0.0</Version>
-    <Authors>Clovis Coli Jr, Marcelo Paiva</Authors>
+    <Version>2.0.4</Version>
+    <Authors>Clovis Coli Jr</Authors>
     <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageIconUrl>https://github.com/Codout/Codout.Framework/raw/master/logo-nuget.png</PackageIconUrl>
+    <PackageIconUrl></PackageIconUrl>
     <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Codout;Framework;ORM;DAL;EnityFrameworkCore;</PackageTags>
     <Copyright>Codout</Copyright>
+    <Company>Codout</Company>
+    <AssemblyVersion>2.0.4.0</AssemblyVersion>
+    <FileVersion>2.0.4.0</FileVersion>
+    <PackageIcon>logo-nuget.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.10" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Codout.Framework.DAL\Codout.Framework.DAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\logo-nuget.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
