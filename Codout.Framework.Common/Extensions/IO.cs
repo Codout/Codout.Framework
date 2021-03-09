@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using HeyRed.Mime;
+using System.IO;
 using System.Net;
 
 namespace Codout.Framework.Common.Extensions
@@ -73,7 +74,7 @@ namespace Codout.Framework.Common.Extensions
             var request = WebRequest.Create(url);
             // ReSharper disable PossibleNullReferenceException
             using (Stream stream = request.GetResponse().GetResponseStream())
-                // ReSharper restore PossibleNullReferenceException
+            // ReSharper restore PossibleNullReferenceException
             {
                 if (stream != null)
                 {
@@ -549,6 +550,19 @@ namespace Codout.Framework.Common.Extensions
                     default: retval = "application/octet-stream"; break;
                 }
             return retval;
+        }
+
+        public static string GetMimeType(this string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName) || !Path.HasExtension(fileName))
+                return null;
+
+            switch (Path.GetExtension(fileName).ToLower())
+            {
+                case ".ogg": return "video/ogg";
+            }
+
+            return MimeTypesMap.GetMimeType(fileName);
         }
         #endregion
     }
