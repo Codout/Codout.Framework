@@ -56,5 +56,21 @@ namespace Codout.Framework.Common.Helpers
 
             return dDistance;
         }
+
+        public static string ConvertToDegrees(double lat, double lon)
+        {
+            var latDir = (lat >= 0 ? "N" : "S");
+            lat = Math.Abs(lat);
+            var latMinPart = ((lat - Math.Truncate(lat) / 1) * 60);
+            var latSecPart = ((latMinPart - Math.Truncate(latMinPart) / 1) * 60);
+
+            var lonDir = (lon >= 0 ? "E" : "W");
+            lon = Math.Abs(lon);
+            var lonMinPart = ((lon - Math.Truncate(lon) / 1) * 60);
+            var lonSecPart = ((lonMinPart - Math.Truncate(lonMinPart) / 1) * 60);
+
+            return $"{Math.Truncate(lat)}°{Math.Truncate(latMinPart)}'{Math.Truncate(latSecPart)}\"{latDir} {Math.Truncate(lon)}°{Math.Truncate(lonMinPart)}'{Math.Truncate(lonSecPart)}\"{lonDir}";
+        }
     }
+
 }
