@@ -1,6 +1,4 @@
 ﻿using System;
-using Codout.Framework.DAL.Entity;
-using Codout.Framework.DAL.Repository;
 
 namespace Codout.Framework.DAL
 {
@@ -8,6 +6,6 @@ namespace Codout.Framework.DAL
     {
         void SaveChanges();
 
-        IRepository<T> Repository<T>() where T : class, IEntity;
+        void CancelChanges();
     }
 }

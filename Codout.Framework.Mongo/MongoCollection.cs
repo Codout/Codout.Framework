@@ -152,6 +152,11 @@ namespace Codout.Framework.Mongo
             return entity;
         }
 
+        public T Refresh(T entity)
+        {
+            return Get(GetIdValue(entity));
+        }
+
         public async Task<T> GetAsync(Expression<Func<T, bool>> predicate)
         {
             return await (await GetCollection<T>().FindAsync(predicate)).FirstOrDefaultAsync();
@@ -202,6 +207,11 @@ namespace Codout.Framework.Mongo
         {
             await UpdateAsync(entity);
             return entity;
+        }
+
+        public Task<T> RefreshAsync(T entity)
+        {
+            return GetAsync(GetIdValue(entity));
         }
 
         /// <summary>

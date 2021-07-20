@@ -1,6 +1,4 @@
 using System;
-using Codout.Framework.DAL.Entity;
-using Codout.Framework.Domain.DAL;
 
 namespace Codout.Framework.Domain
 {

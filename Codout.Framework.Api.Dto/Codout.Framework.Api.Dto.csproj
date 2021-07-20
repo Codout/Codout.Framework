@@ -9,4 +9,8 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Default\" />
+  </ItemGroup>
+
 </Project>

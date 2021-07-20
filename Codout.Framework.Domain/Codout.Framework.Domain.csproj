@@ -6,12 +6,10 @@
 
   <PropertyGroup>
     <Description>Camada de Domínio do Framework da Codout</Description>
-    <Version>2.0.4</Version>
+    <Version>3.0.6</Version>
     <Authors>Clovis Coli Jr</Authors>
     <Company>Codout</Company>
     <Copyright>Codout</Copyright>
-    <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
     <PackageIconUrl></PackageIconUrl>
     <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
@@ -21,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MongoDB.Bson" Version="2.11.6" />
+    <PackageReference Include="MongoDB.Bson" Version="2.13.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 

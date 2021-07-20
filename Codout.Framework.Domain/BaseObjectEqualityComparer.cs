@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using Codout.Framework.DAL.Entity;
-using Codout.Framework.Domain.DAL;
 
 namespace Codout.Framework.Domain
 {

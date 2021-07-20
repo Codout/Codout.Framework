@@ -1,32 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using Codout.Framework.DAL;
-using Codout.Framework.DAL.Entity;
-using Codout.Framework.DAL.Repository;
 using NHibernate;
 
 namespace Codout.Framework.NH
 {
     public class NHUnitOfWork : IUnitOfWork
     {
-        private readonly IDictionary<Type, object> _repositories = new Dictionary<Type, object>();
         private static readonly SessionFactory _sessionFactory = new SessionFactory();
-        private ISession _session;
-        private IStatelessSession _statelessSession;
-        private readonly ITenant _tenant;
+        private ITenant _tenant;
         private bool _disposed;
+        private ISession _session;
 
-        public NHUnitOfWork(ITenant tenant = null)
+        public NHUnitOfWork(ITenant tenant)
         {
             _tenant = tenant;
         }
 
-        public ISession Session => _session ?? (_session = _sessionFactory.OpenSession(_tenant));
-
-        public IStatelessSession StatelessSession => _statelessSession ?? (_statelessSession = _sessionFactory.OpenStatelessSession(_tenant));
+        public ITenant Tenant => _tenant;
 
         public SessionFactory SessionFactory => _sessionFactory;
+
+        public ISession Session => _session ??= _sessionFactory.OpenSession(_tenant);
 
         protected virtual void Dispose(bool disposing)
         {
@@ -34,16 +29,18 @@ namespace Codout.Framework.NH
             {
                 if (disposing)
                 {
-                    if (_session != null && _session.IsOpen)
+                    if (_session is {IsOpen: true})
                     {
-                        if (_session.Transaction != null)
+                        var transaction = _session.GetCurrentTransaction();
+
+                        if (transaction != null)
                         {
-                            if (_session.Transaction.IsActive)
+                            if (transaction.IsActive)
                             {
-                                _session.Transaction.Rollback();
+                                transaction.Rollback();
                             }
 
-                            _session.Transaction.Dispose();
+                            transaction.Dispose();
                         }
 
                         _session.Dispose();
@@ -63,34 +60,38 @@ namespace Codout.Framework.NH
 
         public void SaveChanges()
         {
-            using (var tx = _session.BeginTransaction(IsolationLevel.ReadCommitted))
+            using var tx = _session.BeginTransaction(IsolationLevel.ReadCommitted);
+            try
+            {
+                //forces a flush of the current unit of work
+                tx.Commit();
+            }
+            catch
             {
                 try
                 {
-                    //forces a flush of the current unit of work
-                    tx.Commit();
+                    tx.Rollback();
                 }
                 catch
                 {
-                    try
-                    {
-                        tx.Rollback();
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-
-                    throw;
+                    // ignored
                 }
+
+                throw;
             }
         }
 
-        public IRepository<TEntity> Repository<TEntity>() where TEntity : class, IEntity
+        public void CancelChanges()
         {
-            if (!_repositories.ContainsKey(typeof(TEntity)))
-                _repositories.Add(typeof(TEntity), new NHRepository<TEntity>(Session));
-            return _repositories[typeof(TEntity)] as IRepository<TEntity>;
+            using var tx = _session.BeginTransaction(IsolationLevel.ReadCommitted);
+            try
+            {
+                tx.Rollback();
+            }
+            catch
+            {
+                // ignored
+            }
         }
     }
 }

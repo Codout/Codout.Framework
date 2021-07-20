@@ -20,6 +20,7 @@ namespace Codout.Framework.DAL.Repository
         T SaveOrUpdate(T entity);
         void Update(T entity);
         T Merge(T entity);
+        T Refresh(T entity);
         
         Task<T> GetAsync(Expression<Func<T, bool>> predicate);
         Task<T> GetAsync(object key);
@@ -30,5 +31,6 @@ namespace Codout.Framework.DAL.Repository
         Task<T> SaveOrUpdateAsync(T entity);
         Task UpdateAsync(T entity);
         Task<T> MergeAsync(T entity);
+        Task<T> RefreshAsync(T entity);
     }
 }

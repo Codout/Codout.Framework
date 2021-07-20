@@ -7,7 +7,7 @@
   <PropertyGroup>
     <Description>Implementação da interface Codout.Framework.DAL para MongoDB
 </Description>
-    <Version>2.1.4</Version>
+    <Version>2.1.6</Version>
     <Authors>Clovis Coli Jr</Authors>
     <Company>Codout</Company>
     <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
@@ -18,13 +18,14 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Copyright>Codout</Copyright>
     <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-    <AssemblyVersion>2.1.4.0</AssemblyVersion>
-    <FileVersion>2.1.4.0</FileVersion>
+    <AssemblyVersion>2.1.6.0</AssemblyVersion>
+    <FileVersion>2.1.6.0</FileVersion>
     <PackageIcon>logo-nuget.png</PackageIcon>
+    <PackageReleaseNotes>Inclusão do método Refresh() em MongoCollection</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MongoDB.Driver" Version="2.11.6" />
+    <PackageReference Include="MongoDB.Driver" Version="2.12.4" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Version>3.0.6</Version>
+    <Copyright>Codout</Copyright>
+    <Authors>Clovis Coli Jr</Authors>
+    <Company>Codout</Company>
+    <Description>Bliblioteca de implementação base da camada Application Service</Description>
+    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+    <PackageIcon>logo-nuget.png</PackageIcon>
+    <PackageIconUrl />
+    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Codout</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Codout.DynamicLinq\Codout.DynamicLinq.csproj" />
+    <ProjectReference Include="..\Codout.Framework.Domain\Codout.Framework.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\logo-nuget.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <Import Project="..\Codout.Framework.Dto.Shared\Codout.Framework.Dto.projitems" Label="Shared" />
+
+</Project>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>c53d01e0-e48f-40d5-92d8-eaece82bacb3</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Codout.Framework.Dto</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Dto.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDto.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EntityDto`1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IEntityDto`1.cs" />
+  </ItemGroup>
+</Project>

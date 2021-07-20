@@ -4,7 +4,7 @@
     ///     Defines the public members of a class that supports setting an assigned ID of an object.
     /// </summary>
     /// <typeparam name="TId">The type of the ID.</typeparam>
-    internal interface IHasAssignedId<TId>
+    internal interface IHasAssignedId<in TId>
     {
         /// <summary>
         ///     Sets the assigned ID of an object.

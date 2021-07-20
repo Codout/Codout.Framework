@@ -5,24 +5,40 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Description>Bliblioteca abstrata de implementação para Web API</Description>
-    <Version>2.0.0</Version>
-    <Authors>Clovis Coli Jr, Marcelo Paiva</Authors>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Description>Bliblioteca abstrata de implementação para Web API Restfull</Description>
+    <Version>3.0.6</Version>
+    <Authors>Clovis Coli Jr</Authors>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Copyright>Codout</Copyright>
-    <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageIconUrl>https://github.com/Codout/Codout.Framework/raw/master/logo-nuget.png</PackageIconUrl>
+    <PackageIconUrl></PackageIconUrl>
     <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Codout</PackageTags>
+    <Company>Codout</Company>
+    <PackageIcon>logo-nuget.png</PackageIcon>
+    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Codout.Framework.Api.Dto\Codout.Framework.Api.Dto.csproj" />
+    <ProjectReference Include="..\Codout.DynamicLinq\Codout.DynamicLinq.csproj" />
+    <ProjectReference Include="..\Codout.Framework.Application\Codout.Framework.Application.csproj" />
+    <ProjectReference Include="..\Codout.Framework.DAL\Codout.Framework.DAL.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\logo-nuget.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <Import Project="..\Codout.Framework.Api.Shared\Codout.Framework.Api.Shared.projitems" Label="Shared" />
 
 </Project>

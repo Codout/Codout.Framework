@@ -14,8 +14,6 @@ namespace Codout.Framework.NH
     {
         static readonly object _object = new object();
 
-        public const string DefaultFactoryKey = "nhibernate.current_session";
-
         private const string DefaultHibernateConfig = "hibernate.cfg.xml";
 
         private static readonly Dictionary<string, ISessionFactory> SessionFactories = new Dictionary<string, ISessionFactory>();
@@ -52,14 +50,14 @@ namespace Codout.Framework.NH
         {
             lock (_object)
             {
-                if (!SessionFactories.ContainsKey(tenant.TenantKey))
-                {
-                    var cfg = GetConfiguration(tenant);
+                if (SessionFactories.ContainsKey(tenant.TenantKey)) 
+                    return SessionFactories[tenant.TenantKey];
 
-                    var sessionFactory = cfg.BuildSessionFactory();
+                var cfg = GetConfiguration(tenant);
 
-                    SessionFactories.Add(tenant.TenantKey, sessionFactory);
-                }
+                var sessionFactory = cfg.BuildSessionFactory();
+
+                SessionFactories.Add(tenant.TenantKey, sessionFactory);
 
                 return SessionFactories[tenant.TenantKey];
             }
@@ -68,7 +66,7 @@ namespace Codout.Framework.NH
         public ISession OpenSession(ITenant tenant)
         {
             if (tenant == null)
-                throw new Exception("O objeto tenant não pode ser nulo");
+                throw new Exception($"O objeto ${nameof(ITenant)} não pode ser nulo");
 
             var session = GetSessionFactory(tenant).OpenSession();
 
@@ -80,7 +78,7 @@ namespace Codout.Framework.NH
         public IStatelessSession OpenStatelessSession(ITenant tenant)
         {
             if (tenant == null)
-                throw new Exception("O objeto tenant não pode ser nulo");
+                throw new Exception($"O objeto ${nameof(ITenant)} não pode ser nulo");
 
             var session = GetSessionFactory(tenant).OpenStatelessSession();
 

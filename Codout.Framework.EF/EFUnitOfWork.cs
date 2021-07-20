@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using Codout.Framework.DAL;
 using Codout.Framework.DAL.Entity;
 using Codout.Framework.DAL.Repository;
-using Microsoft.EntityFrameworkCore;
 
 namespace Codout.Framework.EF
 {
@@ -29,7 +29,39 @@ namespace Codout.Framework.EF
         /// </summary>
         public void SaveChanges()
         {
-            DbContext.SaveChanges();
+            using var dbContextTransaction = DbContext.Database.BeginTransaction();
+
+            try
+            {
+                DbContext.SaveChanges();
+
+                dbContextTransaction.Commit();
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    dbContextTransaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    //Igore  
+                }
+            }
+        }
+
+        public void CancelChanges()
+        {
+            using var dbContextTransaction = DbContext.Database.BeginTransaction();
+
+            try
+            {
+                dbContextTransaction.Rollback();
+            }
+            catch (Exception)
+            {
+                //Igore  
+            }
         }
 
         /// <summary>

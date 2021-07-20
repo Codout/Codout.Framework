@@ -6,27 +6,22 @@
 
   <PropertyGroup>
     <Description>Biblioteca de funções para Cliente Api do Framework da Codout</Description>
-    <Version>2.0.4</Version>
+    <Version>3.0.6</Version>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Authors>Clovis Coli Jr</Authors>
     <Copyright>Codout</Copyright>
-    <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
     <PackageIconUrl></PackageIconUrl>
     <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-    <AssemblyVersion>2.0.4.0</AssemblyVersion>
-    <FileVersion>2.0.4.0</FileVersion>
+    <AssemblyVersion>3.0.6.0</AssemblyVersion>
+    <FileVersion>3.0.6.0</FileVersion>
     <Company>Codout</Company>
     <PackageIcon>logo-nuget.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Codout.Framework.Api.Dto\Codout.Framework.Api.Dto.csproj" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,5 +30,13 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Codout.DynamicLinq\Codout.DynamicLinq.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\Codout.Framework.Api.Shared\Codout.Framework.Api.Shared.projitems" Label="Shared" />
+
+  <Import Project="..\Codout.Framework.Dto.Shared\Codout.Framework.Dto.projitems" Label="Shared" />
 
 </Project>

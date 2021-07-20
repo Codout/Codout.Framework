@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Codout.Framework.DAL;
 using Codout.Framework.DAL.Entity;
 using Codout.Framework.DAL.Repository;
 using NHibernate;
@@ -11,11 +12,13 @@ namespace Codout.Framework.NH
 {
     public class NHRepository<T> : IRepository<T> where T : class, IEntity
     {
-        public ISession Session { get; }
+        public NHUnitOfWork UnitOfWork { get; }
 
-        public NHRepository(ISession session)
+        public ISession Session => UnitOfWork.Session;
+
+        public NHRepository(IUnitOfWork unitOfWork)
         {
-            Session = session;
+            UnitOfWork = unitOfWork as NHUnitOfWork;
         }
        
         public IQueryable<T> All()
@@ -91,6 +94,18 @@ namespace Codout.Framework.NH
         public T Merge(T entity)
         {
             return Session.Merge(entity);
+        }
+
+        public T Refresh(T entity)
+        {
+            Session.Refresh(entity);
+            return entity;
+        }
+
+        public async Task<T> RefreshAsync(T entity)
+        {
+            await Session.RefreshAsync(entity);
+            return entity;
         }
 
         public async Task<T> GetAsync(Expression<Func<T, bool>> predicate)
