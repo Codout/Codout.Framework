@@ -1,4 +1,4 @@
-﻿namespace Codout.Framework.Api.Dto
+﻿namespace Codout.Framework.Dto
 {
     public class EntityDto<TId> : IEntityDto<TId>
     {
