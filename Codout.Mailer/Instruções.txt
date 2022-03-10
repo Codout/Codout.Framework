@@ -12,8 +12,8 @@
     "StandBoxMode": false
   },
   "CodoutMailer": {
-    "DefaultFromName": "Padrão Carvalho",
-    "DefaultFromEmail": "contato@padraocarvalho.com.br"
+    "DefaultFromName": "Codout",
+    "DefaultFromEmail": "contato@codout.com"
   },
 
 

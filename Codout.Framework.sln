@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29806.167
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codout.Framework.Common", "Codout.Framework.Common\Codout.Framework.Common.csproj", "{281F92E8-F224-4036-858E-F04203D9107B}"
 EndProject
@@ -38,6 +38,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mailer", "Mailer", "{992EAEDC-B75F-45CA-8B2C-840E3F9B5133}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codout.Kendo.DynamicLinq", "Codout.Kendo.DynamicLinq\Codout.Kendo.DynamicLinq.csproj", "{DE657A9A-7AEE-4592-B199-EE0FAE47414D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Message", "Message", "{52D1358B-1A55-4554-92BE-1EE3407D72CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codout.Zenvia", "Codout.Zenvia\Codout.Zenvia.csproj", "{0FD9F981-632E-42B8-9EB3-FCAE365055DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +105,10 @@ Global
 		{DE657A9A-7AEE-4592-B199-EE0FAE47414D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE657A9A-7AEE-4592-B199-EE0FAE47414D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE657A9A-7AEE-4592-B199-EE0FAE47414D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FD9F981-632E-42B8-9EB3-FCAE365055DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FD9F981-632E-42B8-9EB3-FCAE365055DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FD9F981-632E-42B8-9EB3-FCAE365055DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FD9F981-632E-42B8-9EB3-FCAE365055DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,6 +128,7 @@ Global
 		{5D77842D-DD96-4927-976A-FFFD8207ED70} = {B6832CA4-604B-4DC8-908B-06405133B6B6}
 		{A51B2EDB-B261-41B2-B86F-BBA84AE46288} = {992EAEDC-B75F-45CA-8B2C-840E3F9B5133}
 		{DE657A9A-7AEE-4592-B199-EE0FAE47414D} = {B6832CA4-604B-4DC8-908B-06405133B6B6}
+		{0FD9F981-632E-42B8-9EB3-FCAE365055DE} = {52D1358B-1A55-4554-92BE-1EE3407D72CA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F077B358-8F0D-4791-8E85-DDED3550C27A}
