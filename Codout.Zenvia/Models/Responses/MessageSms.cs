@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Codout.Zenvia.Models.Responses
 {
-    public abstract class MessageSms : BaseObject
+    public class MessageSms : BaseObject
     {
         /// <summary>
         /// An ID for the message. It can be used for future message consulting or callback notifications.
