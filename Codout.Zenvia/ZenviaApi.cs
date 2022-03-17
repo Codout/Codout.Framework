@@ -158,6 +158,9 @@ namespace Codout.Zenvia
                 // Código 201 - Criada.
                 case HttpStatusCode.Created:
                     return Desserialize<T>(await response.Content.ReadAsStringAsync());
+                // Código 400 - Bad Request.
+                case HttpStatusCode.BadRequest:
+                    throw new ZenviaUnauthorizedException("O servidor da API rejeitou a solicitação: BadRequest (400)!");
                 // Código 401 - Não Autorizado.
                 case HttpStatusCode.Unauthorized:
                     throw new ZenviaUnauthorizedException("O servidor da API rejeitou a solicitação: Unauthorized (401)!");
@@ -234,11 +237,10 @@ namespace Codout.Zenvia
         private T Desserialize<T>(String json)
         {
             // Contorno de um bug do Zenvia que envia uma aspa '”' ao invés de uma aspa dupla '"' quando o comando para
-            // cancelar SMS agendado é chamado.
+            // Cancelar SMS agendado é chamado.
             json = json.Replace('”', '"');
             var jo = JObject.Parse(json);
-            json = jo.First.First.ToString();
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonConvert.DeserializeObject<T>(jo.ToString());
         }
     }
 }

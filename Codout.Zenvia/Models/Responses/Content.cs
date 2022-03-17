@@ -1,5 +1,6 @@
 ﻿using Codout.Zenvia.Models.Enumerators;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Codout.Zenvia.Models.Responses
 {
@@ -9,6 +10,7 @@ namespace Codout.Zenvia.Models.Responses
         /// Content type discriminator
         /// </summary>
         [JsonProperty("type")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public ContentType Type { get; set; }
 
         /// <summary>

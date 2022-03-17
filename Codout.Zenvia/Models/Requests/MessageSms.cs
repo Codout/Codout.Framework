@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Codout.Zenvia.Models.Requests
 {
-    public abstract class MessageSms : BaseObject
+    public class MessageSms : BaseObject
     {
         [JsonProperty("from")]
         public string From { get; set; }
