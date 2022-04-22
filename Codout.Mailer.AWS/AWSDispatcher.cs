@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using Amazon;
 using Amazon.Runtime;
 using Amazon.SimpleEmailV2;
 using Amazon.SimpleEmailV2.Model;
@@ -28,7 +29,7 @@ namespace Codout.Mailer.AWS
         {
             try
             {
-                var client = new AmazonSimpleEmailServiceV2Client(new BasicAWSCredentials(_settings.AccessKey, _settings.SecretKey));
+                var client = new AmazonSimpleEmailServiceV2Client(new BasicAWSCredentials(_settings.AccessKey, _settings.SecretKey), RegionEndpoint.GetBySystemName(_settings.RegionEndpoint));
 
                 var response = await client.SendEmailAsync(new SendEmailRequest
                 {
@@ -64,7 +65,7 @@ namespace Codout.Mailer.AWS
                     FromEmailAddress = from.Address
                 });
 
-                string messageId = response.MessageId;
+                var messageId = response.MessageId;
 
                 return new MailerResponse
                 {
