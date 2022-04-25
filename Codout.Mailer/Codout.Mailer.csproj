@@ -11,7 +11,7 @@
     <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
     <Authors>Clovis Coli Jr</Authors>
     <Company>Codout</Company>
-    <Version>1.0.1-rc.3</Version>
+    <Version>1.0.3</Version>
     <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
@@ -19,7 +19,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RazorLight" Version="2.0.0-rc.3" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
+    <PackageReference Include="RazorLight" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -10,7 +10,7 @@
     <PackageIconUrl></PackageIconUrl>
     <PackageTags>Codout;Framework;Mail;Email;Mailer;SendGrid;</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.0.1-rc.3</Version>
+    <Version>1.0.2</Version>
     <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageIcon>logo-nuget.png</PackageIcon>
@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Sendgrid" Version="9.24.0" />
+    <PackageReference Include="Sendgrid" Version="9.27.0" />
   </ItemGroup>
 
   <ItemGroup>
