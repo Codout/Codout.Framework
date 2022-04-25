@@ -1,4 +1,4 @@
-﻿using Codout.Framework.Api.Dto;
+﻿using Codout.Framework.Dto;
 
 namespace Codout.Framework.Api.Client
 {

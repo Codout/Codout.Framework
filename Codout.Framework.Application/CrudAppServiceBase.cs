@@ -2,11 +2,11 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Codout.DynamicLinq;
-using Codout.Framework.Api.Dto;
 using Codout.Framework.Application.Interfaces;
 using Codout.Framework.DAL;
 using Codout.Framework.DAL.Repository;
 using Codout.Framework.Domain;
+using Codout.Framework.Dto;
 
 namespace Codout.Framework.Application
 {

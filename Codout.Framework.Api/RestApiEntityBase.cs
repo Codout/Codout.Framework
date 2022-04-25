@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;   
 using Codout.DynamicLinq;
-using Codout.Framework.Api.Dto;
 using Codout.Framework.Application.Interfaces;
 using Codout.Framework.Domain;
+using Codout.Framework.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,16 +20,6 @@ namespace Codout.Framework.Api
             AppService = appService;
         }
 
-        [HttpPost("get-all")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiException))]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ApiException))]
-        public virtual async Task<IActionResult> GetAll([FromBody]DataSourceRequest value)
-        {
-            var result = await AppService.GetAllAsync(value);
-            return Ok(result);
-        }
-
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -41,7 +31,7 @@ namespace Codout.Framework.Api
             return Ok(result);
         }
 
-        [HttpPost]
+        [HttpPost("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiException))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ApiException))]
@@ -72,6 +62,16 @@ namespace Codout.Framework.Api
         {
             await AppService.DeleteAsync(id);
             return Ok();
+        }
+
+        [HttpPost("get-all")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiException))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ApiException))]
+        public virtual async Task<IActionResult> GetAll([FromBody]DataSourceRequest value)
+        {
+            var result = await AppService.GetAllAsync(value);
+            return Ok(result);
         }
     }
 }

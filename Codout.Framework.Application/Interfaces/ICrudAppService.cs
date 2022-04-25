@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Codout.DynamicLinq;
-using Codout.Framework.Api.Dto;
 using Codout.Framework.Domain;
+using Codout.Framework.Dto;
 
 namespace Codout.Framework.Application.Interfaces
 {
