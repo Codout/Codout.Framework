@@ -442,6 +442,7 @@ namespace Codout.Framework.Common.Extensions
                     case ".sv4cpio": retval = "application/x-sv4cpio"; break;
                     case ".sv4crc": retval = "application/x-sv4crc"; break;
                     case ".svf": retval = "image/vnd.dwg"; break;
+                    case ".svg": retval = "image/svg+xml"; break;
                     case ".svr": retval = "application/x-world"; break;
                     case ".swf": retval = "application/x-shockwave-flash"; break;
                     case ".t": retval = "application/x-troff"; break;
