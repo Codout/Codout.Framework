@@ -45,7 +45,7 @@ namespace Codout.Framework.Application
 
             await Repository.SaveAsync(entity);
 
-            UnitOfWork.SaveChanges();
+            UnitOfWork.Commit();
 
             var output = Mapper.Map<TDto>(entity);
 
@@ -61,7 +61,7 @@ namespace Codout.Framework.Application
 
             entity = Mapper.Map(input, entity, typeof(TDto), typeof(TEntity)) as TEntity;
 
-            UnitOfWork.SaveChanges();
+            UnitOfWork.Commit();
 
             return input;
         }
@@ -75,7 +75,7 @@ namespace Codout.Framework.Application
 
             await Repository.DeleteAsync(entity);
 
-            UnitOfWork.SaveChanges();
+            UnitOfWork.Commit();
         }
     }
 }

@@ -4,8 +4,8 @@ namespace Codout.Framework.DAL
 {
     public interface IUnitOfWork : IDisposable
     {
-        void SaveChanges();
-
-        void CancelChanges();
+        void BeginTransaction();
+        void Commit();
+        void Rollback();
     }
 }

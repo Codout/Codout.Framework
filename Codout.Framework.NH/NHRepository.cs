@@ -20,7 +20,7 @@ namespace Codout.Framework.NH
         {
             UnitOfWork = unitOfWork as NHUnitOfWork;
         }
-       
+
         public IQueryable<T> All()
         {
             return Session.Query<T>();
@@ -164,7 +164,7 @@ namespace Codout.Framework.NH
             {
                 if (disposing)
                 {
-                    Session.Dispose();
+                    //Release
                 }
             }
             _disposed = true;

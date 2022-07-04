@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using Codout.Framework.DAL;
 using NHibernate;
 
@@ -7,21 +6,18 @@ namespace Codout.Framework.NH
 {
     public class NHUnitOfWork : IUnitOfWork
     {
-        private static readonly SessionFactory _sessionFactory = new SessionFactory();
-        private ITenant _tenant;
         private bool _disposed;
+        private ITransaction _transaction;
         private ISession _session;
+
+        public SessionFactory SessionFactory { get; }
+
+        public ISession Session => _session ??= SessionFactory.OpenSession();
 
         public NHUnitOfWork(ITenant tenant)
         {
-            _tenant = tenant;
+            SessionFactory = new SessionFactory(tenant);
         }
-
-        public ITenant Tenant => _tenant;
-
-        public SessionFactory SessionFactory => _sessionFactory;
-
-        public ISession Session => _session ??= _sessionFactory.OpenSession(_tenant);
 
         protected virtual void Dispose(bool disposing)
         {
@@ -29,18 +25,16 @@ namespace Codout.Framework.NH
             {
                 if (disposing)
                 {
-                    if (_session is {IsOpen: true})
+                    if (_session is { IsOpen: true })
                     {
-                        var transaction = _session.GetCurrentTransaction();
-
-                        if (transaction != null)
+                        if (_transaction != null)
                         {
-                            if (transaction.IsActive)
+                            if (_transaction.IsActive)
                             {
-                                transaction.Rollback();
+                                _transaction.Rollback();
                             }
 
-                            transaction.Dispose();
+                            _transaction.Dispose();
                         }
 
                         _session.Dispose();
@@ -58,39 +52,45 @@ namespace Codout.Framework.NH
             GC.SuppressFinalize(this);
         }
 
-        public void SaveChanges()
+        public void BeginTransaction()
         {
-            using var tx = _session.BeginTransaction(IsolationLevel.ReadCommitted);
+            _transaction = Session.BeginTransaction();
+        }
+
+        public void Commit()
+        {
+            if (!(_transaction is { IsActive: true }))
+                BeginTransaction();
+
             try
             {
-                //forces a flush of the current unit of work
-                tx.Commit();
+                // commit transaction if there is one active
+                if (_transaction is { IsActive: true })
+                    _transaction.Commit();
             }
             catch
             {
-                try
-                {
-                    tx.Rollback();
-                }
-                catch
-                {
-                    // ignored
-                }
+                // rollback if there was an exception
+                Rollback();
 
                 throw;
             }
+            finally
+            {
+                _transaction?.Dispose();
+            }
         }
 
-        public void CancelChanges()
+        public void Rollback()
         {
-            using var tx = _session.BeginTransaction(IsolationLevel.ReadCommitted);
             try
             {
-                tx.Rollback();
+                if (_transaction is { IsActive: true })
+                    _transaction.Rollback();
             }
-            catch
+            finally
             {
-                // ignored
+                _transaction?.Dispose();
             }
         }
     }

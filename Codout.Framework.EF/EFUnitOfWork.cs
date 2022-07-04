@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using Codout.Framework.DAL;
-using Codout.Framework.DAL.Entity;
-using Codout.Framework.DAL.Repository;
 
 namespace Codout.Framework.EF
 {
@@ -12,7 +9,7 @@ namespace Codout.Framework.EF
     /// </summary>
     public abstract class EFUnitOfWork<T> : IUnitOfWork where T : DbContext
     {
-        private readonly IDictionary<Type, object> _repositories = new Dictionary<Type, object>();
+        private DbContextTransaction _transaction;
 
         protected EFUnitOfWork(T instance)
         {
@@ -24,56 +21,48 @@ namespace Codout.Framework.EF
         /// </summary>
         public DbContext DbContext { get; }
 
+        public void BeginTransaction()
+        {
+            _transaction = DbContext.Database.BeginTransaction();
+        }
+
         /// <summary>
         /// Efetua o SaveChanges do contexto (sessão) em questão
         /// </summary>
-        public void SaveChanges()
+        public void Commit()
         {
-            using var dbContextTransaction = DbContext.Database.BeginTransaction();
+            if (_transaction == null)
+                BeginTransaction();
 
             try
             {
                 DbContext.SaveChanges();
-
-                dbContextTransaction.Commit();
+                _transaction.Commit();
             }
             catch (Exception)
             {
-                try
-                {
-                    dbContextTransaction.Rollback();
-                }
-                catch (Exception)
-                {
-                    //Igore  
-                }
+                Rollback();
+            }
+            finally
+            {
+                _transaction?.Dispose();
+                _transaction = null;
             }
         }
 
-        public void CancelChanges()
+        public void Rollback()
         {
-            using var dbContextTransaction = DbContext.Database.BeginTransaction();
-
             try
             {
-                dbContextTransaction.Rollback();
-            }
-            catch (Exception)
-            {
-                //Igore  
-            }
-        }
 
-        /// <summary>
-        /// Repositório Genérico que será controlado
-        /// </summary>
-        /// <typeparam name="TEntity">Tipo do objeto</typeparam>
-        /// <returns>Repositório concreto</returns>
-        public IRepository<TEntity> Repository<TEntity>() where TEntity : class, IEntity
-        {
-            if (!_repositories.ContainsKey(typeof(TEntity)))
-                _repositories.Add(typeof(TEntity), new EFRepository<TEntity>(DbContext));
-            return _repositories[typeof(TEntity)] as IRepository<TEntity>;
+                if (_transaction != null)
+                    _transaction.Rollback();
+            }
+            finally
+            {
+                _transaction?.Dispose();
+                _transaction = null;
+            }
         }
 
         #region IDisposable Support
@@ -86,6 +75,12 @@ namespace Codout.Framework.EF
                 if (disposing)
                 {
                     DbContext.Dispose();
+
+                    if (_transaction != null)
+                    {
+                        _transaction?.Dispose();
+                        _transaction = null;
+                    }
                 }
             }
             _disposed = true;

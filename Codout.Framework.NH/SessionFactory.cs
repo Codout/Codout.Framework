@@ -12,18 +12,25 @@ namespace Codout.Framework.NH
 {
     public class SessionFactory
     {
-        static readonly object _object = new object();
-
-        private const string DefaultHibernateConfig = "hibernate.cfg.xml";
+        private static readonly object _object = new object();
 
         private static readonly Dictionary<string, ISessionFactory> SessionFactories = new Dictionary<string, ISessionFactory>();
 
-        public FluentConfiguration GetConfiguration(ITenant tenant)
+        private const string DefaultHibernateConfig = "hibernate.cfg.xml";
+
+        public ITenant Tenant { get; }
+
+        public SessionFactory(ITenant tenant)
+        {
+            Tenant = tenant;
+        }
+
+        private FluentConfiguration GetConfiguration(ITenant tenant)
         {
             var assemblyMappingName = tenant.AssemblyMappingName;
 
             if (string.IsNullOrWhiteSpace(assemblyMappingName))
-                throw new InvalidOperationException("AssemblyMappingName não encontrado, por favor defina o assembly que contém os mapeamentos da classe no Web.Config/App.Config ou na classe de implementação da interface ITenant");
+                throw new InvalidOperationException("A propriedade AssemblyMappingName em ITenant não foi informada, por favor informe o nome do assembly que contém os mapeamentos ORM");
 
             var configuration = new Configuration();
             var hibernateConfig = DefaultHibernateConfig;
@@ -41,48 +48,41 @@ namespace Codout.Framework.NH
                     configuration.Properties.Remove("connection.connection_string_name");
             }
 
-            var fluentlyCfg = Fluently.Configure(configuration).Mappings(m => m.FluentMappings.AddFromAssembly(Assembly.Load(assemblyMappingName)));
+            var fluentlyCfg = Fluently.Configure(configuration)
+                .Mappings(m => m.FluentMappings.AddFromAssembly(Assembly.Load(assemblyMappingName)));
 
             return fluentlyCfg;
         }
 
-        public ISessionFactory GetSessionFactory(ITenant tenant)
+        private ISessionFactory GetSessionFactory()
         {
             lock (_object)
             {
-                if (SessionFactories.ContainsKey(tenant.TenantKey)) 
-                    return SessionFactories[tenant.TenantKey];
+                if (SessionFactories.ContainsKey(Tenant.TenantKey)) 
+                    return SessionFactories[Tenant.TenantKey];
 
-                var cfg = GetConfiguration(tenant);
+                var cfg = GetConfiguration(Tenant);
 
                 var sessionFactory = cfg.BuildSessionFactory();
 
-                SessionFactories.Add(tenant.TenantKey, sessionFactory);
+                SessionFactories.Add(Tenant.TenantKey, sessionFactory);
 
-                return SessionFactories[tenant.TenantKey];
+                return SessionFactories[Tenant.TenantKey];
             }
         }
 
-        public ISession OpenSession(ITenant tenant)
+        public ISession OpenSession()
         {
-            if (tenant == null)
-                throw new Exception($"O objeto ${nameof(ITenant)} não pode ser nulo");
-
-            var session = GetSessionFactory(tenant).OpenSession();
+            var session = GetSessionFactory().OpenSession();
 
             session.FlushMode = FlushMode.Commit;
 
             return session;
         }
 
-        public IStatelessSession OpenStatelessSession(ITenant tenant)
+        public IStatelessSession OpenStatelessSession()
         {
-            if (tenant == null)
-                throw new Exception($"O objeto ${nameof(ITenant)} não pode ser nulo");
-
-            var session = GetSessionFactory(tenant).OpenStatelessSession();
-
-            return session;
+            return GetSessionFactory().OpenStatelessSession();
         }
 
     }
