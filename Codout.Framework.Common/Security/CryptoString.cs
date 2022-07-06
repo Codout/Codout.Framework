@@ -3,44 +3,47 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Codout.Framework.Common.Security
+namespace Codout.Framework.Common.Security;
+
+public class CryptoString
 {
-    public class CryptoString
+    private static byte[] _chave = { };
+    private static readonly byte[] Iv = { 12, 33, 59, 85, 97, 101, 119, 122 };
+
+    public static string Encrypt(string text, string key)
     {
-        private static byte[] _chave = { };
-        private static readonly byte[] Iv = { 12, 33, 59, 85, 97, 101, 119, 122 };
+        var des = new DESCryptoServiceProvider();
+        var ms = new MemoryStream();
 
-        private const string ChaveCriptografia = "C308D044FF164E979396D45AC44189A8";
+        var input = Encoding.UTF8.GetBytes(text);
+        _chave = Encoding.UTF8.GetBytes(key[..8]);
 
-        public static string Encrypt(string phrase)
-        {
-            var des = new DESCryptoServiceProvider();
-            var ms = new MemoryStream();
+        var cs = new CryptoStream(ms, des.CreateEncryptor(_chave, Iv), CryptoStreamMode.Write);
+        cs.Write(input, 0, input.Length);
+        cs.FlushFinalBlock();
 
-            var input = Encoding.UTF8.GetBytes(phrase);
-            _chave = Encoding.UTF8.GetBytes(ChaveCriptografia.Substring(0, 8));
+        return Convert.ToBase64String(ms.ToArray());
+    }
 
-            var cs = new CryptoStream(ms, des.CreateEncryptor(_chave, Iv), CryptoStreamMode.Write);
-            cs.Write(input, 0, input.Length);
-            cs.FlushFinalBlock();
+    public static string Decrypt(string text, string key)
+    {
+        if (string.IsNullOrWhiteSpace(key))
+            throw new ArgumentNullException("The argument \"key\" cannot be null");
 
-            return Convert.ToBase64String(ms.ToArray());
-        }
+        if (key.Length < 8)
+            throw new ArgumentOutOfRangeException("The \"key\" parameter must have 8 characters");
 
-        public static string Decrypt(string phrase)
-        {
-            var des = new DESCryptoServiceProvider();
-            var ms = new MemoryStream();
+        var des = new DESCryptoServiceProvider();
+        var ms = new MemoryStream();
 
-            byte[] input = Convert.FromBase64String(phrase.Replace(" ", "+"));
+        var input = Convert.FromBase64String(text.Replace(" ", "+"));
 
-            _chave = Encoding.UTF8.GetBytes(ChaveCriptografia.Substring(0, 8));
+        _chave = Encoding.UTF8.GetBytes(key[..8]);
 
-            var cs = new CryptoStream(ms, des.CreateDecryptor(_chave, Iv), CryptoStreamMode.Write);
-            cs.Write(input, 0, input.Length);
-            cs.FlushFinalBlock();
+        var cs = new CryptoStream(ms, des.CreateDecryptor(_chave, Iv), CryptoStreamMode.Write);
+        cs.Write(input, 0, input.Length);
+        cs.FlushFinalBlock();
 
-            return Encoding.UTF8.GetString(ms.ToArray());
-        }
+        return Encoding.UTF8.GetString(ms.ToArray());
     }
 }

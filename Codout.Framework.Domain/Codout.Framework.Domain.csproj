@@ -6,7 +6,7 @@
 
   <PropertyGroup>
     <Description>Camada de Domínio do Framework da Codout</Description>
-    <Version>3.0.9</Version>
+    <Version>3.0.10</Version>
     <Authors>Clovis Coli Jr</Authors>
     <Company>Codout</Company>
     <Copyright>Codout</Copyright>
@@ -19,7 +19,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MongoDB.Bson" Version="2.13.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>

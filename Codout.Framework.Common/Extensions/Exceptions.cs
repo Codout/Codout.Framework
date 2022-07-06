@@ -1,28 +1,27 @@
 ﻿using System;
 
-namespace Codout.Framework.Common.Extensions
+namespace Codout.Framework.Common.Extensions;
+
+/// <summary>
+/// Extensões comuns para tipos relacionadas a exceções.
+/// </summary>
+public static class Exceptions
 {
+    #region GetMessage
     /// <summary>
-    /// Extensões comuns para tipos relacionadas a exceções.
+    /// Retorna recursivamente todas as mensagens da excessão.
     /// </summary>
-    public static class Exceptions
+    /// <param name="exception"></param>
+    /// <returns></returns>
+    public static string GetMessage(this Exception exception)
     {
-        #region GetMessage
-        /// <summary>
-        /// Retorna recursivamente todas as mensagens da excessão.
-        /// </summary>
-        /// <param name="exception"></param>
-        /// <returns></returns>
-        public static string GetMessage(this Exception exception)
-        {
-            if (exception == null)
-                return string.Empty;
+        if (exception == null)
+            return string.Empty;
 
-            if (exception.InnerException != null)
-                return $"{exception.Message}\r\n > {GetMessage(exception.InnerException)} ";
+        if (exception.InnerException != null)
+            return $"{exception.Message}\r\n > {GetMessage(exception.InnerException)} ";
 
-            return exception.Message;
-        }
-        #endregion
+        return exception.Message;
     }
+    #endregion
 }

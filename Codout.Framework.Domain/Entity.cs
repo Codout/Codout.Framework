@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using System.Xml.Serialization;
 using Codout.Framework.DAL.Entity;
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson.Serialization.IdGenerators;
-using Newtonsoft.Json;
 
 namespace Codout.Framework.Domain
 {
@@ -46,9 +42,6 @@ namespace Codout.Framework.Domain
         ///     </para>
         /// </remarks>
         [Key]
-        [XmlIgnore]
-        [BsonId(IdGenerator=typeof(GuidGenerator))]
-        [JsonProperty("id")]
         public virtual TId Id
         {
             get => _id;
@@ -66,11 +59,6 @@ namespace Codout.Framework.Domain
         public virtual bool IsTransient()
         {
             return Id == null || Id.Equals(default(TId));
-        }
-
-        public virtual object GetId()
-        {
-            return Id;
         }
 
         public virtual void SetId(TId id)

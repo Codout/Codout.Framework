@@ -1,27 +1,22 @@
 ﻿using System;
+using System.Linq;
 
-namespace Codout.Framework.Common.Extensions
+namespace Codout.Framework.Common.Extensions;
+
+public static class Types
 {
-    public static class Types
+    public static bool IsAssignableToGenericType(this Type givenType, Type genericType)
     {
-        public static bool IsAssignableToGenericType(this Type givenType, Type genericType)
-        {
-            var interfaceTypes = givenType.GetInterfaces();
+        var interfaceTypes = givenType.GetInterfaces();
 
-            foreach (var it in interfaceTypes)
-            {
-                if (it.IsGenericType && it.GetGenericTypeDefinition() == genericType)
-                    return true;
-            }
+        if (interfaceTypes.Any(it => it.IsGenericType && it.GetGenericTypeDefinition() == genericType))
+            return true;
 
-            if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType)
-                return true;
+        if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType)
+            return true;
 
-            Type baseType = givenType.BaseType;
-            if (baseType == null)
-                return false;
+        var baseType = givenType.BaseType;
 
-            return IsAssignableToGenericType(baseType, genericType);
-        }
+        return baseType != null && IsAssignableToGenericType(baseType, genericType);
     }
 }
