@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Title>Codout Frameword Storage Azure</Title>
+    <Authors>Clovis Coli Jr</Authors>
+    <Company>Codout</Company>
+    <Description>Implementação da interface IStorage do Codout.Framework.Storage para uso do storage do Azure</Description>
+    <Copyright>Codout</Copyright>
+    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+    <PackageIcon>logo-nuget.png</PackageIcon>
+    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Codout;Framework;Storage;Azure;</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\logo-nuget.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.14.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Codout.Framework.Storage\Codout.Framework.Storage.csproj" />
+  </ItemGroup>
+
+</Project>

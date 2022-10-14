@@ -27,17 +27,25 @@ namespace Codout.Framework.NH
                 {
                     if (_session is { IsOpen: true })
                     {
-                        if (_transaction != null)
+                        if (_transaction is { IsActive: true })
                         {
-                            if (_transaction.IsActive)
+                            try
                             {
-                                _transaction.Rollback();
+                                // rollback if there was an exception
+                                if (_transaction is { IsActive: true })
+                                    _transaction.Rollback();
                             }
-
-                            _transaction.Dispose();
+                            catch
+                            {
+                                //Ignore
+                            }
                         }
 
-                        _session.Dispose();
+                        _transaction?.Dispose();
+
+                        _transaction = null;
+
+                        _session?.Dispose();
 
                         _session = null;
                     }
@@ -70,8 +78,16 @@ namespace Codout.Framework.NH
             }
             catch
             {
-                // rollback if there was an exception
-                Rollback();
+                try
+                {
+                    // rollback if there was an exception
+                    if (_transaction is { IsActive: true })
+                        _transaction.Rollback();
+                }
+                catch
+                {
+                    //Ignore
+                }
 
                 throw;
             }
@@ -85,12 +101,21 @@ namespace Codout.Framework.NH
         {
             try
             {
-                if (_transaction is { IsActive: true })
-                    _transaction.Rollback();
+                try
+                {
+                    // rollback if there was an exception
+                    if (_transaction is { IsActive: true })
+                        _transaction.Rollback();
+                }
+                catch
+                {
+                    //Ignore
+                }
             }
             finally
             {
                 _transaction?.Dispose();
+                _transaction = null;
             }
         }
     }
