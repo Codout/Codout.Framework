@@ -23,7 +23,7 @@ public class AzureStorage : IStorage
     {
         file.Position = 0;
 
-        var blobContainer = Client.GetBlobContainerClient(container);
+        var blobContainer = Client.GetBlobContainerClient(container.ToLower());
 
         await blobContainer.CreateIfNotExistsAsync(PublicAccessType.Blob);
 
@@ -41,7 +41,7 @@ public class AzureStorage : IStorage
 
     public async Task<Stream> Download(string container, string fileName)
     {
-        var blobContainer = Client.GetBlobContainerClient(container);
+        var blobContainer = Client.GetBlobContainerClient(container.ToLower());
         var blob = blobContainer.GetBlockBlobClient(fileName);
         var stream = new MemoryStream();
         await blob.DownloadToAsync(stream);
@@ -51,9 +51,9 @@ public class AzureStorage : IStorage
 
     public async Task<Stream> DownloadByUrl(string container, string fileUrl)
     {
-        var blobContainer = Client.GetBlobContainerClient(container);
+        var blobContainer = Client.GetBlobContainerClient(container.ToLower());
 
-        if (!await Exists(container, fileUrl))
+        if (!await Exists(container.ToLower(), fileUrl))
             return null;
 
         var fileName = fileUrl.Replace(blobContainer.Uri.AbsoluteUri + "/", "");
@@ -67,16 +67,16 @@ public class AzureStorage : IStorage
 
     public async Task Delete(string container, string fileName)
     {
-        var blobContainer = Client.GetBlobContainerClient(container);
+        var blobContainer = Client.GetBlobContainerClient(container.ToLower());
         var blob = blobContainer.GetBlobClient(fileName);
         await blob.DeleteIfExistsAsync();
     }
 
     public async Task DeleteByUrl(string container, string fileUrl)
     {
-        var blobContainer = Client.GetBlobContainerClient(container);
+        var blobContainer = Client.GetBlobContainerClient(container.ToLower());
 
-        if (!await Exists(container, fileUrl))
+        if (!await Exists(container.ToLower(), fileUrl))
             return;
 
         var fileName = fileUrl.Replace(blobContainer.Uri.AbsoluteUri + "/", "");
@@ -88,7 +88,7 @@ public class AzureStorage : IStorage
 
     public async Task<bool> Exists(string container, string fileUrl)
     {
-        var blobContainer = Client.GetBlobContainerClient(container);
+        var blobContainer = Client.GetBlobContainerClient(container.ToLower());
 
         var fileName = fileUrl.Replace(blobContainer.Uri.AbsoluteUri + "/", "");
 
@@ -100,8 +100,8 @@ public class AzureStorage : IStorage
     public string GetUrl(string container, string fileName)
     {
         if (Settings.UseDevelopmentStorage)
-            return $"{Settings.Url}{container}/{fileName}";
+            return $"{Settings.Url}{container.ToLower()}/{fileName}";
 
-        return $"{Client.Uri.Scheme}://{Client.Uri.Host}/{container}/{fileName}";
+        return $"{Client.Uri.Scheme}://{Client.Uri.Host}/{container.ToLower()}/{fileName}";
     }
 }
