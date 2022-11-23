@@ -2,16 +2,16 @@
 2 - Fazer a injeção de dependência em ConfigureServices
 
 	services.AddScoped<IEManagerMailer>(provider =>
-                new EManagerMailer(Configuration.GetSection("CodoutMailer").Get<CodoutMailerSettings>(),
-                    new SendGridDispatcher(Configuration.GetSection("SendGrid").Get<SendGridSettings>())));
+                new EManagerMailer(Configuration.GetSection("CodoutMailerSettings").Get<CodoutMailerSettings>(),
+                    new SendGridDispatcher(Configuration.GetSection("SendGridSettings").Get<SendGridSettings>())));
 
 3 - Adicionar as configurações em appSettings.json
 
- "SendGrid": {
+ "SendGridSettings": {
     "ApiKey": "SUA API KEY DO SENDGRID",
     "StandBoxMode": false
   },
-  "CodoutMailer": {
+  "CodoutMailerSettings": {
     "DefaultFromName": "Padrão Carvalho",
     "DefaultFromEmail": "contato@padraocarvalho.com.br"
   },
