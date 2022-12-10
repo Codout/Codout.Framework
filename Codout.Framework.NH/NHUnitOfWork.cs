@@ -1,6 +1,7 @@
 ﻿using System;
 using Codout.Framework.DAL;
 using NHibernate;
+using IsolationLevel = System.Data.IsolationLevel;
 
 namespace Codout.Framework.NH
 {
@@ -62,13 +63,23 @@ namespace Codout.Framework.NH
 
         public void BeginTransaction()
         {
-            _transaction = Session.BeginTransaction();
+            BeginTransaction(IsolationLevel.ReadCommitted);
+        }
+
+        public void BeginTransaction(IsolationLevel isolationLevel)
+        {
+            _transaction = Session.BeginTransaction(isolationLevel);
         }
 
         public void Commit()
         {
+            Commit(IsolationLevel.ReadCommitted);
+        }
+
+        public void Commit(IsolationLevel isolationLevel)
+        {
             if (!(_transaction is { IsActive: true }))
-                BeginTransaction();
+                BeginTransaction(isolationLevel);
 
             try
             {
