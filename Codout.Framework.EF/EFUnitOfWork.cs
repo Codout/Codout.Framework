@@ -1,97 +1,107 @@
 ﻿using System;
+using System.Data;
 using System.Data.Entity;
 using Codout.Framework.DAL;
 
-namespace Codout.Framework.EF
+namespace Codout.Framework.EF;
+
+/// <summary>
+/// Unit of Work para repositório genérico com EntityFrameworkCore
+/// </summary>
+public abstract class EFUnitOfWork<T> : IUnitOfWork where T : DbContext
 {
-    /// <summary>
-    /// Unit of Work para repositório genérico com EntityFrameworkCore
-    /// </summary>
-    public abstract class EFUnitOfWork<T> : IUnitOfWork where T : DbContext
+    private DbContextTransaction _transaction;
+
+    protected EFUnitOfWork(T instance)
     {
-        private DbContextTransaction _transaction;
+        DbContext = instance;
+    }
 
-        protected EFUnitOfWork(T instance)
+    /// <summary>
+    /// Conexto do EntityFrameworkCore
+    /// </summary>
+    public DbContext DbContext { get; }
+
+    public void BeginTransaction(IsolationLevel isolationLevel)
+    {
+        _transaction = DbContext.Database.BeginTransaction();
+    }
+
+    public void BeginTransaction()
+    {
+        BeginTransaction(IsolationLevel.ReadCommitted);
+    }
+
+    public void Commit(IsolationLevel isolationLevel)
+    {
+        _transaction?.Commit();
+    }
+
+    /// <summary>
+    /// Efetua o SaveChanges do contexto (sessão) em questão
+    /// </summary>
+    public void Commit()
+    {
+        if (_transaction == null)
+            BeginTransaction();
+
+        try
         {
-            DbContext = instance;
+            DbContext.SaveChanges();
+            _transaction.Commit();
         }
-
-        /// <summary>
-        /// Conexto do EntityFrameworkCore
-        /// </summary>
-        public DbContext DbContext { get; }
-
-        public void BeginTransaction()
+        catch (Exception)
         {
-            _transaction = DbContext.Database.BeginTransaction();
+            Rollback();
         }
-
-        /// <summary>
-        /// Efetua o SaveChanges do contexto (sessão) em questão
-        /// </summary>
-        public void Commit()
+        finally
         {
-            if (_transaction == null)
-                BeginTransaction();
-
-            try
-            {
-                DbContext.SaveChanges();
-                _transaction.Commit();
-            }
-            catch (Exception)
-            {
-                Rollback();
-            }
-            finally
-            {
-                _transaction?.Dispose();
-                _transaction = null;
-            }
+            _transaction?.Dispose();
+            _transaction = null;
         }
+    }
 
-        public void Rollback()
+    public void Rollback()
+    {
+        try
         {
-            try
+
+            if (_transaction != null)
+                _transaction.Rollback();
+        }
+        finally
+        {
+            _transaction?.Dispose();
+            _transaction = null;
+        }
+    }
+
+    #region IDisposable Support
+    private bool _disposed;
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
             {
+                DbContext.Dispose();
 
                 if (_transaction != null)
-                    _transaction.Rollback();
-            }
-            finally
-            {
-                _transaction?.Dispose();
-                _transaction = null;
-            }
-        }
-
-        #region IDisposable Support
-        private bool _disposed;
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
                 {
-                    DbContext.Dispose();
-
-                    if (_transaction != null)
-                    {
-                        _transaction?.Dispose();
-                        _transaction = null;
-                    }
+                    _transaction?.Dispose();
+                    _transaction = null;
                 }
             }
-            _disposed = true;
         }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        #endregion IDisposable Support
-
+        _disposed = true;
     }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+    #endregion IDisposable Support
+
 }
