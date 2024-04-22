@@ -1,37 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <Description>Camada de Domínio do Framework da Codout</Description>
-    <Version>3.0.10</Version>
-    <Authors>Clovis Coli Jr</Authors>
-    <Company>Codout</Company>
-    <Copyright>Codout</Copyright>
-    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-    <PackageIconUrl></PackageIconUrl>
-    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>Codout;Framework;Domain;</PackageTags>
-    <PackageIcon>logo-nuget.png</PackageIcon>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Description>Camada de Domínio do Framework da Codout</Description>
+		<Version>3.1.0</Version>
+		<Authors>Clovis Coli Jr</Authors>
+		<Company>Codout</Company>
+		<Copyright>Codout</Copyright>
+		<PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+		<PackageIconUrl></PackageIconUrl>
+		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>Codout;Framework;Domain;</PackageTags>
+		<PackageIcon>logo-nuget.png</PackageIcon>
+		<PackageOutputPath>$(SolutionDir)Packages</PackageOutputPath>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Codout.Framework.DAL\Codout.Framework.DAL.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Codout.Framework.DAL\Codout.Framework.DAL.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\logo-nuget.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\logo-nuget.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>

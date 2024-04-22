@@ -45,9 +45,11 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Codout.Framework.Dto.Shared
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Storage", "Storage", "{10DDCDA2-E687-45E3-84FE-9CEB5EB656B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codout.Framework.Storage", "Codout.Framework.Storage\Codout.Framework.Storage.csproj", "{A7759C7F-BC27-4BE5-A9D2-F94D0B3CB2F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codout.Framework.Storage", "Codout.Framework.Storage\Codout.Framework.Storage.csproj", "{A7759C7F-BC27-4BE5-A9D2-F94D0B3CB2F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codout.Framework.Storage.Azure", "Codout.Framework.Storage.Azure\Codout.Framework.Storage.Azure.csproj", "{FA89B3EA-E38C-4F35-A3DA-828D1274956F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codout.Framework.Storage.Azure", "Codout.Framework.Storage.Azure\Codout.Framework.Storage.Azure.csproj", "{FA89B3EA-E38C-4F35-A3DA-828D1274956F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codout.Image.Extensions", "Codout.Image.Extensions\Codout.Image.Extensions.csproj", "{7A5F8194-FBD0-47C0-A8F8-1EB68662BE1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -119,6 +121,10 @@ Global
 		{FA89B3EA-E38C-4F35-A3DA-828D1274956F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA89B3EA-E38C-4F35-A3DA-828D1274956F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA89B3EA-E38C-4F35-A3DA-828D1274956F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A5F8194-FBD0-47C0-A8F8-1EB68662BE1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A5F8194-FBD0-47C0-A8F8-1EB68662BE1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A5F8194-FBD0-47C0-A8F8-1EB68662BE1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A5F8194-FBD0-47C0-A8F8-1EB68662BE1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -142,6 +148,7 @@ Global
 		{C53D01E0-E48F-40D5-92D8-EAECE82BACB3} = {B6832CA4-604B-4DC8-908B-06405133B6B6}
 		{A7759C7F-BC27-4BE5-A9D2-F94D0B3CB2F4} = {10DDCDA2-E687-45E3-84FE-9CEB5EB656B9}
 		{FA89B3EA-E38C-4F35-A3DA-828D1274956F} = {10DDCDA2-E687-45E3-84FE-9CEB5EB656B9}
+		{7A5F8194-FBD0-47C0-A8F8-1EB68662BE1E} = {B6832CA4-604B-4DC8-908B-06405133B6B6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F077B358-8F0D-4791-8E85-DDED3550C27A}

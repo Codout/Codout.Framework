@@ -1,44 +1,48 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <Description>Bliblioteca abstrata de implementação para Web API Restfull</Description>
-    <Version>3.0.8</Version>
-    <Authors>Clovis Coli Jr</Authors>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Copyright>Codout</Copyright>
-    <PackageIconUrl></PackageIconUrl>
-    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>Codout</PackageTags>
-    <Company>Codout</Company>
-    <PackageIcon>logo-nuget.png</PackageIcon>
-    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Description>Bliblioteca abstrata de implementação para Web API Restfull</Description>
+		<Version>3.1.0</Version>
+		<Authors>Clovis Coli Jr</Authors>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<Copyright>Codout</Copyright>
+		<PackageIconUrl></PackageIconUrl>
+		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>Codout</PackageTags>
+		<Company>Codout</Company>
+		<PackageIcon>logo-nuget.png</PackageIcon>
+		<PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+		<LangVersion>latest</LangVersion>
+		<PackageOutputPath>$(SolutionDir)Packages</PackageOutputPath>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="13.0.1" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Codout.DynamicLinq\Codout.DynamicLinq.csproj" />
-    <ProjectReference Include="..\Codout.Framework.Application\Codout.Framework.Application.csproj" />
-    <ProjectReference Include="..\Codout.Framework.DAL\Codout.Framework.DAL.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\logo-nuget.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Codout.DynamicLinq\Codout.DynamicLinq.csproj" />
+		<ProjectReference Include="..\Codout.Framework.Application\Codout.Framework.Application.csproj" />
+		<ProjectReference Include="..\Codout.Framework.DAL\Codout.Framework.DAL.csproj" />
+	</ItemGroup>
 
-  <Import Project="..\Codout.Framework.Api.Shared\Codout.Framework.Api.Shared.projitems" Label="Shared" />
+	<ItemGroup>
+		<None Include="..\logo-nuget.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+
+	<Import Project="..\Codout.Framework.Api.Shared\Codout.Framework.Api.Shared.projitems" Label="Shared" />
 
 </Project>

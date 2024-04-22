@@ -1,41 +1,43 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <Authors>Clovis Coli Jr</Authors>
-    <Company>Codout</Company>
-    <Description>Sender da SendGrid para envio de E-mails utilizando a biblioteca Codout.Mailer</Description>
-    <Copyright>Codout</Copyright>
-    <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageIconUrl></PackageIconUrl>
-    <PackageTags>Codout;Framework;Mail;Email;Mailer;SendGrid;</PackageTags>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.0.4</Version>
-    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageIcon>logo-nuget.png</PackageIcon>
-    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Authors>Clovis Coli Jr</Authors>
+		<Company>Codout</Company>
+		<Description>Sender da SendGrid para envio de E-mails utilizando a biblioteca Codout.Mailer</Description>
+		<Copyright>Codout</Copyright>
+		<PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
+		<PackageIconUrl></PackageIconUrl>
+		<PackageTags>Codout;Framework;Mail;Email;Mailer;SendGrid;</PackageTags>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<Version>1.1.0</Version>
+		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageIcon>logo-nuget.png</PackageIcon>
+		<PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+		<PackageOutputPath>$(SolutionDir)Packages</PackageOutputPath>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Sendgrid" Version="9.29.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Sendgrid" Version="9.29.2" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Codout.Mailer\Codout.Mailer.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Codout.Mailer\Codout.Mailer.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="SendGrid">
-      <HintPath>..\..\..\Users\Clovis Coli Jr\.nuget\packages\sendgrid\9.2.0\lib\netstandard1.3\SendGrid.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="SendGrid">
+			<HintPath>..\..\..\Users\Clovis Coli Jr\.nuget\packages\sendgrid\9.2.0\lib\netstandard1.3\SendGrid.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\logo-nuget.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\logo-nuget.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>

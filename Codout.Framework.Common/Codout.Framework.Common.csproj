@@ -1,36 +1,38 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <Description>Biblioteca de funcões comuns do Framework da Codout</Description>
-    <Version>2.0.9</Version>
-    <Authors>Clovis Coli Jr</Authors>
-    <Copyright>Codout</Copyright>
-    <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageIconUrl></PackageIconUrl>
-    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>Codout;Framework</PackageTags>
-    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-    <PackageIcon>logo-nuget.png</PackageIcon>
-    <AssemblyVersion></AssemblyVersion>
-    <FileVersion></FileVersion>
-    <Company>Codout</Company>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Description>Biblioteca de funcões comuns do Framework da Codout</Description>
+		<Version>2.1.0</Version>
+		<Authors>Clovis Coli Jr</Authors>
+		<Copyright>Codout</Copyright>
+		<PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
+		<PackageIconUrl></PackageIconUrl>
+		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>Codout;Framework</PackageTags>
+		<PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+		<PackageIcon>logo-nuget.png</PackageIcon>
+		<AssemblyVersion></AssemblyVersion>
+		<FileVersion></FileVersion>
+		<Company>Codout</Company>
+		<LangVersion>latest</LangVersion>
+		<PackageOutputPath>$(SolutionDir)Packages</PackageOutputPath>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\logo-nuget.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\logo-nuget.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>

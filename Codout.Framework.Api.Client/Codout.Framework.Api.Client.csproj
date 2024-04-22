@@ -1,42 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <Description>Biblioteca de funções para Cliente Api do Framework da Codout</Description>
-    <Version>3.0.6</Version>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Authors>Clovis Coli Jr</Authors>
-    <Copyright>Codout</Copyright>
-    <PackageIconUrl></PackageIconUrl>
-    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-    <AssemblyVersion>3.0.6.0</AssemblyVersion>
-    <FileVersion>3.0.6.0</FileVersion>
-    <Company>Codout</Company>
-    <PackageIcon>logo-nuget.png</PackageIcon>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Description>Biblioteca de funções para Cliente Api do Framework da Codout</Description>
+		<Version>3.1.0</Version>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<Authors>Clovis Coli Jr</Authors>
+		<Copyright>Codout</Copyright>
+		<PackageIconUrl></PackageIconUrl>
+		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+		<AssemblyVersion>3.0.6.0</AssemblyVersion>
+		<FileVersion>3.0.6.0</FileVersion>
+		<Company>Codout</Company>
+		<PackageIcon>logo-nuget.png</PackageIcon>
+		<PackageOutputPath>$(SolutionDir)Packages</PackageOutputPath>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\logo-nuget.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\logo-nuget.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Codout.DynamicLinq\Codout.DynamicLinq.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Codout.DynamicLinq\Codout.DynamicLinq.csproj" />
+	</ItemGroup>
 
-  <Import Project="..\Codout.Framework.Api.Shared\Codout.Framework.Api.Shared.projitems" Label="Shared" />
+	<Import Project="..\Codout.Framework.Api.Shared\Codout.Framework.Api.Shared.projitems" Label="Shared" />
 
-  <Import Project="..\Codout.Framework.Dto.Shared\Codout.Framework.Dto.projitems" Label="Shared" />
+	<Import Project="..\Codout.Framework.Dto.Shared\Codout.Framework.Dto.projitems" Label="Shared" />
 
 </Project>

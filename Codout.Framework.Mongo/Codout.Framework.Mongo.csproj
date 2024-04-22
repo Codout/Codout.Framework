@@ -1,42 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <Description>Implementação da interface Codout.Framework.DAL para MongoDB
+	<PropertyGroup>
+		<Description>Implementação da interface Codout.Framework.DAL para MongoDB
 </Description>
-    <Version>2.1.6</Version>
-    <Authors>Clovis Coli Jr</Authors>
-    <Company>Codout</Company>
-    <PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageIconUrl></PackageIconUrl>
-    <RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>Codout;Framework;ORM;DAL;MongoDB;</PackageTags>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Copyright>Codout</Copyright>
-    <PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-    <AssemblyVersion>2.1.6.0</AssemblyVersion>
-    <FileVersion>2.1.6.0</FileVersion>
-    <PackageIcon>logo-nuget.png</PackageIcon>
-    <PackageReleaseNotes>Inclusão do método Refresh() em MongoCollection</PackageReleaseNotes>
-  </PropertyGroup>
+		<Version>2.2.0</Version>
+		<Authors>Clovis Coli Jr</Authors>
+		<Company>Codout</Company>
+		<PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
+		<PackageIconUrl></PackageIconUrl>
+		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>Codout;Framework;ORM;DAL;MongoDB;</PackageTags>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<Copyright>Codout</Copyright>
+		<PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+		<AssemblyVersion>2.1.6.0</AssemblyVersion>
+		<FileVersion>2.1.6.0</FileVersion>
+		<PackageIcon>logo-nuget.png</PackageIcon>
+		<PackageReleaseNotes>Inclusão do método Refresh() em MongoCollection</PackageReleaseNotes>
+		<LangVersion>latest</LangVersion>
+		<PackageOutputPath>$(SolutionDir)Packages</PackageOutputPath>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MongoDB.Driver" Version="2.23.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Codout.Framework.DAL\Codout.Framework.DAL.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Codout.Framework.DAL\Codout.Framework.DAL.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\logo-nuget.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\logo-nuget.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MongoDB.Driver" Version="2.24.0" />
+	</ItemGroup>
 
 </Project>
