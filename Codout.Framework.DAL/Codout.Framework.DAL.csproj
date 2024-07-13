@@ -2,23 +2,23 @@
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<Description>Interface da Biblioteca de persistência do Framework da Codout</Description>
-		<Version>3.1.0</Version>
+		<Version>3.1.1</Version>
+		<Authors>Clovis Coli Jr</Authors>
+		<Company>Codout</Company>
 		<Copyright>Codout</Copyright>
 		<PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
 		<PackageIconUrl></PackageIconUrl>
 		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>Codout;Framework;ORM;DAL</PackageTags>
-		<Authors>Clovis Coli Jr</Authors>
-		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-		<Company>Codout</Company>
 		<PackageIcon>logo-nuget.png</PackageIcon>
-		<PackageReleaseNotes>Remoção do método de repositório genérico</PackageReleaseNotes>
 		<PackageOutputPath>$(SolutionDir)Packages</PackageOutputPath>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>

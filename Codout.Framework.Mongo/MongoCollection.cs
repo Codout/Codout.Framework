@@ -17,14 +17,14 @@ namespace Codout.Framework.Mongo;
 public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     where T : class, IEntity
 {
-    
+
     public readonly IMongoDatabase MongoDatabase = mongoDatabase;
-    
+
     public IMongoCollection<TEntity> GetCollection<TEntity>()
     {
         return MongoDatabase.GetCollection<TEntity>(typeof(TEntity).Name.ToLower());
     }
-    
+
     /// <summary>
     /// Retorna todos os objetos do repositório (pode ser lento)
     /// </summary>
@@ -124,7 +124,10 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     /// <returns>objeto</returns>
     public T Get(object key)
     {
-        return GetCollection<T>().Find(Builders<T>.Filter.Eq("_id", BsonValue.Create(key))).FirstOrDefault();
+        if (!ObjectId.TryParse(key.ToString(), out var id))
+            return null;
+
+        return GetCollection<T>().Find(Builders<T>.Filter.Eq("_id", BsonValue.Create(id))).FirstOrDefault();
     }
 
     /// <summary>
@@ -134,7 +137,7 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     /// <returns>Objeto</returns>
     public T Load(object key)
     {
-        return Get(key);
+        throw new NotSupportedException();
     }
 
     /// <summary>
@@ -144,13 +147,12 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     /// <returns>Retorna o mesmo objeto, para o caso de retornar algum Id gerado</returns>
     public T Merge(T entity)
     {
-        Update(entity);
-        return entity;
+        throw new NotSupportedException();
     }
 
     public T Refresh(T entity)
     {
-        return Get(GetIdValue(entity));
+        throw new NotSupportedException();
     }
 
     public async Task<T> GetAsync(Expression<Func<T, bool>> predicate)
@@ -160,12 +162,15 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
 
     public async Task<T> GetAsync(object key)
     {
-        return await (await GetCollection<T>().FindAsync(Builders<T>.Filter.Eq("_id", BsonValue.Create(key)))).FirstOrDefaultAsync();
+        if (!ObjectId.TryParse(key.ToString(), out var id))
+            return null;
+
+        return await (await GetCollection<T>().FindAsync(Builders<T>.Filter.Eq("_id", BsonValue.Create(id)))).FirstOrDefaultAsync();
     }
 
     public async Task<T> LoadAsync(object key)
     {
-        return await GetAsync(key);
+        throw new NotSupportedException();
     }
 
     public async Task DeleteAsync(T entity)
@@ -201,13 +206,12 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
 
     public async Task<T> MergeAsync(T entity)
     {
-        await UpdateAsync(entity);
-        return entity;
+        throw new NotSupportedException();
     }
 
     public Task<T> RefreshAsync(T entity)
     {
-        return GetAsync(GetIdValue(entity));
+        throw new NotSupportedException();
     }
 
     /// <summary>
@@ -220,7 +224,6 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
         GetCollection<T>().InsertOne(entity);
         return entity;
     }
-
 
     /// <summary>
     /// Salva ou atualiza o objeto em questão (USAR SOMENTE SE O ID NÃO FOI SETADO)
@@ -251,8 +254,11 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
         GetCollection<T>().ReplaceOne(Builders<T>.Filter.Eq("_id", BsonValue.Create(GetIdValue(entity))), entity);
     }
 
-    public static object GetIdValue(T entity)
+    private static object GetIdValue(T entity)
     {
-        return entity.GetType().GetTypeInfo().GetProperty("Id").GetValue(entity);
+        var key = entity.GetType().GetTypeInfo().GetProperty("Id").GetValue(entity);
+        if (!ObjectId.TryParse(key.ToString(), out var id))
+            return null;
+        return id;
     }
 }
