@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
-		<Version>3.1.0</Version>
+		<Version>3.1.1</Version>
 		<Authors>Clovis Coli Jr</Authors>
 		<Description>Implementação da interface Codout.Framework.DAL para NHibernate
 </Description>
@@ -22,8 +22,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FluentNHibernate" Version="3.3.0" />
-		<PackageReference Include="NHibernate" Version="5.5.1" />
+		<PackageReference Include="FluentNHibernate" Version="3.4.0" />
+		<PackageReference Include="NHibernate" Version="5.5.2" />
 	</ItemGroup>
 
 	<ItemGroup>

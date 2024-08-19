@@ -7,7 +7,7 @@
 	<PropertyGroup>
 		<Description>Implementação da interface Codout.Framework.DAL para EntityFrameworkCore
 </Description>
-		<Version>2.2.0</Version>
+		<Version>2.2.1</Version>
 		<Authors>Clovis Coli Jr</Authors>
 		<PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
 		<PackageIconUrl></PackageIconUrl>
@@ -35,7 +35,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="EntityFramework" Version="6.4.4" />
+		<PackageReference Include="EntityFramework" Version="6.5.1" />
 	</ItemGroup>
 
 </Project>
