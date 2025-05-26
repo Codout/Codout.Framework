@@ -125,8 +125,8 @@ public void ConfigureServices(IServiceCollection services)
 
 * [x] Domain & Common Essentials
 * [x] EF Core & Migrations
-* [ ] MongoDB e replicação automática
-* [ ] NHibernate + FluentMigrator
+* [x] MongoDB e replicação automática
+* [x] NHibernate + FluentMigrator
 * [ ] Suporte a gRPC e mensageria (RabbitMQ, Kafka)
 * [ ] Dashboard de monitoramento e métricas
 
