@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using Codout.Framework.Api.Client.Helpers;
 
 namespace Codout.Framework.Api.Client
 {
@@ -30,13 +28,5 @@ namespace Codout.Framework.Api.Client
         public string UriService { get; }
 
         public HttpClient Client { get; }
-
-        protected async Task<TResult> Result<TResult>(HttpResponseMessage response)
-        {
-            if (response.IsSuccessStatusCode)
-                return await response.Content.ReadAsAsync<TResult>();
-
-            throw new ApiException(await response.Content.ReadAsStringAsync());
-        }
     }
 }

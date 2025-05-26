@@ -1,32 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using Codout.Framework.DAL;
-using Codout.Framework.DAL.Entity;
-using Codout.Framework.DAL.Repository;
 using NHibernate;
+using IsolationLevel = System.Data.IsolationLevel;
 
 namespace Codout.Framework.NH
 {
     public class NHUnitOfWork : IUnitOfWork
     {
-        private readonly IDictionary<Type, object> _repositories = new Dictionary<Type, object>();
-        private static readonly SessionFactory _sessionFactory = new SessionFactory();
-        private ISession _session;
-        private IStatelessSession _statelessSession;
-        private readonly ITenant _tenant;
         private bool _disposed;
+        private ITransaction _transaction;
+        private ISession _session;
 
-        public NHUnitOfWork(ITenant tenant = null)
+        public SessionFactory SessionFactory { get; }
+
+        public ISession Session => _session ??= SessionFactory.OpenSession();
+
+        public NHUnitOfWork(ITenant tenant)
         {
-            _tenant = tenant;
+            SessionFactory = new SessionFactory(tenant);
         }
-
-        public ISession Session => _session ?? (_session = _sessionFactory.OpenSession(_tenant));
-
-        public IStatelessSession StatelessSession => _statelessSession ?? (_statelessSession = _sessionFactory.OpenStatelessSession(_tenant));
-
-        public SessionFactory SessionFactory => _sessionFactory;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -34,19 +26,27 @@ namespace Codout.Framework.NH
             {
                 if (disposing)
                 {
-                    if (_session != null && _session.IsOpen)
+                    if (_session is { IsOpen: true })
                     {
-                        if (_session.Transaction != null)
+                        if (_transaction is { IsActive: true })
                         {
-                            if (_session.Transaction.IsActive)
+                            try
                             {
-                                _session.Transaction.Rollback();
+                                // rollback if there was an exception
+                                if (_transaction is { IsActive: true })
+                                    _transaction.Rollback();
                             }
-
-                            _session.Transaction.Dispose();
+                            catch
+                            {
+                                //Ignore
+                            }
                         }
 
-                        _session.Dispose();
+                        _transaction?.Dispose();
+
+                        _transaction = null;
+
+                        _session?.Dispose();
 
                         _session = null;
                     }
@@ -61,36 +61,73 @@ namespace Codout.Framework.NH
             GC.SuppressFinalize(this);
         }
 
-        public void SaveChanges()
+        public void BeginTransaction()
         {
-            using (var tx = _session.BeginTransaction(IsolationLevel.ReadCommitted))
+            BeginTransaction(IsolationLevel.ReadCommitted);
+        }
+
+        public void BeginTransaction(IsolationLevel isolationLevel)
+        {
+            _transaction = Session.BeginTransaction(isolationLevel);
+        }
+
+        public void Commit()
+        {
+            Commit(IsolationLevel.ReadCommitted);
+        }
+
+        public void Commit(IsolationLevel isolationLevel)
+        {
+            if (!(_transaction is { IsActive: true }))
+                BeginTransaction(isolationLevel);
+
+            try
+            {
+                // commit transaction if there is one active
+                if (_transaction is { IsActive: true })
+                    _transaction.Commit();
+            }
+            catch
             {
                 try
                 {
-                    //forces a flush of the current unit of work
-                    tx.Commit();
+                    // rollback if there was an exception
+                    if (_transaction is { IsActive: true })
+                        _transaction.Rollback();
                 }
                 catch
                 {
-                    try
-                    {
-                        tx.Rollback();
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-
-                    throw;
+                    //Ignore
                 }
+
+                throw;
+            }
+            finally
+            {
+                _transaction?.Dispose();
             }
         }
 
-        public IRepository<TEntity> Repository<TEntity>() where TEntity : class, IEntity
+        public void Rollback()
         {
-            if (!_repositories.ContainsKey(typeof(TEntity)))
-                _repositories.Add(typeof(TEntity), new NHRepository<TEntity>(Session));
-            return _repositories[typeof(TEntity)] as IRepository<TEntity>;
+            try
+            {
+                try
+                {
+                    // rollback if there was an exception
+                    if (_transaction is { IsActive: true })
+                        _transaction.Rollback();
+                }
+                catch
+                {
+                    //Ignore
+                }
+            }
+            finally
+            {
+                _transaction?.Dispose();
+                _transaction = null;
+            }
         }
     }
 }

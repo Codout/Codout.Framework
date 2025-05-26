@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using Codout.Mailer.Helpers;
 using Codout.Mailer.Models;
 using RazorLight;
 
@@ -24,10 +25,11 @@ namespace Codout.Mailer
         }
         
             
-        public virtual async Task<MailerResponse> Send<T>(string templateKey, T model, string subject, string plainTextContent = null, Attachment[] attachments = null) where T : MailerModelBase
+        public virtual async Task<MailerResponse> Send<T>(string templateKey, T model, string subject, Attachment[] attachments = null) where T : MailerModelBase
         {
-            var result = await _engine.CompileRenderAsync(templateKey, model);
-            return await _dispatcher.Send(new MailAddress(_settings.DefaultFromEmail, _settings.DefaultFromName), model.To, subject, result, plainTextContent, attachments);
+            var htmlContent = await _engine.CompileRenderAsync(templateKey, model);
+            var plainTextContent = HtmlUtilities.ConvertToPlainText(htmlContent);
+            return await _dispatcher.Send(new MailAddress(_settings.DefaultFromEmail, _settings.DefaultFromName), model.To, subject, htmlContent, plainTextContent, attachments);
         }
 
     }

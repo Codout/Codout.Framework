@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Codout.Framework.DAL.Entity;
 using Codout.Framework.DAL.Repository;
-using Microsoft.EntityFrameworkCore;
 
 namespace Codout.Framework.EF
 {
@@ -125,7 +125,7 @@ namespace Codout.Framework.EF
             {
                 throw new ArgumentNullException("entity");
             }
-            return DbSet.Add(entity).Entity;
+            return DbSet.Add(entity);
         }
 
         /// <summary>
@@ -137,9 +137,7 @@ namespace Codout.Framework.EF
         {
             if (entity.IsTransient())
                 DbSet.Add(entity);
-            else
-                DbSet.Update(entity);
-
+            
             return entity;
         }
 
@@ -149,7 +147,7 @@ namespace Codout.Framework.EF
         /// <param name="entity">Objeto a ser atulizado</param>
         public void Update(T entity)
         {
-            DbSet.Update(entity);
+            Context.Entry(entity).State = EntityState.Modified;
         }
 
         /// <summary>
@@ -159,7 +157,19 @@ namespace Codout.Framework.EF
         /// <returns>Retorna o mesmo objeto, para o caso de retornar algum Id gerado</returns>
         public T Merge(T entity)
         {
-            return DbSet.Update(entity).Entity;
+            return DbSet.Attach(entity);
+        }
+
+        public T Refresh(T entity)
+        {
+            Context.Entry(entity).Reload();
+            return entity;
+        }
+
+        public async Task<T> RefreshAsync(T entity)
+        {
+            await Context.Entry(entity).ReloadAsync();
+            return entity;
         }
 
         public async Task<T> GetAsync(Expression<Func<T, bool>> predicate)
@@ -179,7 +189,7 @@ namespace Codout.Framework.EF
 
         public async Task DeleteAsync(T entity)
         {
-            await Task.Run(() => DbSet.Remove(entity));
+            DbSet.Remove(entity);
         }
 
         public async Task DeleteAsync(Expression<Func<T, bool>> predicate)
@@ -191,27 +201,25 @@ namespace Codout.Framework.EF
 
         public async Task<T> SaveAsync(T entity)
         {
-            return (await DbSet.AddAsync(entity)).Entity;
+            return DbSet.Add(entity);
         }
 
         public async Task<T> SaveOrUpdateAsync(T entity)
         {
             if (entity.IsTransient())
-                await DbSet.AddAsync(entity);
-            else
-                await UpdateAsync(entity);
+                DbSet.Add(entity);
 
             return entity;
         }
 
         public async Task UpdateAsync(T entity)
         {
-            await Task.Run(() => DbSet.Update(entity));
+            Context.Entry(entity).State = EntityState.Modified;
         }
 
         public async Task<T> MergeAsync(T entity)
         {
-            return (await Task.Run(() => DbSet.Update(entity))).Entity;
+            return DbSet.Attach(entity);
         }
 
         private bool _disposed;

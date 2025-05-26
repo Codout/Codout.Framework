@@ -1,13 +1,14 @@
 ﻿using System;
-using Codout.Framework.DAL.Entity;
-using Codout.Framework.DAL.Repository;
+using System.Data;
 
 namespace Codout.Framework.DAL
 {
     public interface IUnitOfWork : IDisposable
     {
-        void SaveChanges();
-
-        IRepository<T> Repository<T>() where T : class, IEntity;
+        void BeginTransaction(IsolationLevel isolationLevel);
+        void BeginTransaction();
+        void Commit(IsolationLevel isolationLevel);
+        void Commit();
+        void Rollback();
     }
 }

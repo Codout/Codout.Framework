@@ -1,70 +1,107 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
 using Codout.Framework.DAL;
-using Codout.Framework.DAL.Entity;
-using Codout.Framework.DAL.Repository;
-using Microsoft.EntityFrameworkCore;
 
-namespace Codout.Framework.EF
+namespace Codout.Framework.EF;
+
+/// <summary>
+/// Unit of Work para repositório genérico com EntityFrameworkCore
+/// </summary>
+public abstract class EFUnitOfWork<T> : IUnitOfWork where T : DbContext
 {
-    /// <summary>
-    /// Unit of Work para repositório genérico com EntityFrameworkCore
-    /// </summary>
-    public abstract class EFUnitOfWork<T> : IUnitOfWork where T : DbContext
+    private DbContextTransaction _transaction;
+
+    protected EFUnitOfWork(T instance)
     {
-        private readonly IDictionary<Type, object> _repositories = new Dictionary<Type, object>();
+        DbContext = instance;
+    }
 
-        protected EFUnitOfWork(T instance)
-        {
-            DbContext = instance;
-        }
+    /// <summary>
+    /// Conexto do EntityFrameworkCore
+    /// </summary>
+    public DbContext DbContext { get; }
 
-        /// <summary>
-        /// Conexto do EntityFrameworkCore
-        /// </summary>
-        public DbContext DbContext { get; }
+    public void BeginTransaction(IsolationLevel isolationLevel)
+    {
+        _transaction = DbContext.Database.BeginTransaction();
+    }
 
-        /// <summary>
-        /// Efetua o SaveChanges do contexto (sessão) em questão
-        /// </summary>
-        public void SaveChanges()
+    public void BeginTransaction()
+    {
+        BeginTransaction(IsolationLevel.ReadCommitted);
+    }
+
+    public void Commit(IsolationLevel isolationLevel)
+    {
+        _transaction?.Commit();
+    }
+
+    /// <summary>
+    /// Efetua o SaveChanges do contexto (sessão) em questão
+    /// </summary>
+    public void Commit()
+    {
+        if (_transaction == null)
+            BeginTransaction();
+
+        try
         {
             DbContext.SaveChanges();
+            _transaction.Commit();
         }
-
-        /// <summary>
-        /// Repositório Genérico que será controlado
-        /// </summary>
-        /// <typeparam name="TEntity">Tipo do objeto</typeparam>
-        /// <returns>Repositório concreto</returns>
-        public IRepository<TEntity> Repository<TEntity>() where TEntity : class, IEntity
+        catch (Exception)
         {
-            if (!_repositories.ContainsKey(typeof(TEntity)))
-                _repositories.Add(typeof(TEntity), new EFRepository<TEntity>(DbContext));
-            return _repositories[typeof(TEntity)] as IRepository<TEntity>;
+            Rollback();
         }
-
-        #region IDisposable Support
-        private bool _disposed;
-
-        protected virtual void Dispose(bool disposing)
+        finally
         {
-            if (!_disposed)
+            _transaction?.Dispose();
+            _transaction = null;
+        }
+    }
+
+    public void Rollback()
+    {
+        try
+        {
+
+            if (_transaction != null)
+                _transaction.Rollback();
+        }
+        finally
+        {
+            _transaction?.Dispose();
+            _transaction = null;
+        }
+    }
+
+    #region IDisposable Support
+    private bool _disposed;
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
             {
-                if (disposing)
+                DbContext.Dispose();
+
+                if (_transaction != null)
                 {
-                    DbContext.Dispose();
+                    _transaction?.Dispose();
+                    _transaction = null;
                 }
             }
-            _disposed = true;
         }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        #endregion IDisposable Support
-
+        _disposed = true;
     }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+    #endregion IDisposable Support
+
 }
