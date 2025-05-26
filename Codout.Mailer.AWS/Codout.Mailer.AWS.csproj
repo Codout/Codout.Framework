@@ -19,7 +19,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AWSSDK.SimpleEmailV2" Version="3.7.400.2" />
+		<PackageReference Include="AWSSDK.SimpleEmailV2" Version="4.0.0.4" />
 	</ItemGroup>
 
 	<ItemGroup>

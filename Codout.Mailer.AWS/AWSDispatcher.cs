@@ -8,6 +8,7 @@ using Amazon.Runtime;
 using Amazon.SimpleEmailV2;
 using Amazon.SimpleEmailV2.Model;
 using Codout.Mailer.Models;
+using Attachment = System.Net.Mail.Attachment;
 
 namespace Codout.Mailer.AWS
 {
