@@ -1,10 +1,12 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Codout.Framework.Common.Security;
 
 public class Crypto
 {
+    [Obsolete("Obsolete")]
     public static string Md5Encrypt(string phrase)
     {
         var encoder = new UTF8Encoding();
@@ -13,6 +15,7 @@ public class Crypto
         return ByteArrayToString(hashedDataBytes);
     }
 
+    [Obsolete("Obsolete")]
     public static string Sha1Encrypt(string phrase)
     {
         var encoder = new UTF8Encoding();
@@ -21,6 +24,7 @@ public class Crypto
         return ByteArrayToString(hashedDataBytes);
     }
 
+    [Obsolete("Obsolete")]
     public static string Sha256Encrypt(string phrase)
     {
         var encoder = new UTF8Encoding();
@@ -29,6 +33,7 @@ public class Crypto
         return ByteArrayToString(hashedDataBytes);
     }
 
+    [Obsolete("Obsolete")]
     public static string Sha384Encrypt(string phrase)
     {
         var encoder = new UTF8Encoding();
@@ -37,6 +42,7 @@ public class Crypto
         return ByteArrayToString(hashedDataBytes);
     }
 
+    [Obsolete("Obsolete")]
     public static string Sha512Encrypt(string phrase)
     {
         var encoder = new UTF8Encoding();

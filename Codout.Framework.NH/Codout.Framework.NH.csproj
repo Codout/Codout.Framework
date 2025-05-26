@@ -4,15 +4,12 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<Version>4.0.0</Version>
 		<Authors>Clovis Coli Jr</Authors>
-		<Description>Implementação da interface Codout.Framework.DAL para NHibernate
-</Description>
+		<Description>Implementação da interface Codout.Framework.DAL para NHibernate</Description>
 		<Copyright>Codout</Copyright>
 		<PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-		<PackageIconUrl></PackageIconUrl>
 		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>Codout;Framework;ORM;DAL;NHibernate;</PackageTags>
-		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<Company>Codout</Company>
 		<PackageIcon>logo-nuget.png</PackageIcon>
 		<PackageReleaseNotes></PackageReleaseNotes>

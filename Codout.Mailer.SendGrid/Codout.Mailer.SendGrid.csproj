@@ -6,10 +6,8 @@
 		<Company>Codout</Company>
 		<Description>Sender da SendGrid para envio de E-mails utilizando a biblioteca Codout.Mailer</Description>
 		<Copyright>Codout</Copyright>
-		<PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
 		<PackageIconUrl></PackageIconUrl>
 		<PackageTags>Codout;Framework;Mail;Email;Mailer;SendGrid;</PackageTags>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<Version>4.0.0</Version>
 		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>

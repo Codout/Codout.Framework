@@ -6,9 +6,6 @@
 		<Copyright>Codout</Copyright>
 		<PackageTags>Codout;Framework;Mail;Email;Mailer;</PackageTags>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-		<PackageIconUrl></PackageIconUrl>
-		<PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
 		<Authors>Clovis Coli Jr</Authors>
 		<Company>Codout</Company>
 		<Version>4.0.0</Version>

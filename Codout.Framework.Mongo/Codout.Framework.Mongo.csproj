@@ -11,12 +11,9 @@
 		<Authors>Clovis Coli Jr</Authors>
 		<Company>Codout</Company>
 		<Copyright>Codout</Copyright>
-		<PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
-		<PackageIconUrl></PackageIconUrl>
 		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>Codout;Framework;ORM;DAL;MongoDB;</PackageTags>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
 		<PackageIcon>logo-nuget.png</PackageIcon>
 		<PackageOutputPath>$(SolutionDir)Packages</PackageOutputPath>

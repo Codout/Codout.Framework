@@ -7,11 +7,9 @@
 		<Company>Codout</Company>
 		<Description>Sender da Amazon Simple Email Service para envio de E-mails utilizando a biblioteca Codout.Mailer</Description>
 		<Copyright>Codout</Copyright>
-		<PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
 		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
 		<PackageTags>Codout;Framework;Mail;Email;Mailer;SendGrid;</PackageTags>
 		<RepositoryType>git</RepositoryType>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<PackageIcon>logo-nuget.png</PackageIcon>
 		<PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
 		<PackageOutputPath>$(SolutionDir)Packages</PackageOutputPath>

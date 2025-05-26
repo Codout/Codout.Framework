@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
 
 namespace Codout.Framework.Common.Extensions;
@@ -76,6 +77,7 @@ public static class IO
     /// </summary>
     /// <param name="url">The URL.</param>
     /// <returns></returns>
+    [Obsolete("Obsolete")]
     public static string ReadWebPage(string url)
     {
         var request = WebRequest.Create(url);

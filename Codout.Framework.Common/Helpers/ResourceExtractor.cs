@@ -21,9 +21,11 @@ public static class ResourceExtractor
             return;
 
         using var s = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
+        if (filename == null) 
+            return;
         using var fs = new FileStream(filename, FileMode.Create);
         var b = new byte[s.Length];
-        s.Read(b, 0, b.Length);
+        s.ReadExactly(b, 0, b.Length);
         fs.Write(b, 0, b.Length);
     }
 
@@ -64,9 +66,10 @@ public static class ResourceExtractor
             return;
 
         using var s = assembly.GetManifestResourceStream(resourceName);
+        if (filename == null) return;
         using var fs = new FileStream(filename, FileMode.Create);
         var b = new byte[s.Length];
-        s.Read(b, 0, b.Length);
+        s.ReadExactly(b, 0, b.Length);
         fs.Write(b, 0, b.Length);
     }
 
