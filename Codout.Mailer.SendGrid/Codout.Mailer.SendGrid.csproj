@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<Authors>Clovis Coli Jr</Authors>
 		<Company>Codout</Company>
 		<Description>Sender da SendGrid para envio de E-mails utilizando a biblioteca Codout.Mailer</Description>
