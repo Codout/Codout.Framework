@@ -1,9 +1,8 @@
-﻿namespace Codout.Mailer.Models
-{
-    public class CodoutMailerSettings
-    {
-        public string DefaultFromName { get; set; }
+﻿namespace Codout.Mailer.Models;
 
-        public string DefaultFromEmail { get; set; }
-    }
+public class CodoutMailerSettings
+{
+    public string DefaultFromName { get; set; }
+
+    public string DefaultFromEmail { get; set; }
 }

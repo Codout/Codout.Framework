@@ -3,131 +3,120 @@ using Codout.Framework.DAL;
 using NHibernate;
 using IsolationLevel = System.Data.IsolationLevel;
 
-namespace Codout.Framework.NH
+namespace Codout.Framework.NH;
+
+public class NHUnitOfWork(ITenant tenant) : IUnitOfWork
 {
-    public class NHUnitOfWork : IUnitOfWork
+    private bool _disposed;
+    private ISession _session;
+    private ITransaction _transaction;
+
+    public SessionFactory SessionFactory { get; } = new(tenant);
+
+    public ISession Session => _session ??= SessionFactory.OpenSession();
+
+    public void Dispose()
     {
-        private bool _disposed;
-        private ITransaction _transaction;
-        private ISession _session;
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
-        public SessionFactory SessionFactory { get; }
+    public void BeginTransaction()
+    {
+        BeginTransaction(IsolationLevel.ReadCommitted);
+    }
 
-        public ISession Session => _session ??= SessionFactory.OpenSession();
+    public void BeginTransaction(IsolationLevel isolationLevel)
+    {
+        _transaction = Session.BeginTransaction(isolationLevel);
+    }
 
-        public NHUnitOfWork(ITenant tenant)
+    public void Commit()
+    {
+        Commit(IsolationLevel.ReadCommitted);
+    }
+
+    public void Commit(IsolationLevel isolationLevel)
+    {
+        if (!(_transaction is { IsActive: true }))
+            BeginTransaction(isolationLevel);
+
+        try
         {
-            SessionFactory = new SessionFactory(tenant);
+            // commit transaction if there is one active
+            if (_transaction is { IsActive: true })
+                _transaction.Commit();
         }
-
-        protected virtual void Dispose(bool disposing)
+        catch
         {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
-                    if (_session is { IsOpen: true })
-                    {
-                        if (_transaction is { IsActive: true })
-                        {
-                            try
-                            {
-                                // rollback if there was an exception
-                                if (_transaction is { IsActive: true })
-                                    _transaction.Rollback();
-                            }
-                            catch
-                            {
-                                //Ignore
-                            }
-                        }
-
-                        _transaction?.Dispose();
-
-                        _transaction = null;
-
-                        _session?.Dispose();
-
-                        _session = null;
-                    }
-                }
-            }
-            _disposed = true;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        public void BeginTransaction()
-        {
-            BeginTransaction(IsolationLevel.ReadCommitted);
-        }
-
-        public void BeginTransaction(IsolationLevel isolationLevel)
-        {
-            _transaction = Session.BeginTransaction(isolationLevel);
-        }
-
-        public void Commit()
-        {
-            Commit(IsolationLevel.ReadCommitted);
-        }
-
-        public void Commit(IsolationLevel isolationLevel)
-        {
-            if (!(_transaction is { IsActive: true }))
-                BeginTransaction(isolationLevel);
-
             try
             {
-                // commit transaction if there is one active
+                // rollback if there was an exception
                 if (_transaction is { IsActive: true })
-                    _transaction.Commit();
+                    _transaction.Rollback();
             }
             catch
             {
-                try
-                {
-                    // rollback if there was an exception
-                    if (_transaction is { IsActive: true })
-                        _transaction.Rollback();
-                }
-                catch
-                {
-                    //Ignore
-                }
+                //Ignore
+            }
 
-                throw;
-            }
-            finally
-            {
-                _transaction?.Dispose();
-            }
+            throw;
         }
+        finally
+        {
+            _transaction?.Dispose();
+        }
+    }
 
-        public void Rollback()
+    public void Rollback()
+    {
+        try
         {
             try
             {
-                try
-                {
-                    // rollback if there was an exception
-                    if (_transaction is { IsActive: true })
-                        _transaction.Rollback();
-                }
-                catch
-                {
-                    //Ignore
-                }
+                // rollback if there was an exception
+                if (_transaction is { IsActive: true })
+                    _transaction.Rollback();
             }
-            finally
+            catch
             {
-                _transaction?.Dispose();
-                _transaction = null;
+                //Ignore
             }
         }
+        finally
+        {
+            _transaction?.Dispose();
+            _transaction = null;
+        }
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+            if (disposing)
+                if (_session is { IsOpen: true })
+                {
+                    if (_transaction is { IsActive: true })
+                        try
+                        {
+                            // rollback if there was an exception
+                            if (_transaction is { IsActive: true })
+                                _transaction.Rollback();
+                        }
+                        catch
+                        {
+                            //Ignore
+                        }
+
+                    _transaction?.Dispose();
+
+                    _transaction = null;
+
+                    _session?.Dispose();
+
+                    _session = null;
+                }
+
+        _disposed = true;
     }
 }

@@ -1,53 +1,44 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Codout.Framework.Api.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace Codout.Framework.Api.Middleware
+namespace Codout.Framework.Api.Middleware;
+
+public class ApiExceptionMiddleware(RequestDelegate next, ILogger<ApiExceptionMiddleware> logger)
 {
-    public class ApiExceptionMiddleware
+    public async Task InvokeAsync(HttpContext httpContext)
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<ApiExceptionMiddleware> _logger;
-
-        public ApiExceptionMiddleware(RequestDelegate next, ILogger<ApiExceptionMiddleware> logger)
+        try
         {
-            _logger = logger;
-            _next = next;
+            await next(httpContext);
         }
-
-        public async Task InvokeAsync(HttpContext httpContext)
+        catch (Exception ex)
         {
-            try
-            {
-                await _next(httpContext);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message, ex);
-                await HandleExceptionAsync(httpContext, ex);
-            }
-        }
-
-        private Task HandleExceptionAsync(HttpContext context, Exception exception)
-        {
-            context.Response.ContentType = "application/json";
-            
-            return context.Response.WriteAsync(
-                new ApiException(
-                    context.Response.StatusCode,
-                    exception.Message,
-                    new ApiErrorMessage(context.Response.StatusCode, exception.Message)
-                ).ToString());
+            logger.LogError(ex.Message, ex);
+            await HandleExceptionAsync(httpContext, ex);
         }
     }
 
-    public static class ApiExceptionMiddlewareExtensions
+    private Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        public static void ConfigureExceptionMiddleware(this IApplicationBuilder app)
-        {
-            app.UseMiddleware<ApiExceptionMiddleware>();
-        }
+        context.Response.ContentType = "application/json";
+
+        return context.Response.WriteAsync(
+            new ApiException(
+                context.Response.StatusCode,
+                exception.Message,
+                new ApiErrorMessage(context.Response.StatusCode, exception.Message)
+            ).ToString());
+    }
+}
+
+public static class ApiExceptionMiddlewareExtensions
+{
+    public static void ConfigureExceptionMiddleware(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<ApiExceptionMiddleware>();
     }
 }

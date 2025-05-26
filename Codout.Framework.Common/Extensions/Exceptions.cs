@@ -3,13 +3,14 @@
 namespace Codout.Framework.Common.Extensions;
 
 /// <summary>
-/// Extensões comuns para tipos relacionadas a exceções.
+///     Extensões comuns para tipos relacionadas a exceções.
 /// </summary>
 public static class Exceptions
 {
     #region GetMessage
+
     /// <summary>
-    /// Retorna recursivamente todas as mensagens da excessão.
+    ///     Retorna recursivamente todas as mensagens da excessão.
     /// </summary>
     /// <param name="exception"></param>
     /// <returns></returns>
@@ -23,5 +24,6 @@ public static class Exceptions
 
         return exception.Message;
     }
+
     #endregion
 }

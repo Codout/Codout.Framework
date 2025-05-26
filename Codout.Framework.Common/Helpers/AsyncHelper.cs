@@ -7,9 +7,9 @@ namespace Codout.Framework.Common.Helpers;
 public class AsyncHelper
 {
     private static readonly TaskFactory MyTaskFactory = new(CancellationToken.None,
-            TaskCreationOptions.None,
-            TaskContinuationOptions.None,
-            TaskScheduler.Default);
+        TaskCreationOptions.None,
+        TaskContinuationOptions.None,
+        TaskScheduler.Default);
 
     public static TResult RunSync<TResult>(Func<Task<TResult>> func)
     {

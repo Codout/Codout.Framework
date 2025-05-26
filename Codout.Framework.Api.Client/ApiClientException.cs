@@ -1,15 +1,8 @@
 ﻿using System;
 
-namespace Codout.Framework.Api.Client
-{
-    public class ApiClientException : Exception
-    {
-        public ApiException ApiException { get; }
+namespace Codout.Framework.Api.Client;
 
-        public ApiClientException(ApiException apiException)
-            : base(apiException.Message)
-        {
-            ApiException = apiException;
-        }
-    }
+public class ApiClientException(ApiException apiException) : Exception(apiException.Message)
+{
+    public ApiException ApiException { get; } = apiException;
 }

@@ -1,13 +1,12 @@
 ﻿using Codout.Multitenancy.Internal;
 using Microsoft.AspNetCore.Builder;
 
-namespace Codout.Multitenancy
+namespace Codout.Multitenancy;
+
+public static class MultitenancyApplicationBuilderExtensions
 {
-    public static class MultitenancyApplicationBuilderExtensions
+    public static IApplicationBuilder UseMultitenancy(this IApplicationBuilder app)
     {
-        public static IApplicationBuilder UseMultitenancy(this IApplicationBuilder app)
-        {
-            return app.UseMiddleware<TenantResolutionMiddleware>();
-        }
+        return app.UseMiddleware<TenantResolutionMiddleware>();
     }
 }

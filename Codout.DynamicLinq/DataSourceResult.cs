@@ -2,48 +2,47 @@
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace Codout.DynamicLinq
+namespace Codout.DynamicLinq;
+
+/// <summary>
+///     Describes the result of Kendo DataSource read operation.
+/// </summary>
+[KnownType("GetKnownTypes")]
+public class DataSourceResult
 {
     /// <summary>
-    /// Describes the result of Kendo DataSource read operation. 
+    ///     Represents a single page of processed data.
     /// </summary>
-    [KnownType("GetKnownTypes")]
-    public class DataSourceResult
+    public object Data { get; set; }
+
+    /// <summary>
+    ///     Represents a single page of processed grouped data.
+    /// </summary>
+    public object Groups { get; set; }
+
+    /// <summary>
+    ///     Represents a requested aggregates.
+    /// </summary>
+    public object Aggregates { get; set; }
+
+    /// <summary>
+    ///     The total number of records available.
+    /// </summary>
+    public int Total { get; set; }
+
+    /// <summary>
+    ///     Represents error information from server-side.
+    /// </summary>
+    public object Errors { get; set; }
+
+    /// <summary>
+    ///     Used by the KnownType attribute which is required for WCF serialization support
+    /// </summary>
+    /// <returns></returns>
+    private static Type[] GetKnownTypes()
     {
-        /// <summary>
-        /// Represents a single page of processed data.
-        /// </summary>
-        public object Data { get; set; }
-
-        /// <summary>
-        /// Represents a single page of processed grouped data.
-        /// </summary>
-        public object Groups { get; set; }
-
-        /// <summary>
-        /// Represents a requested aggregates.
-        /// </summary>
-        public object Aggregates { get; set; }
-
-        /// <summary>
-        /// The total number of records available.
-        /// </summary>
-        public int Total { get; set; }
-
-        /// <summary>
-        /// Represents error information from server-side.
-        /// </summary>
-        public object Errors { get; set; }
-
-        /// <summary>
-        /// Used by the KnownType attribute which is required for WCF serialization support
-        /// </summary>
-        /// <returns></returns>
-        private static Type[] GetKnownTypes()
-        {
-            var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName.StartsWith("DynamicClasses"));
-            return assembly == null ? new Type[0] : assembly.GetTypes().Where(t => t.Name.StartsWith("DynamicClass")).ToArray();
-        }
-
+        var assembly = AppDomain.CurrentDomain.GetAssemblies()
+            .FirstOrDefault(a => a.FullName != null && a.FullName.StartsWith("DynamicClasses"));
+        return assembly == null ? [] : assembly.GetTypes().Where(t => t.Name.StartsWith("DynamicClass")).ToArray();
     }
 }

@@ -1,16 +1,13 @@
-﻿using Codout.Framework.Dto;
+﻿namespace Codout.Framework.Api.Client;
 
-namespace Codout.Framework.Api.Client
+/// <summary>
+///     Classe DTO base para transporte com WebAPI
+/// </summary>
+/// <typeparam name="TId">Tipo do Id</typeparam>
+public abstract class EntityDtoBase<TId> : IEntityDto<TId>
 {
     /// <summary>
-    /// Classe DTO base para transporte com WebAPI
+    ///     Id do objeto
     /// </summary>
-    /// <typeparam name="TId">Tipo do Id</typeparam>
-    public abstract class EntityDtoBase<TId> : IEntityDto<TId>
-    {
-        /// <summary>
-        /// Id do objeto
-        /// </summary>
-        public TId Id { get; set; }
-    }
+    public TId Id { get; set; }
 }

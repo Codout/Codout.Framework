@@ -1,25 +1,24 @@
 ﻿using Newtonsoft.Json;
 
-namespace Codout.Framework.Api
+namespace Codout.Framework.Api.Client;
+
+public class ApiException
 {
-    public class ApiException
+    public ApiException(int statusCode, string message, params ApiErrorMessage[] errors)
     {
-        public ApiException(int statusCode, string message, params ApiErrorMessage[] errors)
-        {
-            StatusCode = statusCode;
-            Message = message;
-            Errors = errors;
-        }
+        StatusCode = statusCode;
+        Message = message;
+        Errors = errors;
+    }
 
-        public int StatusCode { get; set; }
-        
-        public string Message { get; set; }
+    public int StatusCode { get; set; }
 
-        public ApiErrorMessage[] Errors { get; }
+    public string Message { get; set; }
 
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
+    public ApiErrorMessage[] Errors { get; }
+
+    public override string ToString()
+    {
+        return JsonConvert.SerializeObject(this);
     }
 }

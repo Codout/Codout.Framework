@@ -1,9 +1,8 @@
 ﻿using System.Net.Mail;
 
-namespace Codout.Mailer.Models
+namespace Codout.Mailer.Models;
+
+public class MailerModelBase
 {
-    public class MailerModelBase
-    {
-        public MailAddress To { get; set; }
-    }
+    public MailAddress To { get; set; }
 }

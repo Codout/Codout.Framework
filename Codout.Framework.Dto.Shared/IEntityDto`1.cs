@@ -1,7 +1,6 @@
-﻿namespace Codout.Framework.Dto
+﻿namespace Codout.Framework.Api.Client;
+
+public interface IEntityDto<TId>
 {
-    public interface IEntityDto<TId>
-    {
-        TId Id { get; set; }
-    }
+    TId Id { get; set; }
 }

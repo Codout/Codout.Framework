@@ -5,17 +5,18 @@ using Codout.Framework.Common.Extensions;
 namespace Codout.Framework.Common.Annotations;
 
 /// <summary>
-/// Valida um CPF ou CNPJ.
+///     Valida um CPF ou CNPJ.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
 public class CpfCnpjAttribute : ValidationAttribute
 {
     #region IsValid
+
     /// <summary>
-    /// Determina se o valor especificado do objeto é válido.
+    ///     Determina se o valor especificado do objeto é válido.
     /// </summary>
     /// <returns>
-    /// true se o valor especificado é válido; Caso contrário, false.
+    ///     true se o valor especificado é válido; Caso contrário, false.
     /// </returns>
     /// <param name="value">O valor do objeto a ser validado. </param>
     public override bool IsValid(object value)
@@ -41,5 +42,6 @@ public class CpfCnpjAttribute : ValidationAttribute
                 return false;
         }
     }
+
     #endregion
 }

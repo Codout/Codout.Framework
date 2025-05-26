@@ -8,12 +8,9 @@ namespace Codout.Framework.Common.Extensions;
 
 public class SlugHelper
 {
-    protected Config _config { get; set; }
-
     public SlugHelper() :
         this(new Config())
     {
-
     }
 
     public SlugHelper(Config config)
@@ -21,8 +18,10 @@ public class SlugHelper
         if (config != null)
             _config = config;
         else
-            throw new ArgumentNullException("config", "can't be null use default config or empty construct.");
+            throw new ArgumentNullException(nameof(config), "can't be null use default config or empty construct.");
     }
+
+    protected Config _config { get; set; }
 
     public string GenerateSlug(string str)
     {
@@ -55,7 +54,7 @@ public class SlugHelper
                 sb.Append(t);
         }
 
-        return (sb.ToString().Normalize(NormalizationForm.FormC));
+        return sb.ToString().Normalize(NormalizationForm.FormC);
     }
 
     protected string ApplyReplacements(string str, Dictionary<string, string> replacements)
@@ -75,11 +74,6 @@ public class SlugHelper
 
     public class Config
     {
-        public Dictionary<string, string> CharacterReplacements { get; set; }
-        public bool ForceLowerCase { get; set; }
-        public bool CollapseWhiteSpace { get; set; }
-        public string DeniedCharactersRegex { get; set; }
-
         public Config()
         {
             CharacterReplacements = new Dictionary<string, string> { { " ", "-" } };
@@ -87,6 +81,10 @@ public class SlugHelper
             CollapseWhiteSpace = true;
             DeniedCharactersRegex = @"[^a-zA-Z0-9\-\._]";
         }
-    }
 
+        public Dictionary<string, string> CharacterReplacements { get; set; }
+        public bool ForceLowerCase { get; set; }
+        public bool CollapseWhiteSpace { get; set; }
+        public string DeniedCharactersRegex { get; set; }
+    }
 }

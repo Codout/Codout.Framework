@@ -1,7 +1,7 @@
 ﻿namespace Codout.Framework.Common.Extensions;
 
 /// <summary>
-/// Extensões comuns para tipos relacionadas a expressões regulares.
+///     Extensões comuns para tipos relacionadas a expressões regulares.
 /// </summary>
 public class RegexPattern
 {
@@ -23,7 +23,10 @@ public class RegexPattern
     public const string EmbeddedClassNameUnderscoreMatch = "(?<=^UNDERSCORE).*?(?=UNDERSCORE)";
     public const string EmbeddedClassNameUnderscoreReplace = "^UNDERSCORE.*?UNDERSCORE";
     public const string Guid = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
-    public const string IpAddress = @"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+
+    public const string IpAddress =
+        @"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+
     public const string LowerCase = @"^[a-z]+$";
     public const string Numeric = "[^0-9]";
     public const string SocialSecurity = @"^\d{3}[-]?\d{2}[-]?\d{4}$";
@@ -37,9 +40,15 @@ public class RegexPattern
     public const string SqlLike = @"\x20like\x20";
     public const string SqlNotEqual = @"\<.*\>";
     public const string SqlNotLike = @"\x20not\x20like\x20";
-    public const string StrongPassword = @"(?=^.{8,255}$)((?=.*\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*";
+
+    public const string StrongPassword =
+        @"(?=^.{8,255}$)((?=.*\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*";
+
     public const string UpperCase = @"^[A-Z]+$";
-    public const string Url = @"^^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_=]*)?$";
+
+    public const string Url =
+        @"^^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_=]*)?$";
+
     public const string UsCurrency = @"^\$(([1-9]\d*|([1-9]\d{0,2}(\,\d{3})*))(\.\d{1,2})?|(\.\d{1,2}))$|^\$[0](.00)?$";
     public const string UsTelephone = @"^[01]?[- .]?(\([2-9]\d{2}\)|[2-9]\d{2})[- .]?\d{3}[- .]?\d{4}$";
     public const string UsZipcode = @"^\d{5}$";

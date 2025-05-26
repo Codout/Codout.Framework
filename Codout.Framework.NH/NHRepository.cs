@@ -13,6 +13,7 @@ namespace Codout.Framework.NH;
 public class NHRepository<T>(IUnitOfWork unitOfWork) : IRepository<T>
     where T : class, IEntity
 {
+    private bool _disposed;
     public NHUnitOfWork UnitOfWork { get; } = unitOfWork as NHUnitOfWork;
 
     public ISession Session => UnitOfWork.Session;
@@ -152,23 +153,20 @@ public class NHRepository<T>(IUnitOfWork unitOfWork) : IRepository<T>
         return await Session.MergeAsync(entity);
     }
 
-    private bool _disposed;
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!_disposed)
-        {
-            if (disposing)
-            {
-                //Release
-            }
-        }
-        _disposed = true;
-    }
-
     public void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+            if (disposing)
+            {
+                //Release
+            }
+
+        _disposed = true;
     }
 }

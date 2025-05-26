@@ -1,25 +1,24 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace Codout.Multitenancy.Internal
+namespace Codout.Multitenancy.Internal;
+
+public class TenantResolutionMiddleware
 {
-	public class TenantResolutionMiddleware
+    private readonly RequestDelegate _next;
+
+    public TenantResolutionMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
+        _next = next;
+    }
 
-        public TenantResolutionMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
+    public async Task Invoke(HttpContext context, ITenantResolver tenantResolver)
+    {
+        var tenantContext = await tenantResolver.ResolveAsync(context);
 
-        public async Task Invoke(HttpContext context, ITenantResolver tenantResolver)
-        {
-            var tenantContext = await tenantResolver.ResolveAsync(context);
+        if (tenantContext != null)
+            context.SetTenantContext(tenantContext);
 
-            if (tenantContext != null)
-                context.SetTenantContext(tenantContext);
-
-            await _next.Invoke(context);
-        }
+        await _next.Invoke(context);
     }
 }

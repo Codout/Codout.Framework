@@ -6,18 +6,12 @@ namespace Codout.Framework.Common.Helpers;
 
 public class LatLong
 {
-    private string _round4 = "0.0000";
-    private string _round6 = "0.000000";
-    private string _round8 = "0.00000000";
-
-    public bool IsNegative;
-    public double DecimalDegrees;
-    public double DecimalMinutes;
-    public double DecimalSeconds;
-    public int Degrees;
-    public int Minutes;
-    public bool IsOk = true;
-    public double EpsilonDeg = 0.0000000001;
+    public enum CoordinateFormat
+    {
+        [Description("Deg.dec")] D,
+        [Description("Deg Min.dec")] DM,
+        [Description("Deg Min Sec.dec")] DMS
+    }
 
     public enum CoordinateType
     {
@@ -26,15 +20,18 @@ public class LatLong
         Undefined
     }
 
-    public enum CoordinateFormat
-    {
-        [Description("Deg.dec")]
-        D,
-        [Description("Deg Min.dec")]
-        DM,
-        [Description("Deg Min Sec.dec")]
-        DMS
-    }
+    private readonly string _round4 = "0.0000";
+    private readonly string _round6 = "0.000000";
+    private readonly string _round8 = "0.00000000";
+    public double DecimalDegrees;
+    public double DecimalMinutes;
+    public double DecimalSeconds;
+    public int Degrees;
+    public double EpsilonDeg = 0.0000000001;
+
+    public bool IsNegative;
+    public bool IsOk = true;
+    public int Minutes;
 
     public static LatLong FromDecimalDegree(double decdeg)
     {
@@ -92,7 +89,7 @@ public class LatLong
 
             ll.DecimalSeconds = delta * 60;
             ll.Degrees = Convert.ToInt32(Math.Floor((double)degree));
-            ll.DecimalDegrees = degree + (minute / 60);
+            ll.DecimalDegrees = degree + minute / 60;
 
             return ll;
         }
@@ -120,8 +117,8 @@ public class LatLong
 
             ll.Degrees = Convert.ToInt32(Math.Floor((double)degree));
             ll.Minutes = Convert.ToInt32(Math.Floor((double)minute));
-            ll.DecimalDegrees = degree + (minute / (double)60) + (second / 3600);
-            ll.DecimalMinutes = minute + (second / 60);
+            ll.DecimalDegrees = degree + minute / (double)60 + second / 3600;
+            ll.DecimalMinutes = minute + second / 60;
             ll.DecimalSeconds = second;
 
             return ll;
@@ -143,7 +140,9 @@ public class LatLong
 
     public override string ToString()
     {
-        return IsNegative ? (-1 * DecimalDegrees).ToString(CultureInfo.InvariantCulture) : DecimalDegrees.ToString(CultureInfo.InvariantCulture);
+        return IsNegative
+            ? (-1 * DecimalDegrees).ToString(CultureInfo.InvariantCulture)
+            : DecimalDegrees.ToString(CultureInfo.InvariantCulture);
     }
 
     public string ToStringFullyDecorated(CoordinateType latlongType)
@@ -169,7 +168,7 @@ public class LatLong
 
     public string ToStringFullyDecorated()
     {
-        return ToStringFullyDecorated(LatLong.CoordinateType.Undefined);
+        return ToStringFullyDecorated(CoordinateType.Undefined);
     }
 
     public string ToStringDMS(bool decorate)
@@ -183,7 +182,7 @@ public class LatLong
         CorrectMinuteOrSecondIs60(CoordinateFormat.DMS);
 
         var s = decorate
-            ? $"{sign}{Degrees,3}° {Minutes,2}' {DecimalSeconds.ToString(_round4),7}\"" 
+            ? $"{sign}{Degrees,3}° {Minutes,2}' {DecimalSeconds.ToString(_round4),7}\""
             : $"{sign}{Degrees,3} {Minutes,2} {DecimalSeconds.ToString(_round4),7}";
 
         return s;
@@ -204,8 +203,8 @@ public class LatLong
 
         CorrectMinuteOrSecondIs60(CoordinateFormat.DM);
 
-        var s = decorate 
-            ? $"{sign}{Degrees,3}° {DecimalMinutes.ToString(_round6),9}'" 
+        var s = decorate
+            ? $"{sign}{Degrees,3}° {DecimalMinutes.ToString(_round6),9}'"
             : $"{sign}{Degrees,3} {DecimalMinutes.ToString(_round6),9}";
         return s;
     }
@@ -219,14 +218,14 @@ public class LatLong
     {
         // decimal degrees will be rounded to 8 decimals, more is only apparent accuracy
         var sign = "";
-        
+
         if (IsNegative)
             sign = "-";
 
-        var s = decorate 
-            ? $"{sign}{DecimalDegrees.ToString(_round8),12}°" 
+        var s = decorate
+            ? $"{sign}{DecimalDegrees.ToString(_round8),12}°"
             : $"{sign}{DecimalDegrees.ToString(_round8),12}";
-        
+
         return s;
     }
 
@@ -250,6 +249,7 @@ public class LatLong
                     Degrees += 1;
                     Minutes = 0;
                 }
+
                 return true;
             }
             case CoordinateFormat.DMS:
@@ -266,6 +266,7 @@ public class LatLong
                         Minutes = 0;
                     }
                 }
+
                 return true;
             }
             default:
@@ -281,7 +282,7 @@ public class LatLong
 
             if (Convert.ToDouble(minestrone) >= 60 - EpsilonDeg && Convert.ToDouble(minestrone) <= 60 + EpsilonDeg)
                 return 1;
-            
+
             return 0;
         }
         catch (Exception)
@@ -300,10 +301,10 @@ public class LatLong
         };
 
         var rstr = "0";
-        
+
         if (nrOfDec > 0)
             rstr = "0." + new string('0', nrOfDec);
-        
+
         return MinuteOrSecondIs60(minuteOrSec, rstr);
     }
 }

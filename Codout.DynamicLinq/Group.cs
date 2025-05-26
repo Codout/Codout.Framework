@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Codout.DynamicLinq
+namespace Codout.DynamicLinq;
+
+public class Group : Sort
 {
-    public class Group : Sort
-    {
-        [DataMember(Name = "aggregates")]
-        public IEnumerable<Aggregator> Aggregates { get; set; }
-    }
+    [DataMember(Name = "aggregates")] public IEnumerable<Aggregator> Aggregates { get; set; }
 }

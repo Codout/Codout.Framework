@@ -6,19 +6,18 @@ namespace Codout.Framework.Common.Helpers;
 
 public static class RunSafeHelper
 {
-    public static async Task RunSafe(this Task task, Action<Exception> onError = null, CancellationToken token = default)
+    public static async Task RunSafe(this Task task, Action<Exception> onError = null,
+        CancellationToken token = default)
     {
         Exception exception = null;
         try
         {
             if (!token.IsCancellationRequested)
-            {
                 await Task.Run(() =>
                 {
                     task.Start();
                     task.Wait(token);
                 }, token);
-            }
         }
         catch (TaskCanceledException)
         {
@@ -27,7 +26,7 @@ public static class RunSafeHelper
         catch (AggregateException e)
         {
             var ex = e.InnerException;
-            while (ex is { InnerException: { } })
+            while (ex is { InnerException: not null })
                 ex = ex.InnerException;
             exception = ex;
         }
@@ -35,10 +34,7 @@ public static class RunSafeHelper
         {
             exception = e;
         }
-        finally
-        {
-            //AfterTaskRun?.Invoke(null, task);
-        }
+
         if (exception != null)
         {
             //TODO: Log to Insights

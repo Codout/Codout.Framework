@@ -7,13 +7,14 @@ using System.Reflection;
 namespace Codout.Framework.Common.Extensions;
 
 /// <summary>
-/// Extensões comuns para tipos relacionadas a banco de dados.
+///     Extensões comuns para tipos relacionadas a banco de dados.
 /// </summary>
 public static class Database
 {
     #region DbType.GetSqlDBType
+
     /// <summary>
-    /// Returns the SqlDbType for a give DbType
+    ///     Returns the SqlDbType for a give DbType
     /// </summary>
     /// <returns>Retorna um SqlDbType.</returns>
     public static SqlDbType GetSqlDBType(this DbType dbType)
@@ -73,11 +74,13 @@ public static class Database
                 return SqlDbType.VarChar;
         }
     }
+
     #endregion
 
     #region Type.GetDbType
+
     /// <summary>
-    /// Busca o tipo de dados do banco relacionado o tipo de dados passado como argumento.
+    ///     Busca o tipo de dados do banco relacionado o tipo de dados passado como argumento.
     /// </summary>
     /// <param name="type">Tipo do objeto.</param>
     /// <returns>Retorna o DbType relacionado.</returns>
@@ -85,11 +88,11 @@ public static class Database
     {
         DbType result;
 
-        if (type == typeof(Int32))
+        if (type == typeof(int))
             result = DbType.Int32;
-        else if (type == typeof(Int16))
+        else if (type == typeof(short))
             result = DbType.Int16;
-        else if (type == typeof(Int64))
+        else if (type == typeof(long))
             result = DbType.Int64;
         else if (type == typeof(DateTime))
             result = DbType.DateTime;
@@ -110,44 +113,48 @@ public static class Database
 
         return result;
     }
+
     #endregion
 
     #region IDataReader.Load<T>
+
     /// <summary>
-    /// Coerces an IDataReader to try and load an object using name/property matching
+    ///     Coerces an IDataReader to try and load an object using name/property matching
     /// </summary>
     public static void Load<T>(this IDataReader rdr, T item, List<string> columnNames)
     {
-        Type iType = typeof(T);
+        var iType = typeof(T);
 
-        PropertyInfo[] cachedProps = iType.GetProperties();
-        FieldInfo[] cachedFields = iType.GetFields();
+        var cachedProps = iType.GetProperties();
+        var cachedFields = iType.GetFields();
 
         PropertyInfo currentProp;
         FieldInfo currentField = null;
 
-        for (int i = 0; i < rdr.FieldCount; i++)
+        for (var i = 0; i < rdr.FieldCount; i++)
         {
-            string pName = rdr.GetName(i);
-            currentProp = cachedProps.SingleOrDefault(x => x.Name.Equals(pName, StringComparison.InvariantCultureIgnoreCase));
+            var pName = rdr.GetName(i);
+            currentProp =
+                cachedProps.SingleOrDefault(x => x.Name.Equals(pName, StringComparison.InvariantCultureIgnoreCase));
 
             //mike if the property is null and ColumnNames has data then look in ColumnNames for match
             if (currentProp == null && columnNames != null && columnNames.Count > i)
             {
-                int i1 = i;
+                var i1 = i;
                 currentProp = cachedProps.First(x => x.Name == columnNames[i1]);
             }
 
             //if the property is null, likely it's a Field
             if (currentProp == null)
-                currentField = cachedFields.SingleOrDefault(x => x.Name.Equals(pName, StringComparison.InvariantCultureIgnoreCase));
+                currentField = cachedFields.SingleOrDefault(x =>
+                    x.Name.Equals(pName, StringComparison.InvariantCultureIgnoreCase));
 
             if (currentProp != null && !DBNull.Value.Equals(rdr.GetValue(i)))
             {
-                Type valueType = rdr.GetValue(i).GetType();
-                if (valueType == typeof(Boolean))
+                var valueType = rdr.GetValue(i).GetType();
+                if (valueType == typeof(bool))
                 {
-                    string value = rdr.GetValue(i).ToString();
+                    var value = rdr.GetValue(i).ToString();
                     currentProp.SetValue(item, value == "1" || value == "True", null);
                 }
                 else if (currentProp.PropertyType == typeof(Guid))
@@ -156,7 +163,8 @@ public static class Database
                 }
                 else if (Objects.IsNullableEnum(currentProp.PropertyType))
                 {
-                    var nullEnumObjectValue = Enum.ToObject(Nullable.GetUnderlyingType(currentProp.PropertyType), rdr.GetValue(i));
+                    var nullEnumObjectValue = Enum.ToObject(Nullable.GetUnderlyingType(currentProp.PropertyType),
+                        rdr.GetValue(i));
                     currentProp.SetValue(item, nullEnumObjectValue, null);
                 }
                 else if (currentProp.PropertyType.IsEnum)
@@ -166,7 +174,6 @@ public static class Database
                 }
                 else
                 {
-
                     var val = rdr.GetValue(i);
                     //try to assign it
                     currentProp.SetValue(item,
@@ -177,10 +184,10 @@ public static class Database
             }
             else if (currentField != null && !DBNull.Value.Equals(rdr.GetValue(i)))
             {
-                Type valueType = rdr.GetValue(i).GetType();
-                if (valueType == typeof(Boolean))
+                var valueType = rdr.GetValue(i).GetType();
+                if (valueType == typeof(bool))
                 {
-                    string value = rdr.GetValue(i).ToString();
+                    var value = rdr.GetValue(i).ToString();
                     currentField.SetValue(item, value == "1" || value == "True");
                 }
                 else if (currentField.FieldType == typeof(Guid))
@@ -189,7 +196,8 @@ public static class Database
                 }
                 else if (Objects.IsNullableEnum(currentField.FieldType))
                 {
-                    var nullEnumObjectValue = Enum.ToObject(Nullable.GetUnderlyingType(currentField.FieldType), rdr.GetValue(i));
+                    var nullEnumObjectValue = Enum.ToObject(Nullable.GetUnderlyingType(currentField.FieldType),
+                        rdr.GetValue(i));
                     currentField.SetValue(item, nullEnumObjectValue);
                 }
                 else
@@ -204,32 +212,36 @@ public static class Database
             }
         }
     }
+
     #endregion
 
     #region IDataReader.LoadValueType<T>
+
     /// <summary>
-    /// Loads a single primitive value type
+    ///     Loads a single primitive value type
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public static void LoadValueType<T>(this IDataReader rdr, ref T item)
     {
-        Type iType = typeof(T);
+        var iType = typeof(T);
         //thanks to Pascal LaCroix for the help here...
 
         if (iType.IsValueType)
         {
             // We assume only one field
-            if (iType == typeof(Int16) || iType == typeof(Int32) || iType == typeof(Int64))
+            if (iType == typeof(short) || iType == typeof(int) || iType == typeof(long))
                 item = (T)Convert.ChangeType(rdr.GetValue(0), iType);
             else
                 item = (T)rdr.GetValue(0);
         }
     }
+
     #endregion
 
     #region IDataReader.ToEnumerableValueType<T>
+
     /// <summary>
-    /// Toes the type of the enumerable value.
+    ///     Toes the type of the enumerable value.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="rdr">The IDataReader to read from.</param>
@@ -245,27 +257,30 @@ public static class Database
             LoadValueType(rdr, ref instance);
             result.Add(instance);
         }
+
         return result.AsEnumerable();
     }
+
     #endregion
 
     #region Type.IsCoreSystemType
+
     /// <summary>
-    /// Determines whether [is core system type] [the specified type].
+    ///     Determines whether [is core system type] [the specified type].
     /// </summary>
     /// <param name="type">The type.</param>
     /// <returns>
-    /// 	<c>true</c> if [is core system type] [the specified type]; otherwise, <c>false</c>.
+    ///     <c>true</c> if [is core system type] [the specified type]; otherwise, <c>false</c>.
     /// </returns>
     private static bool IsCoreSystemType(Type type)
     {
         return type == typeof(string) ||
-               type == typeof(Int16) ||
-               type == typeof(Int16?) ||
-               type == typeof(Int32) ||
-               type == typeof(Int32?) ||
-               type == typeof(Int64) ||
-               type == typeof(Int64?) ||
+               type == typeof(short) ||
+               type == typeof(short?) ||
+               type == typeof(int) ||
+               type == typeof(int?) ||
+               type == typeof(long) ||
+               type == typeof(long?) ||
                type == typeof(decimal) ||
                type == typeof(decimal?) ||
                type == typeof(double) ||
@@ -277,17 +292,20 @@ public static class Database
                type == typeof(bool) ||
                type == typeof(bool?);
     }
+
     #endregion
 
     #region IDataReader.ToEnumerable<T>
+
     /// <summary>
-    /// Coerces an IDataReader to load an enumerable of T
+    ///     Coerces an IDataReader to load an enumerable of T
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="rdr"></param>
     /// <param name="columnNames"></param>
     /// <param name="onItemCreated">Invoked when a new item is created</param>
-    public static IEnumerable<T> ToEnumerable<T>(this IDataReader rdr, List<string> columnNames, Func<object, object> onItemCreated)
+    public static IEnumerable<T> ToEnumerable<T>(this IDataReader rdr, List<string> columnNames,
+        Func<object, object> onItemCreated)
     {
         //mike added ColumnNames
         var result = new List<T>();
@@ -297,18 +315,14 @@ public static class Database
             var type = typeof(T);
             if (type.Name.Contains("AnonymousType"))
             {
-
                 //this is an anon type and it has read-only fields that are set
                 //in a constructor. So - read the fields and build it
                 //http://stackoverflow.com/questions/478013/how-do-i-create-and-access-a-new-instance-of-an-anonymous-class-passed-as-a-param
                 var properties = type.GetProperties();
-                int objIdx = 0;
+                var objIdx = 0;
                 var objArray = new object[properties.Length];
 
-                foreach (var prop in properties)
-                {
-                    objArray[objIdx++] = rdr[prop.Name];
-                }
+                foreach (var prop in properties) objArray[objIdx++] = rdr[prop.Name];
 
                 result.Add((T)Activator.CreateInstance(type, objArray));
             }
@@ -328,24 +342,23 @@ public static class Database
             {
                 instance = Activator.CreateInstance<T>();
 
-                if (onItemCreated != null)
-                {
-                    instance = (T)onItemCreated(instance);
-                }
+                if (onItemCreated != null) instance = (T)onItemCreated(instance);
 
                 //do we have a parameterless constructor?
-                Load(rdr, instance, columnNames);//mike added ColumnNames
+                Load(rdr, instance, columnNames); //mike added ColumnNames
                 result.Add(instance);
             }
         }
 
         return result;
     }
+
     #endregion
 
     #region IDataReader.ToList<T>
+
     /// <summary>
-    /// Converte um DataReader para uma lista.
+    ///     Converte um DataReader para uma lista.
     /// </summary>
     /// <param name="rdr"></param>
     /// <typeparam name="T"></typeparam>
@@ -354,11 +367,13 @@ public static class Database
     {
         return rdr.ToList<T>(null);
     }
+
     #endregion
 
     #region IDataReader.ToList<T>
+
     /// <summary>
-    /// Creates a typed list from an IDataReader
+    ///     Creates a typed list from an IDataReader
     /// </summary>
     public static List<T> ToList<T>(this IDataReader rdr, Func<object, object> onItemCreated) where T : new()
     {
@@ -369,15 +384,14 @@ public static class Database
         {
             var item = new T();
 
-            if (onItemCreated != null)
-            {
-                item = (T)onItemCreated(item);
-            }
+            if (onItemCreated != null) item = (T)onItemCreated(item);
 
-            rdr.Load(item, null);//mike added null to match ColumnNames
+            rdr.Load(item, null); //mike added null to match ColumnNames
             result.Add(item);
         }
+
         return result;
     }
+
     #endregion
 }

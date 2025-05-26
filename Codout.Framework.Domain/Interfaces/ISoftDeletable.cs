@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Codout.Framework.Domain.Interfaces
+namespace Codout.Framework.Domain.Interfaces;
+
+public interface ISoftDeletable
 {
-    public interface ISoftDeletable
-    {
-        DateTime? DeletedAt { get; set; }
-    }
+    DateTime? DeletedAt { get; set; }
 }

@@ -1,9 +1,8 @@
-﻿namespace Codout.Mailer.SendGrid
-{
-    public class SendGridSettings
-    {
-        public string ApiKey { get; set; }
+﻿namespace Codout.Mailer.SendGrid;
 
-        public bool StandBox { get; set; }
-    }
+public class SendGridSettings
+{
+    public string ApiKey { get; set; }
+
+    public bool StandBox { get; set; }
 }

@@ -2,34 +2,38 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Codout.Framework.Common.Extensions;
 
 /// <summary>
-/// Extensões comuns para tipos relacionadas a strings.
+///     Extensões comuns para tipos relacionadas a strings.
 /// </summary>
 public static class Strings
 {
     #region Variáveis
+
     private static readonly Dictionary<int, string> EntityTable = new();
+
     #endregion
 
     #region Construtores
+
     /// <summary>
-    /// Initializes the <see cref="Strings"/> class.
+    ///     Initializes the <see cref="Strings" /> class.
     /// </summary>
     static Strings()
     {
         FillEntities();
     }
+
     #endregion
 
     #region RemoveAcentos
+
     /// <summary>
-    /// Remove os acentos do texto.
+    ///     Remove os acentos do texto.
     /// </summary>
     /// <param name="texto"></param>
     /// <returns></returns>
@@ -41,11 +45,13 @@ public static class Strings
         var bytes = Encoding.GetEncoding("iso-8859-8").GetBytes(texto);
         return Encoding.UTF8.GetString(bytes);
     }
+
     #endregion RemoveAcentos
 
     #region Matches
+
     /// <summary>
-    /// Compara duas strings.
+    ///     Compara duas strings.
     /// </summary>
     /// <param name="source"></param>
     /// <param name="compare"></param>
@@ -54,11 +60,13 @@ public static class Strings
     {
         return string.Equals(source, compare, StringComparison.InvariantCultureIgnoreCase);
     }
+
     #endregion
 
     #region MatchesTrimmed
+
     /// <summary>
-    /// Compara duas strings ignorando espaços no início e no fim da string.
+    ///     Compara duas strings ignorando espaços no início e no fim da string.
     /// </summary>
     /// <param name="source"></param>
     /// <param name="compare"></param>
@@ -67,11 +75,13 @@ public static class Strings
     {
         return string.Equals(source.Trim(), compare.Trim(), StringComparison.InvariantCultureIgnoreCase);
     }
+
     #endregion
 
     #region MatchesRegex
+
     /// <summary>
-    /// Verifica se a string está no formato especificado.
+    ///     Verifica se a string está no formato especificado.
     /// </summary>
     /// <param name="inputString"></param>
     /// <param name="matchPattern"></param>
@@ -81,11 +91,13 @@ public static class Strings
         return Regex.IsMatch(inputString, matchPattern,
             RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
     }
+
     #endregion
 
     #region Chop
+
     /// <summary>
-    /// Strips the last specified chars from a string.
+    ///     Strips the last specified chars from a string.
     /// </summary>
     /// <param name="sourceString">The source string.</param>
     /// <param name="removeFromEnd">The remove from end.</param>
@@ -93,15 +105,17 @@ public static class Strings
     public static string Chop(this string sourceString, int removeFromEnd)
     {
         var result = sourceString;
-        if ((removeFromEnd > 0) && (sourceString.Length > removeFromEnd - 1))
+        if (removeFromEnd > 0 && sourceString.Length > removeFromEnd - 1)
             result = result.Remove(sourceString.Length - removeFromEnd, removeFromEnd);
         return result;
     }
+
     #endregion
 
     #region Chop
+
     /// <summary>
-    /// Strips the last specified chars from a string.
+    ///     Strips the last specified chars from a string.
     /// </summary>
     /// <param name="sourceString">The source string.</param>
     /// <param name="backDownTo">The back down to.</param>
@@ -120,11 +134,13 @@ public static class Strings
 
         return result;
     }
+
     #endregion
 
     #region PluralToSingular
+
     /// <summary>
-    /// Plurals to singular.
+    ///     Plurals to singular.
     /// </summary>
     /// <param name="sourceString">The source string.</param>
     /// <returns></returns>
@@ -132,11 +148,13 @@ public static class Strings
     {
         return sourceString.MakeSingular();
     }
+
     #endregion
 
     #region SingularToPlural
+
     /// <summary>
-    /// Singulars to plural.
+    ///     Singulars to plural.
     /// </summary>
     /// <param name="sourceString">The source string.</param>
     /// <returns></returns>
@@ -144,26 +162,30 @@ public static class Strings
     {
         return sourceString.MakePlural();
     }
+
     #endregion
 
     #region Pluralize
+
     /// <summary>
-    /// Make plural when count is not one
+    ///     Make plural when count is not one
     /// </summary>
     /// <param name="number">The number of things</param>
     /// <param name="sourceString">The source string.</param>
     /// <returns></returns>
     public static string Pluralize(this int number, string sourceString)
     {
-        return number == 1 
-            ? string.Concat(number, " ", sourceString.MakeSingular()) 
+        return number == 1
+            ? string.Concat(number, " ", sourceString.MakeSingular())
             : $"{number} {sourceString.MakePlural()}";
     }
+
     #endregion
 
     #region Clip
+
     /// <summary>
-    /// Removes the specified chars from the beginning of a string.
+    ///     Removes the specified chars from the beginning of a string.
     /// </summary>
     /// <param name="sourceString">The source string.</param>
     /// <param name="removeFromBeginning">The remove from beginning.</param>
@@ -175,11 +197,13 @@ public static class Strings
             result = result.Remove(0, removeFromBeginning);
         return result;
     }
+
     #endregion
 
     #region Clip
+
     /// <summary>
-    /// Removes chars from the beginning of a string, up to the specified string
+    ///     Removes chars from the beginning of a string, up to the specified string
     /// </summary>
     /// <param name="sourceString">The source string.</param>
     /// <param name="removeUpTo">The remove up to.</param>
@@ -194,11 +218,13 @@ public static class Strings
 
         return result;
     }
+
     #endregion
 
     #region Chop
+
     /// <summary>
-    /// Strips the last char from a a string.
+    ///     Strips the last char from a a string.
     /// </summary>
     /// <param name="sourceString">The source string.</param>
     /// <returns></returns>
@@ -206,11 +232,13 @@ public static class Strings
     {
         return Chop(sourceString, 1);
     }
+
     #endregion
 
     #region Clip
+
     /// <summary>
-    /// Strips the last char from a a string.
+    ///     Strips the last char from a a string.
     /// </summary>
     /// <param name="sourceString">The source string.</param>
     /// <returns></returns>
@@ -218,11 +246,13 @@ public static class Strings
     {
         return Clip(sourceString, 1);
     }
+
     #endregion
 
     #region FastReplace
+
     /// <summary>
-    /// Fasts the replace.
+    ///     Fasts the replace.
     /// </summary>
     /// <param name="original">The original.</param>
     /// <param name="pattern">The pattern.</param>
@@ -232,11 +262,13 @@ public static class Strings
     {
         return FastReplace(original, pattern, replacement, StringComparison.InvariantCultureIgnoreCase);
     }
+
     #endregion
 
     #region FastReplace
+
     /// <summary>
-    /// Fasts the replace.
+    ///     Fasts the replace.
     /// </summary>
     /// <param name="original">The original.</param>
     /// <param name="pattern">The pattern.</param>
@@ -276,11 +308,13 @@ public static class Strings
 
         return result.ToString();
     }
+
     #endregion
 
     #region Crop
+
     /// <summary>
-    /// Returns text that is located between the startText and endText tags.
+    ///     Returns text that is located between the startText and endText tags.
     /// </summary>
     /// <param name="sourceString">The source string.</param>
     /// <param name="startText">The text from which to start the crop</param>
@@ -294,18 +328,20 @@ public static class Strings
             return string.Empty;
 
         startIndex += startText.Length;
-        
+
         var endIndex = sourceString.IndexOf(endText, startIndex, StringComparison.CurrentCultureIgnoreCase);
-        
-        return endIndex == -1 
-            ? string.Empty 
+
+        return endIndex == -1
+            ? string.Empty
             : sourceString.Substring(startIndex, endIndex - startIndex);
     }
+
     #endregion
 
     #region Squeeze
+
     /// <summary>
-    /// Removes excess white space in a string.
+    ///     Removes excess white space in a string.
     /// </summary>
     /// <param name="sourceString">The source string.</param>
     /// <returns></returns>
@@ -315,19 +351,19 @@ public static class Strings
         var lines = sourceString.Split(delim, StringSplitOptions.RemoveEmptyEntries);
         var sb = new StringBuilder();
         foreach (var s in lines)
-        {
             if (!string.IsNullOrEmpty(s.Trim()))
                 sb.Append(s + " ");
-        }
         //remove the last pipe
         var result = Chop(sb.ToString());
         return result.Trim();
     }
+
     #endregion
 
     #region ToAlphaNumericOnly
+
     /// <summary>
-    /// Removes all non-alpha numeric characters in a string
+    ///     Removes all non-alpha numeric characters in a string
     /// </summary>
     /// <param name="sourceString">The source string.</param>
     /// <returns></returns>
@@ -335,23 +371,29 @@ public static class Strings
     {
         return Regex.Replace(sourceString, @"\W*", "");
     }
+
     #endregion
 
     #region OnlyNumbers
+
     /// <summary>
-    /// Return only numbers of string
+    ///     Return only numbers of string
     /// </summary>
     /// <param name="sourceString">The source string.</param>
     /// <returns></returns>
     public static string OnlyNumbers(this string sourceString)
     {
-        return !string.IsNullOrWhiteSpace(sourceString) ? string.Concat(sourceString.Where(char.IsDigit)) : string.Empty;
+        return !string.IsNullOrWhiteSpace(sourceString)
+            ? string.Concat(sourceString.Where(char.IsDigit))
+            : string.Empty;
     }
+
     #endregion
 
     #region ToWords
+
     /// <summary>
-    /// Creates a string array based on the words in a sentence
+    ///     Creates a string array based on the words in a sentence
     /// </summary>
     /// <param name="sourceString">The source string.</param>
     /// <returns></returns>
@@ -360,11 +402,13 @@ public static class Strings
         var result = sourceString.Trim();
         return result.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
     }
+
     #endregion
 
     #region StripHtml
+
     /// <summary>
-    /// Strips all HTML tags from a string
+    ///     Strips all HTML tags from a string
     /// </summary>
     /// <param name="htmlString">The HTML string.</param>
     /// <returns></returns>
@@ -372,11 +416,13 @@ public static class Strings
     {
         return StripHtml(htmlString, string.Empty);
     }
+
     #endregion
 
     #region StripHtml
+
     /// <summary>
-    /// Strips all HTML tags from a string and replaces the tags with the specified replacement
+    ///     Strips all HTML tags from a string and replaces the tags with the specified replacement
     /// </summary>
     /// <param name="htmlString">The HTML string.</param>
     /// <param name="htmlPlaceHolder">The HTML place holder.</param>
@@ -391,11 +437,13 @@ public static class Strings
         sOut = sOut.Replace("&lt;", "<");
         return sOut;
     }
+
     #endregion
 
     #region FindMatches
+
     /// <summary>
-    /// Procura padrões.
+    ///     Procura padrões.
     /// </summary>
     /// <param name="source"></param>
     /// <param name="find"></param>
@@ -406,11 +454,13 @@ public static class Strings
 
         return (from Match m in reg.Matches(source) select m.Value).ToList();
     }
+
     #endregion
 
     #region ToDelimitedList
+
     /// <summary>
-    /// Converts a generic List collection to a single comma-delimitted string.
+    ///     Converts a generic List collection to a single comma-delimitted string.
     /// </summary>
     /// <param name="list">The list.</param>
     /// <returns></returns>
@@ -418,11 +468,13 @@ public static class Strings
     {
         return ToDelimitedList(list, ",");
     }
+
     #endregion
 
     #region ToDelimitedList
+
     /// <summary>
-    /// Converts a generic List collection to a single string using the specified delimitter.
+    ///     Converts a generic List collection to a single string using the specified delimitter.
     /// </summary>
     /// <param name="list">The list.</param>
     /// <param name="delimiter">The delimiter.</param>
@@ -436,35 +488,37 @@ public static class Strings
         result = Chop(result);
         return result;
     }
+
     #endregion
 
     #region Strip
+
     /// <summary>
-    /// Strips the specified input.
+    ///     Strips the specified input.
     /// </summary>
     /// <param name="sourceString">The source string.</param>
     /// <param name="stripValue">The strip value.</param>
     /// <returns></returns>
     public static string Strip(this string sourceString, string stripValue)
     {
-        if (string.IsNullOrEmpty(stripValue)) 
+        if (string.IsNullOrEmpty(stripValue))
             return sourceString;
 
         var replace = stripValue.Split(new[] { ',' });
 
         foreach (var t in replace)
-        {
             if (!string.IsNullOrEmpty(sourceString))
                 sourceString = Regex.Replace(sourceString, t, string.Empty);
-        }
 
         return sourceString;
     }
+
     #endregion
 
     #region AsciiToUnicode
+
     /// <summary>
-    /// Converts ASCII encoding to Unicode
+    ///     Converts ASCII encoding to Unicode
     /// </summary>
     /// <param name="asciiCode">The ASCII code.</param>
     /// <returns></returns>
@@ -473,13 +527,15 @@ public static class Strings
         var ascii = Encoding.UTF32;
         var c = (char)asciiCode;
         var b = ascii.GetBytes(c.ToString(CultureInfo.InvariantCulture));
-        return ascii.GetString((b));
+        return ascii.GetString(b);
     }
+
     #endregion
 
     #region HtmlEncode
+
     /// <summary>
-    /// Converts Text to HTML-encoded string
+    ///     Converts Text to HTML-encoded string
     /// </summary>
     /// <param name="text">The text string.</param>
     /// <returns></returns>
@@ -488,11 +544,13 @@ public static class Strings
         text = EntityTable.Aggregate(text, (current, key) => current.Replace(AsciiToUnicode(key.Key), key.Value));
         return text.Replace(AsciiToUnicode(38), "&amp;");
     }
+
     #endregion
 
     #region HtmlDecode
+
     /// <summary>
-    /// Converts HTML-encoded bits to Text
+    ///     Converts HTML-encoded bits to Text
     /// </summary>
     /// <param name="html">The html text.</param>
     /// <returns></returns>
@@ -501,45 +559,49 @@ public static class Strings
         html = html.Replace("&amp;", "&");
         return EntityTable.Aggregate(html, (current, key) => current.Replace(key.Value, AsciiToUnicode(key.Key)));
     }
+
     #endregion
 
     #region ToFormattedString
+
     /// <summary>
-    /// Formats the args using String.Format with the target string as a format string.
+    ///     Formats the args using String.Format with the target string as a format string.
     /// </summary>
     /// <param name="fmt">The format string passed to String.Format</param>
     /// <param name="args">The args passed to String.Format</param>
     /// <returns></returns>
     public static string ToFormattedString(this string fmt, params object[] args)
     {
-        return String.Format(fmt, args);
+        return string.Format(fmt, args);
     }
+
     #endregion
 
     #region ToEnum<T>
+
     /// <summary>
-    /// Strings to enum.
+    ///     Strings to enum.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="value">The value.</param>
     /// <returns></returns>
     public static T ToEnum<T>(this string value)
     {
-        T oOut = default(T);
-        Type t = typeof(T);
-        foreach (FieldInfo fi in t.GetFields())
-        {
+        var oOut = default(T);
+        var t = typeof(T);
+        foreach (var fi in t.GetFields())
             if (fi.Name.Matches(value))
                 oOut = (T)fi.GetValue(null);
-        }
 
         return oOut;
     }
+
     #endregion
 
     #region FillEntities
+
     /// <summary>
-    /// Fills the entities.
+    ///     Fills the entities.
     /// </summary>
     private static void FillEntities()
     {
@@ -796,22 +858,20 @@ public static class Strings
         EntityTable.Add(8250, "&rsaquo;");
         EntityTable.Add(8364, "&euro;");
     }
+
     #endregion
 
     #region [ Truncate ]
 
     /// <summary>
-    /// Truncar (reduz) string ao tamanho passado como parâmetro
+    ///     Truncar (reduz) string ao tamanho passado como parâmetro
     /// </summary>
     /// <param name="value">Valor a ser truncado</param>
     /// <param name="maxLength">Tamanho maxímo retornado</param>
     /// <returns></returns>
     public static string Truncate(this string value, int maxLength)
     {
-        if (!string.IsNullOrEmpty(value) && value.Length > maxLength)
-        {
-            return value.Substring(0, maxLength);
-        }
+        if (!string.IsNullOrEmpty(value) && value.Length > maxLength) return value.Substring(0, maxLength);
         return value;
     }
 
@@ -838,5 +898,4 @@ public static class Strings
     }
 
     #endregion [ RemoveCharactersSpecial ]
-
 }

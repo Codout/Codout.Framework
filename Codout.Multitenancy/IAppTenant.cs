@@ -1,9 +1,8 @@
-﻿namespace Codout.Multitenancy
+﻿namespace Codout.Multitenancy;
+
+public interface IAppTenant
 {
-    public interface IAppTenant
-    {
-        string TenantKey { get; set; }
-        DataBaseType DataBaseType { get; set; }
-        string ConnectionString { get; set; }
-    }
+    string TenantKey { get; set; }
+    DataBaseType DataBaseType { get; set; }
+    string ConnectionString { get; set; }
 }

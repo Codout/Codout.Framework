@@ -11,22 +11,18 @@ using MongoDB.Driver;
 namespace Codout.Framework.Mongo;
 
 /// <summary>
-/// Repositório genérico de dados para MongoDB
+///     Repositório genérico de dados para MongoDB
 /// </summary>
 /// <typeparam name="T">Classe que define o tipo do repositório</typeparam>
 public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     where T : class, IEntity
 {
-
     public readonly IMongoDatabase MongoDatabase = mongoDatabase;
 
-    public IMongoCollection<TEntity> GetCollection<TEntity>()
-    {
-        return MongoDatabase.GetCollection<TEntity>(typeof(TEntity).Name.ToLower());
-    }
+    private bool _disposed;
 
     /// <summary>
-    /// Retorna todos os objetos do repositório (pode ser lento)
+    ///     Retorna todos os objetos do repositório (pode ser lento)
     /// </summary>
     /// <returns>Lista de objetos</returns>
     public IQueryable<T> All()
@@ -35,7 +31,7 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     }
 
     /// <summary>
-    /// Delete o objeto indicado do repositório de dados
+    ///     Delete o objeto indicado do repositório de dados
     /// </summary>
     /// <param name="entity">Objeto a ser deletado</param>
     public void Delete(T entity)
@@ -44,26 +40,12 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     }
 
     /// <summary>
-    /// Exclui uma lista de objetos conforme o filtro
+    ///     Exclui uma lista de objetos conforme o filtro
     /// </summary>
     /// <param name="predicate">Filtro de objetos a serem deletados</param>
     public void Delete(Expression<Func<T, bool>> predicate)
     {
         GetCollection<T>().DeleteMany(Builders<T>.Filter.Where(predicate));
-    }
-
-    private bool _disposed;
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!_disposed)
-        {
-            if (disposing)
-            {
-                // Libera os componentes
-            }
-        }
-        _disposed = true;
     }
 
     public void Dispose()
@@ -73,7 +55,7 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     }
 
     /// <summary>
-    /// Retorna uma lista de objetos do repositório de acordo com o filtro apresentado
+    ///     Retorna uma lista de objetos do repositório de acordo com o filtro apresentado
     /// </summary>
     /// <param name="predicate">Lista de objetos</param>
     /// <returns></returns>
@@ -83,7 +65,7 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     }
 
     /// <summary>
-    /// Retorna uma lista de objetos do repositório de acordo com o filtro e com opção de paginação
+    ///     Retorna uma lista de objetos do repositório de acordo com o filtro e com opção de paginação
     /// </summary>
     /// <param name="filter">Filtro de bojetos</param>
     /// <param name="total">Retorna o todal de objetos</param>
@@ -108,7 +90,7 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     }
 
     /// <summary>
-    /// Retorna um objeto do repositório de acordo com o filtro
+    ///     Retorna um objeto do repositório de acordo com o filtro
     /// </summary>
     /// <param name="predicate">Filtro</param>
     /// <returns>objeto</returns>
@@ -118,7 +100,7 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     }
 
     /// <summary>
-    /// Retorna um objeto de acordo com a Key
+    ///     Retorna um objeto de acordo com a Key
     /// </summary>
     /// <param name="key">Key do objeto</param>
     /// <returns>objeto</returns>
@@ -131,7 +113,7 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     }
 
     /// <summary>
-    /// Efetua a carga do objeto conforme a key
+    ///     Efetua a carga do objeto conforme a key
     /// </summary>
     /// <param name="key">Key do objeto</param>
     /// <returns>Objeto</returns>
@@ -141,7 +123,7 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     }
 
     /// <summary>
-    /// Efetua o Merge do objeto no repositório
+    ///     Efetua o Merge do objeto no repositório
     /// </summary>
     /// <param name="entity">Objeto a ser mesclado</param>
     /// <returns>Retorna o mesmo objeto, para o caso de retornar algum Id gerado</returns>
@@ -165,10 +147,11 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
         if (!ObjectId.TryParse(key.ToString(), out var id))
             return null;
 
-        return await (await GetCollection<T>().FindAsync(Builders<T>.Filter.Eq("_id", BsonValue.Create(id)))).FirstOrDefaultAsync();
+        return await (await GetCollection<T>().FindAsync(Builders<T>.Filter.Eq("_id", BsonValue.Create(id))))
+            .FirstOrDefaultAsync();
     }
 
-    public async Task<T> LoadAsync(object key)
+    public Task<T> LoadAsync(object key)
     {
         throw new NotSupportedException();
     }
@@ -194,17 +177,19 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
         if (entity.IsTransient())
             await GetCollection<T>().InsertOneAsync(entity);
         else
-            await GetCollection<T>().ReplaceOneAsync(Builders<T>.Filter.Eq("_id", BsonValue.Create(GetIdValue(entity))), entity);
+            await GetCollection<T>()
+                .ReplaceOneAsync(Builders<T>.Filter.Eq("_id", BsonValue.Create(GetIdValue(entity))), entity);
 
         return entity;
     }
 
     public async Task UpdateAsync(T entity)
     {
-        await GetCollection<T>().ReplaceOneAsync(Builders<T>.Filter.Eq("_id", BsonValue.Create(GetIdValue(entity))), entity);
+        await GetCollection<T>()
+            .ReplaceOneAsync(Builders<T>.Filter.Eq("_id", BsonValue.Create(GetIdValue(entity))), entity);
     }
 
-    public async Task<T> MergeAsync(T entity)
+    public Task<T> MergeAsync(T entity)
     {
         throw new NotSupportedException();
     }
@@ -215,7 +200,7 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     }
 
     /// <summary>
-    /// Salva o objeto no repositório
+    ///     Salva o objeto no repositório
     /// </summary>
     /// <param name="entity">Objeto a ser salvo</param>
     /// <returns>Retorna o mesmo objeto, para o caso de retornar algum Id gerado</returns>
@@ -226,7 +211,7 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     }
 
     /// <summary>
-    /// Salva ou atualiza o objeto em questão (USAR SOMENTE SE O ID NÃO FOI SETADO)
+    ///     Salva ou atualiza o objeto em questão (USAR SOMENTE SE O ID NÃO FOI SETADO)
     /// </summary>
     /// <param name="entity">Objeto a ser salvo/atualizado</param>
     /// <returns>Retorna o mesmo objeto, para o caso de retornar algum Id gerado</returns>
@@ -246,12 +231,28 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     }
 
     /// <summary>
-    /// Atualiza o objeto no repositório
+    ///     Atualiza o objeto no repositório
     /// </summary>
     /// <param name="entity">Objeto a ser atulizado</param>
     public void Update(T entity)
     {
         GetCollection<T>().ReplaceOne(Builders<T>.Filter.Eq("_id", BsonValue.Create(GetIdValue(entity))), entity);
+    }
+
+    public IMongoCollection<TEntity> GetCollection<TEntity>()
+    {
+        return MongoDatabase.GetCollection<TEntity>(typeof(TEntity).Name.ToLower());
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+            if (disposing)
+            {
+                // Libera os componentes
+            }
+
+        _disposed = true;
     }
 
     private static object GetIdValue(T entity)

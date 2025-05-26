@@ -9,19 +9,19 @@ public class NumberToText
     //array de 2 linhas e 14 colunas[2][14]
     private static readonly string[,] Qualificadores =
     {
-        {"centavo", "centavos"}, //[1][0] e [1][1]
-        {"", ""}, //[2][0],[2][1]
-        {"mil", "mil"},
-        {"milhão", "milhões"},
-        {"bilhão", "bilhões"},
-        {"trilhão", "trilhões"},
-        {"quatrilhão", "quatrilhões"},
-        {"quintilhão", "quintilhões"},
-        {"sextilhão", "sextilhões"},
-        {"setilhão", "setilhões"},
-        {"octilhão", "octilhões"},
-        {"nonilhão", "nonilhões"},
-        {"decilhão", "decilhões"}
+        { "centavo", "centavos" }, //[1][0] e [1][1]
+        { "", "" }, //[2][0],[2][1]
+        { "mil", "mil" },
+        { "milhão", "milhões" },
+        { "bilhão", "bilhões" },
+        { "trilhão", "trilhões" },
+        { "quatrilhão", "quatrilhões" },
+        { "quintilhão", "quintilhões" },
+        { "sextilhão", "sextilhões" },
+        { "setilhão", "setilhões" },
+        { "octilhão", "octilhões" },
+        { "nonilhão", "nonilhões" },
+        { "decilhão", "decilhões" }
     };
 
     private static readonly string[,] Numeros =
@@ -43,17 +43,18 @@ public class NumberToText
         }
     };
 
-    private int _num;
     private readonly List<int> _numeroLista;
+
+    private int _num;
 
     public NumberToText()
     {
-        _numeroLista = new List<int>();
+        _numeroLista = [];
     }
 
     public NumberToText(decimal dec)
     {
-        _numeroLista = new List<int>();
+        _numeroLista = [];
         SetNumero(dec);
     }
 
@@ -81,7 +82,7 @@ public class NumberToText
     {
         var div = _num / divisor;
         var mod = _num % divisor;
-        var newNum = new[] {div, mod};
+        var newNum = new[] { div, mod };
 
         _numeroLista.Add(mod);
         _num = div;
@@ -107,7 +108,7 @@ public class NumberToText
 
     private bool EhUltimoGrupo(int ps)
     {
-        return ps > 0 && _numeroLista[ps] != 0 || !TemMaisGrupos(ps - 1);
+        return (ps > 0 && _numeroLista[ps] != 0) || !TemMaisGrupos(ps - 1);
     }
 
     private bool EhGrupoZero(int ps)
@@ -174,8 +175,8 @@ public class NumberToText
 
             buf.Append(" ");
 
-            buf.Append(numero == 1 
-                ? Qualificadores[escala, 0] 
+            buf.Append(numero == 1
+                ? Qualificadores[escala, 0]
                 : Qualificadores[escala, 1]);
         }
 

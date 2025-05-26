@@ -6,8 +6,8 @@ using System.Reflection;
 namespace Codout.Framework.Common.Helpers;
 
 /// <summary>
-/// Classe para carregar as Dlls de uma pasta que não esteja em BIN ou na raiz da Aplicação
-/// e que implementam a interface passada no parametro T
+///     Classe para carregar as Dlls de uma pasta que não esteja em BIN ou na raiz da Aplicação
+///     e que implementam a interface passada no parametro T
 /// </summary>
 /// <typeparam name="T">Interface do Plugin</typeparam>
 public static class PluginLoader<T>
@@ -22,7 +22,6 @@ public static class PluginLoader<T>
         ICollection<Assembly> assemblies = new List<Assembly>(dllFileNames.Length);
 
         foreach (var dllFile in dllFileNames)
-        {
             try
             {
                 var an = AssemblyName.GetAssemblyName(dllFile);
@@ -32,7 +31,6 @@ public static class PluginLoader<T>
             catch (BadImageFormatException)
             {
             }
-        }
 
         var pluginType = typeof(T);
 
@@ -40,22 +38,16 @@ public static class PluginLoader<T>
 
         foreach (var assembly in assemblies)
         {
-            if (assembly == null) 
+            if (assembly == null)
                 continue;
 
             var types = assembly.GetTypes();
 
             foreach (var type in types)
             {
-                if (type.IsInterface || type.IsAbstract)
-                {
-                    continue;
-                }
+                if (type.IsInterface || type.IsAbstract) continue;
 
-                if (type.GetInterface(pluginType.FullName) != null)
-                {
-                    pluginTypes.Add(type);
-                }
+                if (type.GetInterface(pluginType.FullName) != null) pluginTypes.Add(type);
             }
         }
 

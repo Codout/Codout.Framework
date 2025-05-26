@@ -5,32 +5,32 @@ using Codout.Mailer.Helpers;
 using Codout.Mailer.Models;
 using RazorLight;
 
-namespace Codout.Mailer
+namespace Codout.Mailer;
+
+public class CodoutMailer : ICodoutMailer
 {
-    public class CodoutMailer : ICodoutMailer
+    private readonly ICodoutMailerDispatcher _dispatcher;
+    private readonly RazorLightEngine _engine;
+    private readonly CodoutMailerSettings _settings;
+
+    protected CodoutMailer(CodoutMailerSettings settings, ICodoutMailerDispatcher dispatcher, Type templateRootType)
     {
-        private readonly ICodoutMailerDispatcher _dispatcher;
-        private readonly CodoutMailerSettings _settings;
-        private readonly RazorLightEngine _engine;
+        _settings = settings;
+        _dispatcher = dispatcher;
 
-        protected CodoutMailer(CodoutMailerSettings settings, ICodoutMailerDispatcher dispatcher, Type templateRootType)
-        {
-            _settings = settings;
-            _dispatcher = dispatcher;
+        _engine = new RazorLightEngineBuilder()
+            .UseEmbeddedResourcesProject(templateRootType)
+            .UseMemoryCachingProvider()
+            .Build();
+    }
 
-            _engine = new RazorLightEngineBuilder()
-                .UseEmbeddedResourcesProject(templateRootType)
-                .UseMemoryCachingProvider()
-                .Build();
-        }
-        
-            
-        public virtual async Task<MailerResponse> Send<T>(string templateKey, T model, string subject, Attachment[] attachments = null) where T : MailerModelBase
-        {
-            var htmlContent = await _engine.CompileRenderAsync(templateKey, model);
-            var plainTextContent = HtmlUtilities.ConvertToPlainText(htmlContent);
-            return await _dispatcher.Send(new MailAddress(_settings.DefaultFromEmail, _settings.DefaultFromName), model.To, subject, htmlContent, plainTextContent, attachments);
-        }
 
+    public virtual async Task<MailerResponse> Send<T>(string templateKey, T model, string subject,
+        Attachment[] attachments = null) where T : MailerModelBase
+    {
+        var htmlContent = await _engine.CompileRenderAsync(templateKey, model);
+        var plainTextContent = HtmlUtilities.ConvertToPlainText(htmlContent);
+        return await _dispatcher.Send(new MailAddress(_settings.DefaultFromEmail, _settings.DefaultFromName), model.To,
+            subject, htmlContent, plainTextContent, attachments);
     }
 }

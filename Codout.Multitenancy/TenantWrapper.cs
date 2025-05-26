@@ -1,23 +1,22 @@
-﻿namespace Codout.Multitenancy
+﻿namespace Codout.Multitenancy;
+
+/// <summary>
+///     ITenant wrapper that returns the tenant instance.
+/// </summary>
+/// <typeparam name="TTenant"></typeparam>
+public class TenantWrapper<TTenant> : ITenant<TTenant> where TTenant : IAppTenant
 {
     /// <summary>
-    /// ITenant wrapper that returns the tenant instance.
+    ///     Intializes the wrapper with the tenant instance to return.
     /// </summary>
-    /// <typeparam name="TTenant"></typeparam>	
-    public class TenantWrapper<TTenant> : ITenant<TTenant> where TTenant : IAppTenant
+    /// <param name="tenant">The tenant instance to return.</param>
+    public TenantWrapper(TTenant tenant)
     {
-        /// <summary>
-        /// Intializes the wrapper with the tenant instance to return.
-        /// </summary>
-        /// <param name="tenant">The tenant instance to return.</param>		
-        public TenantWrapper(TTenant tenant)
-		{
-			Value = tenant;
-		}
+        Value = tenant;
+    }
 
-        /// <summary>
-        /// The tenant instance.
-        /// </summary>
-		public TTenant Value { get; }
-	}
+    /// <summary>
+    ///     The tenant instance.
+    /// </summary>
+    public TTenant Value { get; }
 }

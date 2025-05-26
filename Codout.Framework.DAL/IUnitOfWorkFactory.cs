@@ -1,7 +1,6 @@
-﻿namespace Codout.Framework.DAL
+﻿namespace Codout.Framework.DAL;
+
+public interface IUnitOfWorkFactory<out T> where T : IUnitOfWork
 {
-    public interface IUnitOfWorkFactory<out T> where T : IUnitOfWork
-    {
-        T Create();
-    }
+    T Create();
 }

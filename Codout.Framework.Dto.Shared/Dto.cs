@@ -1,6 +1,5 @@
-﻿namespace Codout.Framework.Dto
+﻿namespace Codout.Framework.Api.Client;
+
+public class Dto : IDto
 {
-    public class Dto : IDto
-    {
-    }
 }

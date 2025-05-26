@@ -4,13 +4,14 @@ using System.Net;
 namespace Codout.Framework.Common.Extensions;
 
 /// <summary>
-/// Extensões comuns para tipos relacionadas a IO.
+///     Extensões comuns para tipos relacionadas a IO.
 /// </summary>
 public static class IO
 {
     #region GetFileText
+
     /// <summary>
-    /// Read a text file and obtain it's contents.
+    ///     Read a text file and obtain it's contents.
     /// </summary>
     /// <param name="absolutePath">The complete file path to write to.</param>
     /// <returns>String containing the content of the file.</returns>
@@ -19,11 +20,13 @@ public static class IO
         using var sr = new StreamReader(absolutePath);
         return sr.ReadToEnd();
     }
+
     #endregion
 
     #region CreateToFile
+
     /// <summary>
-    /// Creates or opens a file for writing and writes text to it.
+    ///     Creates or opens a file for writing and writes text to it.
     /// </summary>
     /// <param name="absolutePath">The complete file path to write to.</param>
     /// <param name="fileText">A String containing text to be written to the file.</param>
@@ -32,11 +35,13 @@ public static class IO
         using var sw = File.CreateText(absolutePath);
         sw.Write(fileText);
     }
+
     #endregion
 
     #region UpdateFileText
+
     /// <summary>
-    /// Update text within a file by replacing a substring within the file.
+    ///     Update text within a file by replacing a substring within the file.
     /// </summary>
     /// <param name="absolutePath">The complete file path to write to.</param>
     /// <param name="lookFor">A String to be replaced.</param>
@@ -46,11 +51,13 @@ public static class IO
         var newText = GetFileText(absolutePath).Replace(lookFor, replaceWith);
         WriteToFile(absolutePath, newText);
     }
+
     #endregion
 
     #region WriteToFile
+
     /// <summary>
-    /// Writes out a string to a file.
+    ///     Writes out a string to a file.
     /// </summary>
     /// <param name="absolutePath">The complete file path to write to.</param>
     /// <param name="fileText">A String containing text to be written to the file.</param>
@@ -59,11 +66,13 @@ public static class IO
         using var sw = new StreamWriter(absolutePath, false);
         sw.Write(fileText);
     }
+
     #endregion
 
     #region ReadWebPage
+
     /// <summary>
-    /// Fetches a web page
+    ///     Fetches a web page
     /// </summary>
     /// <param name="url">The URL.</param>
     /// <returns></returns>
@@ -72,7 +81,7 @@ public static class IO
         var request = WebRequest.Create(url);
         using var stream = request.GetResponse().GetResponseStream();
 
-        if (stream == null) 
+        if (stream == null)
             return null;
 
         var sr = new StreamReader(stream);
@@ -81,11 +90,13 @@ public static class IO
 
         return webPage;
     }
+
     #endregion
 
     #region MimeType
+
     /// <summary>
-    /// Retorna o MimeType de acordo com a extensão do arquivo.
+    ///     Retorna o MimeType de acordo com a extensão do arquivo.
     /// </summary>
     /// <param name="strFileName"></param>
     /// <returns></returns>
@@ -94,8 +105,8 @@ public static class IO
         var retrieval = string.Empty;
 
         var extension = Path.GetExtension(strFileName);
-        
-        if (extension == null) 
+
+        if (extension == null)
             return retrieval;
 
         retrieval = extension.ToLower() switch
@@ -552,5 +563,6 @@ public static class IO
         };
         return retrieval;
     }
+
     #endregion
 }

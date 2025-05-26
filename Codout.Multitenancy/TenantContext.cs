@@ -1,60 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Codout.Multitenancy
+namespace Codout.Multitenancy;
+
+public class TenantContext : IDisposable
 {
-	public class TenantContext : IDisposable
+    private bool _disposed;
+
+    public TenantContext(IAppTenant tenant)
     {
-        private bool _disposed;
+        Tenant = tenant;
+        Properties = new Dictionary<string, object>();
+    }
 
-        public TenantContext(IAppTenant tenant)
+    public string Id { get; } = Guid.NewGuid().ToString();
+    public IAppTenant Tenant { get; }
+    public IDictionary<string, object> Properties { get; }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed) return;
+
+        if (disposing)
         {
-            Tenant = tenant;
-            Properties = new Dictionary<string, object>();
+            foreach (var prop in Properties) TryDisposeProperty(prop.Value as IDisposable);
+
+            TryDisposeProperty(Tenant as IDisposable);
         }
 
-        public string Id { get; } = Guid.NewGuid().ToString();
-        public IAppTenant Tenant { get; }
-        public IDictionary<string, object> Properties { get; }
+        _disposed = true;
+    }
 
-        public void Dispose()
+    private void TryDisposeProperty(IDisposable obj)
+    {
+        if (obj == null) return;
+
+        try
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            obj.Dispose();
         }
-
-        protected virtual void Dispose(bool disposing)
+        catch (ObjectDisposedException)
         {
-            if (_disposed)
-            {
-                return;
-            }
-
-            if (disposing)
-            {
-                foreach (var prop in Properties)
-                {
-                    TryDisposeProperty(prop.Value as IDisposable);
-                }
-
-				TryDisposeProperty(Tenant as IDisposable);
-			}
-
-            _disposed = true;
-        }
-
-        private void TryDisposeProperty(IDisposable obj)
-        {
-            if (obj == null)
-            {
-                return;
-            }
-
-            try
-            {
-                obj.Dispose();
-            }
-            catch (ObjectDisposedException) { }
         }
     }
 }

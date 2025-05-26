@@ -3,17 +3,18 @@ using System.IO;
 
 namespace Codout.Framework.Common.Extensions;
 
-///<summary>
-/// Extensões comuns para tipos relacionadas a <see cref="Stream"/>.
-///</summary>
+/// <summary>
+///     Extensões comuns para tipos relacionadas a <see cref="Stream" />.
+/// </summary>
 public static class Streams
 {
     #region ReadFully
+
     /// <summary>
-    /// Lê um fluxo de dados até o fim. Os dados são retornados como um array de bytes.
-    /// Um <see cref="IOException"/> é lançada se qualquer uma das chamadas subjacentes de entrada/saída falhar.
+    ///     Lê um fluxo de dados até o fim. Os dados são retornados como um array de bytes.
+    ///     Um <see cref="IOException" /> é lançada se qualquer uma das chamadas subjacentes de entrada/saída falhar.
     /// </summary>
-    /// <param name="stream">Um <see cref="Stream"/> de origem.</param>
+    /// <param name="stream">Um <see cref="Stream" /> de origem.</param>
     public static byte[] ReadFully(this Stream stream)
     {
         // use 32K for initial length.
@@ -42,10 +43,12 @@ public static class Streams
                 read++;
             }
         }
+
         // Buffer é agora muito grande. Reduzir.
         var ret = new byte[read];
         Array.Copy(buffer, ret, read);
         return ret;
     }
+
     #endregion
 }

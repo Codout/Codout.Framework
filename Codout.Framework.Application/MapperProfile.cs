@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
+using Codout.Framework.Api.Client;
 using Codout.Framework.Domain;
-using Codout.Framework.Dto;
 
-namespace Codout.Framework.Application
+namespace Codout.Framework.Application;
+
+public class MappingProfile : Profile
 {
-    public class MappingProfile : Profile
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            CreateMap(typeof(Entity<>), typeof(EntityDto<>)).ReverseMap();
-        }
+        CreateMap(typeof(Entity<>), typeof(EntityDto<>)).ReverseMap();
     }
 }

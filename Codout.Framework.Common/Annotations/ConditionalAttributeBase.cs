@@ -4,36 +4,20 @@ using System.ComponentModel.DataAnnotations;
 namespace Codout.Framework.Common.Annotations;
 
 /// <summary>
-/// Classe base para validações condicionais.
+///     Classe base para validações condicionais.
 /// </summary>
 public abstract class ConditionalAttributeBase : ValidationAttribute
 {
     #region Variáveis
+
     private const string DefaultErrorMessage = "O campo {0} está inválido.";
-    #endregion
 
-    #region Construtores
-    /// <summary>
-    /// Construtor padrão.
-    /// </summary>
-    protected ConditionalAttributeBase()
-        : this(DefaultErrorMessage)
-    {
-    }
-
-    /// <summary>
-    /// Construtor com opção de mensagem de erro.
-    /// </summary>
-    /// <param name="errorMessage"></param>
-    protected ConditionalAttributeBase(string errorMessage)
-        : base(errorMessage)
-    {
-    }
     #endregion
 
     #region ShouldRunValidation
+
     /// <summary>
-    /// Verifica se a validação deve ser executada.
+    ///     Verifica se a validação deve ser executada.
     /// </summary>
     /// <param name="value"></param>
     /// <param name="dependentProperty"></param>
@@ -49,14 +33,16 @@ public abstract class ConditionalAttributeBase : ValidationAttribute
         var dependentValue = GetDependentFieldValue(dependentProperty, validationContext);
 
         // compare the value against the target value
-        return ((dependentValue == null && targetValue == null) ||
-                (dependentValue != null && dependentValue.Equals(targetValue)));
+        return (dependentValue == null && targetValue == null) ||
+               (dependentValue != null && dependentValue.Equals(targetValue));
     }
+
     #endregion
 
     #region GetDependentFieldValue
+
     /// <summary>
-    /// Busca o valor do campo dependente.
+    ///     Busca o valor do campo dependente.
     /// </summary>
     /// <param name="dependentProperty"></param>
     /// <param name="validationContext"></param>
@@ -74,5 +60,27 @@ public abstract class ConditionalAttributeBase : ValidationAttribute
         var dependentvalue = field.GetValue(validationContext.ObjectInstance, null);
         return dependentvalue;
     }
+
+    #endregion
+
+    #region Construtores
+
+    /// <summary>
+    ///     Construtor padrão.
+    /// </summary>
+    protected ConditionalAttributeBase()
+        : this(DefaultErrorMessage)
+    {
+    }
+
+    /// <summary>
+    ///     Construtor com opção de mensagem de erro.
+    /// </summary>
+    /// <param name="errorMessage"></param>
+    protected ConditionalAttributeBase(string errorMessage)
+        : base(errorMessage)
+    {
+    }
+
     #endregion
 }

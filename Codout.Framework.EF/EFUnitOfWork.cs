@@ -6,21 +6,16 @@ using Codout.Framework.DAL;
 namespace Codout.Framework.EF;
 
 /// <summary>
-/// Unit of Work para repositório genérico com EntityFrameworkCore
+///     Unit of Work para repositório genérico com EntityFrameworkCore
 /// </summary>
-public abstract class EFUnitOfWork<T> : IUnitOfWork where T : DbContext
+public abstract class EFUnitOfWork<T>(T instance) : IUnitOfWork where T : DbContext
 {
     private DbContextTransaction _transaction;
 
-    protected EFUnitOfWork(T instance)
-    {
-        DbContext = instance;
-    }
-
     /// <summary>
-    /// Conexto do EntityFrameworkCore
+    ///     Conexto do EntityFrameworkCore
     /// </summary>
-    public DbContext DbContext { get; }
+    public DbContext DbContext { get; } = instance;
 
     public void BeginTransaction(IsolationLevel isolationLevel)
     {
@@ -38,7 +33,7 @@ public abstract class EFUnitOfWork<T> : IUnitOfWork where T : DbContext
     }
 
     /// <summary>
-    /// Efetua o SaveChanges do contexto (sessão) em questão
+    ///     Efetua o SaveChanges do contexto (sessão) em questão
     /// </summary>
     public void Commit()
     {
@@ -48,7 +43,7 @@ public abstract class EFUnitOfWork<T> : IUnitOfWork where T : DbContext
         try
         {
             DbContext.SaveChanges();
-            _transaction.Commit();
+            _transaction?.Commit();
         }
         catch (Exception)
         {
@@ -65,7 +60,6 @@ public abstract class EFUnitOfWork<T> : IUnitOfWork where T : DbContext
     {
         try
         {
-
             if (_transaction != null)
                 _transaction.Rollback();
         }
@@ -77,12 +71,12 @@ public abstract class EFUnitOfWork<T> : IUnitOfWork where T : DbContext
     }
 
     #region IDisposable Support
+
     private bool _disposed;
 
     protected virtual void Dispose(bool disposing)
     {
         if (!_disposed)
-        {
             if (disposing)
             {
                 DbContext.Dispose();
@@ -93,7 +87,7 @@ public abstract class EFUnitOfWork<T> : IUnitOfWork where T : DbContext
                     _transaction = null;
                 }
             }
-        }
+
         _disposed = true;
     }
 
@@ -102,6 +96,6 @@ public abstract class EFUnitOfWork<T> : IUnitOfWork where T : DbContext
         Dispose(true);
         GC.SuppressFinalize(this);
     }
-    #endregion IDisposable Support
 
+    #endregion IDisposable Support
 }

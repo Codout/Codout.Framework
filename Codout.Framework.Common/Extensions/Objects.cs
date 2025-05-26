@@ -5,46 +5,48 @@ using System.ComponentModel;
 namespace Codout.Framework.Common.Extensions;
 
 /// <summary>
-/// Extensões comuns para tipos relacionadas a objetos.
+///     Extensões comuns para tipos relacionadas a objetos.
 /// </summary>
 public static class Objects
 {
     #region ChangeTypeTo<T>
+
     /// <summary>
-    /// Returns an Object with the specified Type and whose value is equivalent to the specified object.
+    ///     Returns an Object with the specified Type and whose value is equivalent to the specified object.
     /// </summary>
     /// <param name="value">An Object that implements the IConvertible interface.</param>
     /// <returns>
-    /// An object whose Type is conversionType (or conversionType's underlying type if conversionType
-    /// is Nullable&lt;&gt;) and whose value is equivalent to value. -or- a null reference, if value is a null
-    /// reference and conversionType is not a value type.
+    ///     An object whose Type is conversionType (or conversionType's underlying type if conversionType
+    ///     is Nullable&lt;&gt;) and whose value is equivalent to value. -or- a null reference, if value is a null
+    ///     reference and conversionType is not a value type.
     /// </returns>
     /// <remarks>
-    /// This method exists as a workaround to System.Convert.ChangeType(Object, Type) which does not handle
-    /// nullables as of version 2.0 (2.0.50727.42) of the .NET Framework. The idea is that this method will
-    /// be deleted once Convert.ChangeType is updated in a future version of the .NET Framework to handle
-    /// nullable types, so we want this to behave as closely to Convert.ChangeType as possible.
-    /// This method was written by Peter Johnson at:
-    /// http://aspalliance.com/author.aspx?uId=1026.
+    ///     This method exists as a workaround to System.Convert.ChangeType(Object, Type) which does not handle
+    ///     nullables as of version 2.0 (2.0.50727.42) of the .NET Framework. The idea is that this method will
+    ///     be deleted once Convert.ChangeType is updated in a future version of the .NET Framework to handle
+    ///     nullable types, so we want this to behave as closely to Convert.ChangeType as possible.
+    ///     This method was written by Peter Johnson at:
+    ///     http://aspalliance.com/author.aspx?uId=1026.
     /// </remarks>
-    /// 
     public static object ChangeTypeTo<T>(this object value)
     {
         var conversionType = typeof(T);
         return ChangeTypeTo(value, conversionType);
     }
+
     #endregion
 
     #region ChangeTypeTo
+
     /// <summary>
-    /// Returns an Object with the specified Type and whose value is equivalent to the specified object.
+    ///     Returns an Object with the specified Type and whose value is equivalent to the specified object.
     /// </summary>
     /// <param name="value">An Object that implements the IConvertible interface.</param>
     /// <param name="conversionType"></param>
     /// <returns>
-    /// An object whose Type is conversionType (or conversionType's underlying type if conversionType
-    /// is Nullable&lt;&gt;) and whose value is equivalent to value. -or- a null reference, if value is a null
-    /// reference and conversionType is not a value type.
+    ///     An object whose Type is conversionType (or conversionType's underlying type if conversionType
+    ///     is Nullable&lt;&gt;) and whose value is equivalent to value. -or- a null reference, if value is a null
+    ///     reference and conversionType is not a value type.
     /// </returns>
     public static object ChangeTypeTo(this object value, Type conversionType)
     {
@@ -75,27 +77,29 @@ public static class Objects
         }
         else if (conversionType == typeof(Guid))
         {
-            return new Guid(value.ToString());
-
+            return new Guid(value.ToString() ?? string.Empty);
         }
-        else if (conversionType == typeof(Int64) && value is int)
+        else if (conversionType == typeof(long) && value is int)
         {
             //there is an issue with SQLite where the PK is ALWAYS int64. If this conversion type is Int64
             //we need to throw here - suggesting that they need to use LONG instead
 
 
-            throw new InvalidOperationException("Can't convert an Int64 (long) to Int32(int). If you're using SQLite - this is probably due to your PK being an INTEGER, which is 64bit. You'll need to set your key to long.");
+            throw new InvalidOperationException(
+                "Can't convert an Int64 (long) to Int32(int). If you're using SQLite - this is probably due to your PK being an INTEGER, which is 64bit. You'll need to set your key to long.");
         }
 
         // Now that we've guaranteed conversionType is something Convert.ChangeType can handle (i.e. not a
         // nullable type), pass the call on to Convert.ChangeType
         return Convert.ChangeType(value, conversionType);
     }
+
     #endregion
 
     #region ToDictionary
+
     /// <summary>
-    /// Converte as propriedades de um objeto para um dicionário contendo o nome da propriedade e valor.
+    ///     Converte as propriedades de um objeto para um dicionário contendo o nome da propriedade e valor.
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
@@ -104,7 +108,6 @@ public static class Objects
         var result = new Dictionary<string, object>();
         var props = value.GetType().GetProperties();
         foreach (var pi in props)
-        {
             try
             {
                 result.Add(pi.Name, pi.GetValue(value, null));
@@ -113,14 +116,16 @@ public static class Objects
             {
                 //Ignore
             }
-        }
+
         return result;
     }
+
     #endregion
 
     #region FromDictionary<T>
+
     /// <summary>
-    /// Copia os valores do dicionário para as propriedades do objeto.
+    ///     Copia os valores do dicionário para as propriedades do objeto.
     /// </summary>
     /// <param name="settings"></param>
     /// <param name="item"></param>
@@ -138,13 +143,16 @@ public static class Objects
             if (pi.CanWrite)
                 pi.SetValue(item, settings[pi.Name], null);
         }
+
         return item;
     }
+
     #endregion
 
     #region CopyTo<T>
+
     /// <summary>
-    /// Copias as propriedades de um objeto para outro.
+    ///     Copias as propriedades de um objeto para outro.
     /// </summary>
     /// <param name="from"></param>
     /// <param name="to"></param>
@@ -158,11 +166,13 @@ public static class Objects
 
         return to;
     }
+
     #endregion
 
     #region IsNullableEnum
+
     /// <summary>
-    /// Verifica se o enum é do tipo Nullable.
+    ///     Verifica se o enum é do tipo Nullable.
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
@@ -172,5 +182,6 @@ public static class Objects
 
         return enumType is { IsEnum: true };
     }
+
     #endregion
 }

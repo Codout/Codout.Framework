@@ -16,7 +16,7 @@ public interface IStorage
     Task Delete(string container, string fileName, CancellationToken cancellationToken);
 
     Task<Uri> MoveTo(string fromContainer, string toContainer, string fileName, CancellationToken cancellationToken);
-    
+
     Task<Uri> CopyTo(string fromContainer, string toContainer, string fileName, CancellationToken cancellationToken);
 
     Uri GetBlobUri(string container, string fileName);

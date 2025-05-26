@@ -1,8 +1,7 @@
-﻿namespace Codout.Multitenancy
+﻿namespace Codout.Multitenancy;
+
+public class TenantPipelineBuilderContext<TTenant> where TTenant : IAppTenant
 {
-    public class TenantPipelineBuilderContext<TTenant> where TTenant : IAppTenant
-    {
-        public TenantContext TenantContext { get; set; }
-        public TTenant Tenant { get; set; }
-    }
+    public TenantContext TenantContext { get; set; }
+    public TTenant Tenant { get; set; }
 }

@@ -12,11 +12,12 @@ namespace Codout.Framework.Storage.Azure;
 
 public class AzureStorage(AzureSettings settings) : IStorage
 {
+    private BlobServiceClient _client;
     public AzureSettings Settings { get; } = settings;
 
-    private BlobServiceClient _client;
-
-    public BlobServiceClient Client => (_client ??= new BlobServiceClient(Settings.UseDevelopmentStorage ? "UseDevelopmentStorage=true" : $"DefaultEndpointsProtocol={Settings.Protocol};AccountName={Settings.AccountName};AccountKey={Settings.AccountKey};BlobEndpoint={Settings.Url};"));
+    public BlobServiceClient Client => _client ??= new BlobServiceClient(Settings.UseDevelopmentStorage
+        ? "UseDevelopmentStorage=true"
+        : $"DefaultEndpointsProtocol={Settings.Protocol};AccountName={Settings.AccountName};AccountKey={Settings.AccountKey};BlobEndpoint={Settings.Url};");
 
     public async Task<Uri> Upload(Stream file, string container, string fileName, CancellationToken cancellationToken)
     {
@@ -43,7 +44,7 @@ public class AzureStorage(AzureSettings settings) : IStorage
         var blobContainer = Client.GetBlobContainerClient(container.ToLower());
         var blob = blobContainer.GetBlockBlobClient(fileName);
         var stream = new MemoryStream();
-        await blob.DownloadToAsync(stream, cancellationToken: cancellationToken);
+        await blob.DownloadToAsync(stream, cancellationToken);
         stream.Position = 0;
         return stream;
     }
@@ -60,6 +61,55 @@ public class AzureStorage(AzureSettings settings) : IStorage
         var blobContainer = Client.GetBlobContainerClient(container.ToLower());
         var blob = blobContainer.GetBlobClient(fileName);
         await blob.DeleteIfExistsAsync(cancellationToken: cancellationToken);
+    }
+
+    public Uri GetBlobUri(string container, string fileName)
+    {
+        var blobContainer = Client.GetBlobContainerClient(container.ToLower());
+        var blob = blobContainer.GetBlobClient(fileName);
+        return blob.Uri;
+    }
+
+    public async Task<Uri> MoveTo(string fromContainer, string toContainer, string fileName,
+        CancellationToken cancellationToken)
+    {
+        var sourceBlobContainer = Client.GetBlobContainerClient(fromContainer.ToLower());
+
+        var srcBlob = sourceBlobContainer.GetBlobClient(fileName);
+
+        if (!await srcBlob.ExistsAsync(cancellationToken))
+            throw new Exception("Source blob cannot be null.");
+
+        var destBlobContainer = Client.GetBlobContainerClient(toContainer.ToLower());
+        await destBlobContainer.CreateIfNotExistsAsync(PublicAccessType.Blob, cancellationToken: cancellationToken);
+
+        var name = srcBlob.Uri.Segments.Last();
+        var destBlob = destBlobContainer.GetBlobClient(name);
+        await destBlob.StartCopyFromUriAsync(srcBlob.Uri, cancellationToken: cancellationToken);
+
+        await srcBlob.DeleteAsync(cancellationToken: cancellationToken);
+
+        return destBlob.Uri;
+    }
+
+    public async Task<Uri> CopyTo(string fromContainer, string toContainer, string fileName,
+        CancellationToken cancellationToken)
+    {
+        var sourceBlobContainer = Client.GetBlobContainerClient(fromContainer.ToLower());
+
+        var srcBlob = sourceBlobContainer.GetBlobClient(fileName);
+
+        if (!await srcBlob.ExistsAsync(cancellationToken))
+            throw new Exception("Source blob cannot be null.");
+
+        var destBlobContainer = Client.GetBlobContainerClient(toContainer.ToLower());
+        await destBlobContainer.CreateIfNotExistsAsync(PublicAccessType.Blob, cancellationToken: cancellationToken);
+
+        var name = srcBlob.Uri.Segments.Last();
+        var destBlob = destBlobContainer.GetBlobClient(name);
+        await destBlob.StartCopyFromUriAsync(srcBlob.Uri, cancellationToken: cancellationToken);
+
+        return destBlob.Uri;
     }
 
     public async Task DeleteByUrl(string container, string fileUrl, CancellationToken cancellationToken)
@@ -85,52 +135,5 @@ public class AzureStorage(AzureSettings settings) : IStorage
         var blob = blobContainer.GetBlobClient(fileName);
 
         return await blob.ExistsAsync();
-    }
-
-    public Uri GetBlobUri(string container, string fileName)
-    {
-        var blobContainer = Client.GetBlobContainerClient(container.ToLower());
-        var blob = blobContainer.GetBlobClient(fileName);
-        return blob.Uri;
-    }
-
-    public async Task<Uri> MoveTo(string fromContainer, string toContainer, string fileName, CancellationToken cancellationToken)
-    {
-        var sourceBlobContainer = Client.GetBlobContainerClient(fromContainer.ToLower());
-
-        var srcBlob = sourceBlobContainer.GetBlobClient(fileName);
-
-        if (!await srcBlob.ExistsAsync(cancellationToken))
-            throw new Exception("Source blob cannot be null.");
-
-        var destBlobContainer = Client.GetBlobContainerClient(toContainer.ToLower());
-        await destBlobContainer.CreateIfNotExistsAsync(PublicAccessType.Blob, cancellationToken: cancellationToken);
-
-        var name = srcBlob.Uri.Segments.Last();
-        var destBlob = destBlobContainer.GetBlobClient(name);
-        var result = await destBlob.StartCopyFromUriAsync(srcBlob.Uri, cancellationToken: cancellationToken);
-
-        await srcBlob.DeleteAsync(cancellationToken: cancellationToken);
-
-        return destBlob.Uri;
-    }
-
-    public async Task<Uri> CopyTo(string fromContainer, string toContainer, string fileName, CancellationToken cancellationToken)
-    {
-        var sourceBlobContainer = Client.GetBlobContainerClient(fromContainer.ToLower());
-
-        var srcBlob = sourceBlobContainer.GetBlobClient(fileName);
-
-        if (!await srcBlob.ExistsAsync(cancellationToken))
-            throw new Exception("Source blob cannot be null.");
-
-        var destBlobContainer = Client.GetBlobContainerClient(toContainer.ToLower());
-        await destBlobContainer.CreateIfNotExistsAsync(PublicAccessType.Blob, cancellationToken: cancellationToken);
-
-        var name = srcBlob.Uri.Segments.Last();
-        var destBlob = destBlobContainer.GetBlobClient(name);
-        var result = await destBlob.StartCopyFromUriAsync(srcBlob.Uri, cancellationToken: cancellationToken);
-
-        return destBlob.Uri;
     }
 }

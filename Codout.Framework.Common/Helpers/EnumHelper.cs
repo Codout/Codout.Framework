@@ -7,12 +7,13 @@ using System.Linq;
 namespace Codout.Framework.Common.Helpers;
 
 /// <summary>
-/// Método auxiliar para Enumeradores
+///     Método auxiliar para Enumeradores
 /// </summary>
 public static class EnumHelper
 {
     /// <summary>
-    /// Obtem a descrição de um enumerador a partir do Attribute <see cref="DescriptionAttribute">DescriptionAttribute</see>
+    ///     Obtem a descrição de um enumerador a partir do Attribute
+    ///     <see cref="DescriptionAttribute">DescriptionAttribute</see>
     /// </summary>
     /// <param name="value">Valor do Enumerador</param>
     /// <returns>Descrição do enumerador</returns>
@@ -23,11 +24,14 @@ public static class EnumHelper
 
         var field = value.GetType().GetField(value.ToString());
 
-        return Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is not DescriptionAttribute attribute ? value.ToString() : attribute.Description;
+        return Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is not DescriptionAttribute attribute
+            ? value.ToString()
+            : attribute.Description;
     }
 
     /// <summary>
-    /// Obtem a descrição de um enumerador a partir do Attribute <see cref="DescriptionAttribute">DescriptionAttribute</see>
+    ///     Obtem a descrição de um enumerador a partir do Attribute
+    ///     <see cref="DescriptionAttribute">DescriptionAttribute</see>
     /// </summary>
     /// <param name="value">Tipo para Enumerador</param>
     /// <param name="name">O valor correspondente ao nome do Enumerador</param>
@@ -40,11 +44,11 @@ public static class EnumHelper
         var field = value.GetField(name);
 
         var attributes = (DescriptionAttribute[])field.GetCustomAttributes(typeof(DescriptionAttribute), false);
-        return (attributes.Length > 0) ? attributes[0].Description : name;
+        return attributes.Length > 0 ? attributes[0].Description : name;
     }
 
     /// <summary>
-    /// Obtem o valor do enumerador a partir da descrição do <see cref="DescriptionAttribute">DescriptionAttribute</see>
+    ///     Obtem o valor do enumerador a partir da descrição do <see cref="DescriptionAttribute">DescriptionAttribute</see>
     /// </summary>
     /// <typeparam name="T">Tipo do enumerador</typeparam>
     /// <param name="description">Descrição do Enumerador</param>
@@ -54,7 +58,6 @@ public static class EnumHelper
         var type = typeof(T);
         if (!type.IsEnum) throw new InvalidOperationException();
         foreach (var field in type.GetFields())
-        {
             if (Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
             {
                 if (attribute.Description == description)
@@ -65,7 +68,7 @@ public static class EnumHelper
                 if (field.Name == description)
                     return (T)field.GetValue(null);
             }
-        }
+
         return default;
     }
 
@@ -85,7 +88,7 @@ public static class EnumHelper
 
         return description;
     }
-    
+
     public static DictionaryEntry[] GetDicionary(Type enumType)
     {
         var names = Enum.GetNames(enumType);
@@ -98,7 +101,7 @@ public static class EnumHelper
     }
 
     /// <summary>
-    /// Gets the value of an Enum, based on it's Description Attribute or named value
+    ///     Gets the value of an Enum, based on it's Description Attribute or named value
     /// </summary>
     /// <param name="value">The Enum type</param>
     /// <param name="description">The description or name of the element</param>
@@ -112,16 +115,10 @@ public static class EnumHelper
             var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
 
             if (attributes.Length > 0)
-            {
                 if (attributes[0].Description == description)
-                {
                     return fi.GetValue(fi.Name);
-                }
-            }
-            if (fi.Name == description)
-            {
-                return fi.GetValue(fi.Name);
-            }
+
+            if (fi.Name == description) return fi.GetValue(fi.Name);
         }
 
         return description;
