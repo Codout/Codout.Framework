@@ -6,7 +6,7 @@
 
 	<PropertyGroup>
 		<Description>Camada de Domínio do Framework da Codout</Description>
-		<Version>3.1.0</Version>
+		<Version>4.0.0</Version>
 		<Authors>Clovis Coli Jr</Authors>
 		<Company>Codout</Company>
 		<Copyright>Codout</Copyright>

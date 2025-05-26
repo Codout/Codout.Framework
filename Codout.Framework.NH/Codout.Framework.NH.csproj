@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
-		<Version>3.1.1</Version>
+		<Version>4.0.0</Version>
 		<Authors>Clovis Coli Jr</Authors>
 		<Description>Implementação da interface Codout.Framework.DAL para NHibernate
 </Description>

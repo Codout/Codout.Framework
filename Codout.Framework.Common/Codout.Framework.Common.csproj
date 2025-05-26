@@ -6,7 +6,7 @@
 
 	<PropertyGroup>
 		<Description>Biblioteca de funcões comuns do Framework da Codout</Description>
-		<Version>2.1.0</Version>
+		<Version>4.0.0</Version>
 		<Authors>Clovis Coli Jr</Authors>
 		<Copyright>Codout</Copyright>
 		<PackageLicenseUrl>https://github.com/Codout/Codout.Framework/blob/master/LICENSE</PackageLicenseUrl>
