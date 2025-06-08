@@ -19,7 +19,7 @@ namespace Codout.Framework.DP
         public DPRepository(IDbConnection connection, ISqlGenerator<T> sqlGenerator)
             : base(connection, sqlGenerator)
         {
-
+            DbConnection = connection;
         }
 
         private IDbConnection CreateConnection()
@@ -42,7 +42,9 @@ namespace Codout.Framework.DP
 
         public IQueryable<T> Find(Expression<Func<T, bool>> predicate)
         {
-            return DbConnection.Query() <T>().AsQueryable();
+            using var con = CreateConnection();
+
+            return base.Find(predicate).AsQueryable();
         }
 
         public IQueryable<T> Find(Expression<Func<T, bool>> filter, out int total, int index = 0, int size = 50)
@@ -78,7 +80,7 @@ namespace Codout.Framework.DP
         {
             using var con = CreateConnection();
 
-            var result = DbConnection.Delete<T>(entity);
+            base.Delete(predicate);
         }
 
         public T Save(T entity)
