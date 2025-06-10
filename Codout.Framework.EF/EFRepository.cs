@@ -34,7 +34,7 @@ public class EFRepository<T>(DbContext context) : IRepository<T>
     /// </summary>
     /// <param name="predicate">Lista de objetos</param>
     /// <returns></returns>
-    public IQueryable<T> Find(Expression<Func<T, bool>> predicate)
+    public IQueryable<T> Where(Expression<Func<T, bool>> predicate)
     {
         return DbSet.Where(predicate).AsQueryable();
     }
@@ -47,7 +47,7 @@ public class EFRepository<T>(DbContext context) : IRepository<T>
     /// <param name="index">Indica o índice da paginação</param>
     /// <param name="size">Tamanho da página</param>
     /// <returns>Lista de objetos</returns>
-    public IQueryable<T> Find(Expression<Func<T, bool>> filter, out int total, int index = 0, int size = 50)
+    public IQueryable<T> Where(Expression<Func<T, bool>> filter, out int total, int index = 0, int size = 50)
     {
         var skipCount = index * size;
 
@@ -188,7 +188,7 @@ public class EFRepository<T>(DbContext context) : IRepository<T>
 
     public async Task DeleteAsync(Expression<Func<T, bool>> predicate)
     {
-        var entities = Find(predicate);
+        var entities = Where(predicate);
         foreach (var entity in entities)
             await DeleteAsync(entity);
     }

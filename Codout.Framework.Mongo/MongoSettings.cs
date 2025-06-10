@@ -1,6 +1,6 @@
 ﻿namespace Codout.Framework.Mongo;
 
-public class MongoSettings
+public class MongoDbSettings
 {
     public string DatabaseName { get; set; }
 

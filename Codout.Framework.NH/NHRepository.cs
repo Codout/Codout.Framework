@@ -23,12 +23,12 @@ public class NHRepository<T>(IUnitOfWork unitOfWork) : IRepository<T>
         return Session.Query<T>();
     }
 
-    public IQueryable<T> Find(Expression<Func<T, bool>> predicate)
+    public IQueryable<T> Where(Expression<Func<T, bool>> predicate)
     {
         return All().Where(predicate);
     }
 
-    public IQueryable<T> Find(Expression<Func<T, bool>> filter, out int total, int index = 0, int size = 50)
+    public IQueryable<T> Where(Expression<Func<T, bool>> filter, out int total, int index = 0, int size = 50)
     {
         var skipCount = index * size;
 
@@ -67,7 +67,7 @@ public class NHRepository<T>(IUnitOfWork unitOfWork) : IRepository<T>
 
     public void Delete(Expression<Func<T, bool>> predicate)
     {
-        var entities = Find(predicate);
+        var entities = Where(predicate);
         foreach (var entity in entities)
             Delete(entity);
     }
@@ -127,7 +127,7 @@ public class NHRepository<T>(IUnitOfWork unitOfWork) : IRepository<T>
 
     public async Task DeleteAsync(Expression<Func<T, bool>> predicate)
     {
-        var entities = Find(predicate);
+        var entities = Where(predicate);
         foreach (var entity in entities)
             await DeleteAsync(entity);
     }

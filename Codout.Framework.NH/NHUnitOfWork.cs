@@ -1,122 +1,138 @@
 ﻿using System;
+using System.Data;
 using Codout.Framework.DAL;
 using NHibernate;
-using IsolationLevel = System.Data.IsolationLevel;
 
 namespace Codout.Framework.NH;
 
-public class NHUnitOfWork(ITenant tenant) : IUnitOfWork
+/// <summary>
+/// Implementação de Unit of Work para NHibernate,
+/// gerencia ciclo de vida de transações e sessões de forma segura.
+/// </summary>
+public class NHUnitOfWork : IUnitOfWork
 {
-    private bool _disposed;
-    private ISession _session;
+    private readonly ISession _session;
     private ITransaction _transaction;
+    private bool _disposed;
 
-    public SessionFactory SessionFactory { get; } = new(tenant);
-
-    public ISession Session => _session ??= SessionFactory.OpenSession();
-
-    public void Dispose()
+    /// <summary>
+    /// Cria uma nova instância de NHUnitOfWork com a sessão injetada.
+    /// </summary>
+    /// <param name="session">Sessão NHibernate</param>
+    public NHUnitOfWork(ISession session)
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
+        _session = session ?? throw new ArgumentNullException(nameof(session));
     }
 
-    public void BeginTransaction()
+    /// <summary>
+    /// Exposição da sessão ativa.
+    /// </summary>
+    public ISession Session => _session;
+
+    /// <summary>
+    /// Inicia uma transação se não houver nenhuma ativa.
+    /// </summary>
+    public void BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
     {
-        BeginTransaction(IsolationLevel.ReadCommitted);
+        if (_transaction is not { IsActive: true })
+        {
+            _transaction = _session.BeginTransaction(isolationLevel);
+        }
     }
 
-    public void BeginTransaction(IsolationLevel isolationLevel)
+    /// <summary>
+    /// Executa uma operação dentro de transação, fazendo commit ou rollback automaticamente.
+    /// </summary>
+    public T InTransaction<T>(Func<ISession, T> work)
     {
-        _transaction = Session.BeginTransaction(isolationLevel);
+        if (work == null) throw new ArgumentNullException(nameof(work));
+
+        BeginTransaction();
+        try
+        {
+            var result = work(_session);
+            Commit();
+            return result;
+        }
+        catch
+        {
+            Rollback();
+            throw;
+        }
     }
 
-    public void Commit()
+    /// <summary>
+    /// Persiste a transação ativa.
+    /// </summary>
+    public void Commit(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
     {
-        Commit(IsolationLevel.ReadCommitted);
-    }
-
-    public void Commit(IsolationLevel isolationLevel)
-    {
-        if (!(_transaction is { IsActive: true }))
+        if (_transaction is not { IsActive: true })
             BeginTransaction(isolationLevel);
 
         try
         {
-            // commit transaction if there is one active
-            if (_transaction is { IsActive: true })
-                _transaction.Commit();
+            _transaction.Commit();
         }
         catch
         {
             try
             {
-                // rollback if there was an exception
-                if (_transaction is { IsActive: true })
-                    _transaction.Rollback();
+                _transaction.Rollback();
             }
             catch
             {
-                //Ignore
+                // Ignorar falha no rollback
             }
-
             throw;
         }
         finally
         {
-            _transaction?.Dispose();
-        }
-    }
-
-    public void Rollback()
-    {
-        try
-        {
-            try
-            {
-                // rollback if there was an exception
-                if (_transaction is { IsActive: true })
-                    _transaction.Rollback();
-            }
-            catch
-            {
-                //Ignore
-            }
-        }
-        finally
-        {
-            _transaction?.Dispose();
+            _transaction.Dispose();
             _transaction = null;
         }
     }
 
-    protected virtual void Dispose(bool disposing)
+    /// <summary>
+    /// Desfaz a transação ativa.
+    /// </summary>
+    public void Rollback()
     {
-        if (!_disposed)
-            if (disposing)
-                if (_session is { IsOpen: true })
-                {
-                    if (_transaction is { IsActive: true })
-                        try
-                        {
-                            // rollback if there was an exception
-                            if (_transaction is { IsActive: true })
-                                _transaction.Rollback();
-                        }
-                        catch
-                        {
-                            //Ignore
-                        }
+        if (_transaction is { IsActive: true })
+        {
+            try
+            {
+                _transaction.Rollback();
+            }
+            catch
+            {
+                // Ignorar falha no rollback
+            }
+            finally
+            {
+                _transaction.Dispose();
+                _transaction = null;
+            }
+        }
+    }
 
-                    _transaction?.Dispose();
+    /// <summary>
+    /// Libera a sessão e faz rollback caso ainda haja transação aberta.
+    /// </summary>
+    public void Dispose()
+    {
+        if (_disposed) return;
 
-                    _transaction = null;
+        try
+        {
+            Rollback();
+        }
+        catch
+        {
+            // Ignorar exceções no dispose
+        }
 
-                    _session?.Dispose();
-
-                    _session = null;
-                }
-
+        _session.Dispose();
         _disposed = true;
+        GC.SuppressFinalize(this);
     }
 }

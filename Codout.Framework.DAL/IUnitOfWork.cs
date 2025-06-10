@@ -5,9 +5,7 @@ namespace Codout.Framework.DAL;
 
 public interface IUnitOfWork : IDisposable
 {
-    void BeginTransaction(IsolationLevel isolationLevel);
-    void BeginTransaction();
-    void Commit(IsolationLevel isolationLevel);
-    void Commit();
+    void BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
+    void Commit(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
     void Rollback();
 }

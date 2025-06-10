@@ -59,7 +59,7 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     /// </summary>
     /// <param name="predicate">Lista de objetos</param>
     /// <returns></returns>
-    public IQueryable<T> Find(Expression<Func<T, bool>> predicate)
+    public IQueryable<T> Where(Expression<Func<T, bool>> predicate)
     {
         return All().Where(predicate);
     }
@@ -72,12 +72,12 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     /// <param name="index">Indica o índice da paginação</param>
     /// <param name="size">Tamanho da página</param>
     /// <returns>Lista de objetos</returns>
-    public IQueryable<T> Find(Expression<Func<T, bool>> filter, out int total, int index = 0, int size = 50)
+    public IQueryable<T> Where(Expression<Func<T, bool>> filter, out int total, int index = 0, int size = 50)
     {
         var skipCount = index * size;
 
         var resetSet = filter != null
-            ? Find(filter).AsQueryable()
+            ? Where(filter).AsQueryable()
             : GetCollection<T>().AsQueryable();
 
         resetSet = skipCount == 0
@@ -96,7 +96,7 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     /// <returns>objeto</returns>
     public T Get(Expression<Func<T, bool>> predicate)
     {
-        return Find(predicate).SingleOrDefault();
+        return Where(predicate).SingleOrDefault();
     }
 
     /// <summary>

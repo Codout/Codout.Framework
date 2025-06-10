@@ -1,83 +1,101 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
-using System.Xml;
-using Codout.Framework.DAL;
+using System.Threading.Tasks;
 using FluentNHibernate.Cfg;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using NHibernate;
-using Configuration = NHibernate.Cfg.Configuration;
+using NHibernate.Cfg;
+using NHibernate.Mapping.ByCode;
+using NHibernate.Tool.hbm2ddl;
 
 namespace Codout.Framework.NH;
 
-public class SessionFactory(ITenant tenant)
+/// <summary>
+/// Provedor end-to-end para criar, expor e gerenciar o ciclo de vida do ISessionFactory.
+/// Encapsula a inicialização preguiçosa, scan de assemblies configurados e descarte seguro do ISessionFactory.
+/// </summary>
+public class SessionFactoryProvider : IHostedService, IDisposable
 {
-    private const string DefaultHibernateConfig = "hibernate.cfg.xml";
-    private static readonly Lock Object = new();
+    private readonly IConfiguration _configuration;
+    private readonly Lazy<ISessionFactory> _factory;
 
-    private static readonly Dictionary<string, ISessionFactory> SessionFactories = new();
+    /// <summary>
+    /// Instância preguiçosa do NHibernate ISessionFactory.
+    /// </summary>
+    public ISessionFactory Factory => _factory.Value;
 
-    public ITenant Tenant { get; } = tenant;
-
-    private FluentConfiguration GetConfiguration(ITenant tenant)
+    /// <summary>
+    /// Constrói o provedor usando IConfiguration para localização do XML e mapeamentos por assembly.
+    /// </summary>
+    public SessionFactoryProvider(IConfiguration configuration)
     {
-        var assemblyMappingName = tenant.AssemblyMappingName;
-
-        if (string.IsNullOrWhiteSpace(assemblyMappingName))
-            throw new InvalidOperationException(
-                "A propriedade AssemblyMappingName em ITenant não foi informada, por favor informe o nome do assembly que contém os mapeamentos ORM");
-
-        var configuration = new Configuration();
-        var hibernateConfig = DefaultHibernateConfig;
-
-        if (Path.IsPathRooted(hibernateConfig) == false)
-            hibernateConfig = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, hibernateConfig);
-
-        if (File.Exists(hibernateConfig))
-            configuration.Configure(new XmlTextReader(hibernateConfig));
-
-        if (!string.IsNullOrWhiteSpace(tenant.ConnectionString))
-        {
-            configuration.SetProperty("connection.connection_string", tenant.ConnectionString);
-            if (configuration.Properties.ContainsKey("connection.connection_string_name"))
-                configuration.Properties.Remove("connection.connection_string_name");
-        }
-
-        var fluentlyCfg = Fluently.Configure(configuration)
-            .Mappings(m => m.FluentMappings.AddFromAssembly(Assembly.Load(assemblyMappingName)));
-
-        return fluentlyCfg;
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        _factory = new Lazy<ISessionFactory>(BuildFactory, LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
-    private ISessionFactory GetSessionFactory()
+    /// <summary>
+    /// Obtém a fábrica a partir de hibernate.cfg.xml e classes de mapeamento encontradas nos assemblies configurados.
+    /// </summary>
+    private ISessionFactory BuildFactory()
     {
-        lock (Object)
-        {
-            if (SessionFactories.ContainsKey(Tenant.TenantKey))
-                return SessionFactories[Tenant.TenantKey];
+        var configFile = _configuration.GetValue<string?>("NHibernate:ConfigFile") ?? "hibernate.cfg.xml";
+        var xmlPath = Path.IsPathRooted(configFile)
+            ? configFile
+            : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, configFile);
 
-            var cfg = GetConfiguration(Tenant);
+        if (!File.Exists(xmlPath))
+            throw new FileNotFoundException($"Arquivo NHibernate não encontrado: {xmlPath}");
 
-            var sessionFactory = cfg.BuildSessionFactory();
+        var cfg = new Configuration();
+        cfg.Configure(xmlPath);
+        
+        // Obter nome da connection string do XML
+        var connectionStringName = cfg.Properties[NHibernate.Cfg.Environment.ConnectionStringName];
 
-            SessionFactories.Add(Tenant.TenantKey, sessionFactory);
+        if (string.IsNullOrEmpty(connectionStringName))
+            throw new InvalidOperationException("Connection string name não encontrada no XML.");
 
-            return SessionFactories[Tenant.TenantKey];
-        }
+        // Agora carrega a connection string do appsettings.json
+        var connectionString = _configuration.GetConnectionString(connectionStringName);
+
+        if (string.IsNullOrEmpty(connectionString))
+            throw new InvalidOperationException($"Connection string '{connectionStringName}' não encontrada em appsettings.json.");
+
+        cfg.SetProperty(NHibernate.Cfg.Environment.ConnectionString, connectionString);
+
+        var fluentlyCfg = Fluently.Configure(cfg);
+
+        var assemblyNames = _configuration.GetSection("NHibernate:MappingAssemblies").Get<string[]>();
+        var assemblies = assemblyNames.Select(name => Assembly.Load(new AssemblyName(name))).ToArray();
+
+        foreach (var assembly in assemblies)
+            fluentlyCfg.Mappings(m => m.FluentMappings.AddFromAssembly(assembly));    
+
+        var autoUpdate = _configuration.GetValue<bool>("NHibernate:AutoUpdateSchema");
+        if (autoUpdate)
+            new SchemaUpdate(cfg).Execute(useStdOut: true, doUpdate: true);
+
+        return fluentlyCfg.BuildSessionFactory();
     }
 
-    public ISession OpenSession()
+    // IHostedService: nenhuma ação na inicialização
+    public Task StartAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+
+    // Fecha a fábrica no shutdown
+    public Task StopAsync(CancellationToken cancellationToken)
     {
-        var session = GetSessionFactory().OpenSession();
-
-        session.FlushMode = FlushMode.Commit;
-
-        return session;
+        if (_factory.IsValueCreated)
+            _factory.Value.Close();
+        return Task.CompletedTask;
     }
 
-    public IStatelessSession OpenStatelessSession()
+    public void Dispose()
     {
-        return GetSessionFactory().OpenStatelessSession();
+        if (_factory.IsValueCreated)
+            _factory.Value.Dispose();
     }
 }
