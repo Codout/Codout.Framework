@@ -5,21 +5,22 @@ using System.Threading.Tasks;
 using Codout.Framework.DAL;
 using Codout.Framework.DAL.Entity;
 using Codout.Framework.DAL.Repository;
+using Codout.Framework.NH;
 using NHibernate;
 using NHibernate.Linq;
-
-namespace Codout.Framework.NH;
 
 public class NHRepository<T>(IUnitOfWork unitOfWork) : IRepository<T>
     where T : class, IEntity
 {
     private bool _disposed;
-    public NHUnitOfWork UnitOfWork { get; } = unitOfWork as NHUnitOfWork;
-
+    public NHUnitOfWork UnitOfWork { get; } = unitOfWork as NHUnitOfWork ?? throw new ArgumentException("UnitOfWork must be of type NHUnitOfWork.");
     public ISession Session => UnitOfWork.Session;
 
-    public IQueryable<T> All()
+    public IQueryable<T> All() => Session.Query<T>();
+
+    public IQueryable<T> AllReadOnly()
     {
+        Session.DefaultReadOnly = true;
         return Session.Query<T>();
     }
 
@@ -28,37 +29,28 @@ public class NHRepository<T>(IUnitOfWork unitOfWork) : IRepository<T>
         return All().Where(predicate);
     }
 
-    public IQueryable<T> Where(Expression<Func<T, bool>> filter, out int total, int index = 0, int size = 50)
+    public IQueryable<T> WhereReadOnly(Expression<Func<T, bool>> predicate)
     {
-        var skipCount = index * size;
-
-        var resetSet = filter != null
-            ? All().Where(filter).AsQueryable()
-            : All().AsQueryable();
-
-        resetSet = skipCount == 0
-            ? resetSet.Take(size)
-            : resetSet.Skip(skipCount).Take(size);
-
-        total = resetSet.Count();
-
-        return resetSet.AsQueryable();
+        Session.DefaultReadOnly = true;
+        return Session.Query<T>().Where(predicate);
     }
 
-    public T Get(Expression<Func<T, bool>> predicate)
+    public IQueryable<T> WherePaged(Expression<Func<T, bool>> predicate, out int total, int index = 0, int size = 50)
     {
-        return All().SingleOrDefault(predicate);
+        var query = Session.Query<T>().Where(predicate);
+
+        total = query.Count();
+        return query.Skip(index * size).Take(size);
     }
 
-    public T Get(object key)
-    {
-        return Session.Get<T>(key);
-    }
+    public T Get(Expression<Func<T, bool>> predicate) =>
+        All().SingleOrDefault(predicate);
 
-    public T Load(object key)
-    {
-        return Session.Load<T>(key);
-    }
+    public T Get(object key) =>
+        Session.Get<T>(key);
+
+    public T Load(object key) =>
+        Session.Load<T>(key);
 
     public void Delete(T entity)
     {
@@ -67,14 +59,15 @@ public class NHRepository<T>(IUnitOfWork unitOfWork) : IRepository<T>
 
     public void Delete(Expression<Func<T, bool>> predicate)
     {
-        var entities = Where(predicate);
+        var entities = Where(predicate).ToList();
         foreach (var entity in entities)
             Delete(entity);
     }
 
     public T Save(T entity)
     {
-        return Session.Save(entity) as T;
+        Session.Save(entity);
+        return entity;
     }
 
     public T SaveOrUpdate(T entity)
@@ -115,9 +108,9 @@ public class NHRepository<T>(IUnitOfWork unitOfWork) : IRepository<T>
         return await Session.GetAsync<T>(key);
     }
 
-    public async Task<T> LoadAsync(object key)
+    public Task<T> LoadAsync(object key)
     {
-        return await Session.LoadAsync<T>(key);
+        return Task.FromResult(Session.Load<T>(key));
     }
 
     public async Task DeleteAsync(T entity)
@@ -127,14 +120,15 @@ public class NHRepository<T>(IUnitOfWork unitOfWork) : IRepository<T>
 
     public async Task DeleteAsync(Expression<Func<T, bool>> predicate)
     {
-        var entities = Where(predicate);
+        var entities = Where(predicate).ToList();
         foreach (var entity in entities)
             await DeleteAsync(entity);
     }
 
     public async Task<T> SaveAsync(T entity)
     {
-        return await Session.SaveAsync(entity) as T;
+        await Session.SaveAsync(entity);
+        return entity;
     }
 
     public async Task<T> SaveOrUpdateAsync(T entity)
@@ -153,6 +147,12 @@ public class NHRepository<T>(IUnitOfWork unitOfWork) : IRepository<T>
         return await Session.MergeAsync(entity);
     }
 
+    public IQueryable<T> IncludeMany(params Expression<Func<T, object>>[] includes)
+    {
+        // NHibernate doesn't support Include — use only for interface compatibility
+        return All(); // No-op
+    }
+
     public void Dispose()
     {
         Dispose(true);
@@ -161,11 +161,10 @@ public class NHRepository<T>(IUnitOfWork unitOfWork) : IRepository<T>
 
     protected virtual void Dispose(bool disposing)
     {
-        if (!_disposed)
-            if (disposing)
-            {
-                //Release
-            }
+        if (!_disposed && disposing)
+        {
+            // Optional: Dispose or close session
+        }
 
         _disposed = true;
     }

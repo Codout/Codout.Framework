@@ -8,7 +8,7 @@ public static class RegisterServices
     public static IServiceCollection AddCrudAppServices(this IServiceCollection services)
     {
         return services
-            .AddAutoMapper(typeof(MappingProfile))
+            .AddAutoMapper(x => x.AddMaps(typeof(MappingProfile)))
             .AddScoped(typeof(ICrudAppService<,,>), typeof(CrudAppServiceBase<,,>));
     }
 }

@@ -6,7 +6,7 @@ namespace Codout.Framework.Common.Extensions;
 /// <summary>
 ///     Extensões comuns para tipos relacionadas a <see cref="Stream" />.
 /// </summary>
-public static class Streams
+public static class StreamExtensions
 {
     #region ReadFully
 

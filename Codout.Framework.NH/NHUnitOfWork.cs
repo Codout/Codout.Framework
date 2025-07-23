@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using Codout.Framework.DAL;
+using Codout.Framework.DAL.Entity;
 using NHibernate;
 
 namespace Codout.Framework.NH;
@@ -29,10 +30,15 @@ public class NHUnitOfWork : IUnitOfWork
     /// </summary>
     public ISession Session => _session;
 
+    public void BeginTransaction()
+    {
+        BeginTransaction(IsolationLevel.ReadCommitted);
+    }
+
     /// <summary>
     /// Inicia uma transação se não houver nenhuma ativa.
     /// </summary>
-    public void BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
+    public void BeginTransaction(IsolationLevel isolationLevel)
     {
         if (_transaction is not { IsActive: true })
         {
@@ -43,14 +49,14 @@ public class NHUnitOfWork : IUnitOfWork
     /// <summary>
     /// Executa uma operação dentro de transação, fazendo commit ou rollback automaticamente.
     /// </summary>
-    public T InTransaction<T>(Func<ISession, T> work)
+    public T InTransaction<T>(Func<T> work) where T : class, IEntity
     {
         if (work == null) throw new ArgumentNullException(nameof(work));
 
         BeginTransaction();
         try
         {
-            var result = work(_session);
+            var result = work();
             Commit();
             return result;
         }
@@ -61,10 +67,15 @@ public class NHUnitOfWork : IUnitOfWork
         }
     }
 
+    public void Commit()
+    {
+        Commit(IsolationLevel.ReadCommitted);
+    }
+
     /// <summary>
     /// Persiste a transação ativa.
     /// </summary>
-    public void Commit(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
+    public void Commit(IsolationLevel isolationLevel)
     {
         if (_transaction is not { IsActive: true })
             BeginTransaction(isolationLevel);

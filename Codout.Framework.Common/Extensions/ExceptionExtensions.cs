@@ -5,7 +5,7 @@ namespace Codout.Framework.Common.Extensions;
 /// <summary>
 ///     Extensões comuns para tipos relacionadas a exceções.
 /// </summary>
-public static class Exceptions
+public static class ExceptionExtensions
 {
     #region GetMessage
 

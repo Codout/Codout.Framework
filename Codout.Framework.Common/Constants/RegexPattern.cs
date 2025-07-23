@@ -1,4 +1,4 @@
-﻿namespace Codout.Framework.Common.Extensions;
+﻿namespace Codout.Framework.Common.Constants;
 
 /// <summary>
 ///     Extensões comuns para tipos relacionadas a expressões regulares.

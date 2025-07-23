@@ -1,25 +1,45 @@
 ﻿using System;
 using System.Data;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using Codout.Framework.DAL;
+using Codout.Framework.DAL.Entity;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Codout.Framework.EF;
 
 /// <summary>
-///     Unit of Work para repositório genérico com EntityFrameworkCore
+/// Unit of Work para repositório genérico com EntityFrameworkCore
 /// </summary>
 public abstract class EFUnitOfWork<T>(T instance) : IUnitOfWork where T : DbContext
 {
-    private DbContextTransaction _transaction;
+    private IDbContextTransaction _transaction;
 
     /// <summary>
-    ///     Conexto do EntityFrameworkCore
+    /// Conexto do EntityFrameworkCore
     /// </summary>
     public DbContext DbContext { get; } = instance;
 
     public void BeginTransaction(IsolationLevel isolationLevel)
     {
         _transaction = DbContext.Database.BeginTransaction();
+    }
+
+    public T1 InTransaction<T1>(Func<T1> work) where T1 : class, IEntity
+    {
+        if (work == null) throw new ArgumentNullException(nameof(work));
+
+        BeginTransaction();
+        try
+        {
+            var result = work();
+            Commit();
+            return result;
+        }
+        catch
+        {
+            Rollback();
+            throw;
+        }
     }
 
     public void BeginTransaction()
@@ -33,7 +53,7 @@ public abstract class EFUnitOfWork<T>(T instance) : IUnitOfWork where T : DbCont
     }
 
     /// <summary>
-    ///     Efetua o SaveChanges do contexto (sessão) em questão
+    /// Efetua o SaveChanges do contexto (sessão) em questão
     /// </summary>
     public void Commit()
     {

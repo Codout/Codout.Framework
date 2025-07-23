@@ -5,7 +5,7 @@ namespace Codout.Framework.Common.Extensions;
 /// <summary>
 ///     Extensões comuns para tipos relacionadas a datas.
 /// </summary>
-public static class Dates
+public static class DateTimeExtensions
 {
     #region CountWeekdays
 

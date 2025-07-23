@@ -1,13 +1,11 @@
-﻿using System;
-using System.IO;
-using System.Net;
+﻿using System.IO;
 
 namespace Codout.Framework.Common.Extensions;
 
 /// <summary>
 ///     Extensões comuns para tipos relacionadas a IO.
 /// </summary>
-public static class IO
+public static class IOExtensions
 {
     #region GetFileText
 
@@ -66,31 +64,6 @@ public static class IO
     {
         using var sw = new StreamWriter(absolutePath, false);
         sw.Write(fileText);
-    }
-
-    #endregion
-
-    #region ReadWebPage
-
-    /// <summary>
-    ///     Fetches a web page
-    /// </summary>
-    /// <param name="url">The URL.</param>
-    /// <returns></returns>
-    [Obsolete("Obsolete")]
-    public static string ReadWebPage(string url)
-    {
-        var request = WebRequest.Create(url);
-        using var stream = request.GetResponse().GetResponseStream();
-
-        if (stream == null)
-            return null;
-
-        var sr = new StreamReader(stream);
-        var webPage = sr.ReadToEnd();
-        sr.Close();
-
-        return webPage;
     }
 
     #endregion

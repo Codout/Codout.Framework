@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
+using System.IO;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using Amazon;
@@ -8,7 +8,8 @@ using Amazon.Runtime;
 using Amazon.SimpleEmailV2;
 using Amazon.SimpleEmailV2.Model;
 using Codout.Mailer.Models;
-using Attachment = System.Net.Mail.Attachment;
+using MimeKit;
+using ContentType = MimeKit.ContentType;
 
 namespace Codout.Mailer.AWS;
 
@@ -19,7 +20,7 @@ public class AWSDispatcher(AWSSettings settings) : ICodoutMailerDispatcher
         string subject,
         string htmlContent,
         string plainTextContent = null,
-        Attachment[] attachments = null)
+        System.Net.Mail.Attachment[] attachments = null)
     {
         try
         {
@@ -27,53 +28,63 @@ public class AWSDispatcher(AWSSettings settings) : ICodoutMailerDispatcher
                 new BasicAWSCredentials(settings.AccessKey, settings.SecretKey),
                 RegionEndpoint.GetBySystemName(settings.RegionEndpoint));
 
-            var response = await client.SendEmailAsync(new SendEmailRequest
+            // Montar e-mail usando MimeKit (recomendado)
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress(from.DisplayName, from.Address));
+            message.To.Add(new MailboxAddress(to.DisplayName, to.Address));
+            message.Subject = subject;
+
+            var bodyBuilder = new BodyBuilder
             {
+                HtmlBody = htmlContent,
+                TextBody = plainTextContent
+            };
+
+            if (attachments != null)
+            {
+                foreach (var attachment in attachments)
+                {
+                    using var memoryStream = new MemoryStream();
+                    await attachment.ContentStream.CopyToAsync(memoryStream);
+                    bodyBuilder.Attachments.Add(attachment.Name, memoryStream.ToArray(), ContentType.Parse(attachment.ContentType.MediaType));
+                }
+            }
+
+            message.Body = bodyBuilder.ToMessageBody();
+
+            using var ms = new MemoryStream();
+            await message.WriteToAsync(ms);
+
+            var sendRequest = new SendEmailRequest
+            {
+                FromEmailAddress = from.Address,
                 Destination = new Destination
                 {
-                    ToAddresses = new List<string> { to.Address }
+                    ToAddresses = [to.Address]
                 },
                 Content = new EmailContent
                 {
-                    Simple = new Message
+                    Raw = new RawMessage
                     {
-                        Body = new Body
-                        {
-                            Html = new Content
-                            {
-                                Charset = "UTF-8",
-                                Data = htmlContent
-                            },
-                            Text = new Content
-                            {
-                                Charset = "UTF-8",
-                                Data = plainTextContent
-                            }
-                        },
-                        Subject = new Content
-                        {
-                            Charset = "UTF-8",
-                            Data = subject
-                        }
+                        Data = ms
                     }
-                },
-                ReplyToAddresses = new List<string> { from.Address },
-                FromEmailAddress = from.Address
-            });
+                }
+            };
 
-            var messageId = response.MessageId;
+            var response = await client.SendEmailAsync(sendRequest);
 
             return new MailerResponse
             {
-                Sent = response.HttpStatusCode == HttpStatusCode.Accepted
+                Sent = response.HttpStatusCode == System.Net.HttpStatusCode.Accepted,
+                ErrorMessages = [response.MessageId]
             };
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
             return new MailerResponse
             {
                 Sent = false,
-                ErrorMessages = new List<string>([e.Message])
+                ErrorMessages = new List<string> { ex.Message }
             };
         }
     }

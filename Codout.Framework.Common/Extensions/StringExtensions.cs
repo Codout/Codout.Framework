@@ -4,13 +4,14 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Codout.Framework.Common.Helpers;
 
 namespace Codout.Framework.Common.Extensions;
 
 /// <summary>
 ///     Extensões comuns para tipos relacionadas a strings.
 /// </summary>
-public static class Strings
+public static class StringExtensions
 {
     #region Variáveis
 
@@ -21,9 +22,9 @@ public static class Strings
     #region Construtores
 
     /// <summary>
-    ///     Initializes the <see cref="Strings" /> class.
+    ///     Initializes the <see cref="StringExtensions" /> class.
     /// </summary>
-    static Strings()
+    static StringExtensions()
     {
         FillEntities();
     }
@@ -879,7 +880,7 @@ public static class Strings
 
     #region [ RemoveCharactersSpecial ]
 
-    public static string RemoveCharactersSpecial(this string text, bool aceitaEspaco = true, bool replaceAccents = true)
+    public static string RemoveCharactersSpecial(this string text, bool allowWhiteSpace = true, bool replaceAccents = true)
     {
         var ret = text;
 
@@ -890,9 +891,9 @@ public static class Strings
             ret = RemoveAccents(ret);
 
         ret = Regex.Replace(ret,
-            aceitaEspaco
+            allowWhiteSpace
                 ? @"[^0-9a-zA-ZéúíóáÉÚÍÓÁèùìòàÈÙÌÒÀõãñÕÃÑêûîôâÊÛÎÔÂëÿüïöäËYÜÏÖÄçÇ\s]+?"
-                : @"[^0-9a-zA-ZéúíóáÉÚÍÓÁèùìòàÈÙÌÒÀõãñÕÃÑêûîôâÊÛÎÔÂëÿüïöäËYÜÏÖÄçÇ]+?", string.Empty);
+                : "[^0-9a-zA-ZéúíóáÉÚÍÓÁèùìòàÈÙÌÒÀõãñÕÃÑêûîôâÊÛÎÔÂëÿüïöäËYÜÏÖÄçÇ]+?", string.Empty);
 
         return ret;
     }

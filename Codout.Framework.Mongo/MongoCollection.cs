@@ -30,6 +30,11 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
         return GetCollection<T>().AsQueryable();
     }
 
+    public IQueryable<T> AllReadOnly()
+    {
+        return GetCollection<T>().AsQueryable();
+    }
+
     /// <summary>
     ///     Delete o objeto indicado do repositório de dados
     /// </summary>
@@ -64,6 +69,11 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
         return All().Where(predicate);
     }
 
+    public IQueryable<T> WhereReadOnly(Expression<Func<T, bool>> predicate)
+    {
+        return GetCollection<T>().AsQueryable().Where(predicate);
+    }
+
     /// <summary>
     ///     Retorna uma lista de objetos do repositório de acordo com o filtro e com opção de paginação
     /// </summary>
@@ -72,7 +82,7 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     /// <param name="index">Indica o índice da paginação</param>
     /// <param name="size">Tamanho da página</param>
     /// <returns>Lista de objetos</returns>
-    public IQueryable<T> Where(Expression<Func<T, bool>> filter, out int total, int index = 0, int size = 50)
+    public IQueryable<T> WherePaged(Expression<Func<T, bool>> filter, out int total, int index = 0, int size = 50)
     {
         var skipCount = index * size;
 
@@ -197,6 +207,11 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     public Task<T> RefreshAsync(T entity)
     {
         throw new NotSupportedException();
+    }
+
+    public IQueryable<T> IncludeMany(params Expression<Func<T, object>>[] includes)
+    {
+        throw new NotImplementedException();
     }
 
     /// <summary>

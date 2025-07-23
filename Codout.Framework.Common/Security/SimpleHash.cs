@@ -1,246 +1,539 @@
 ﻿using System;
+using System.Buffers;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Codout.Framework.Common.Security;
 
-public enum HashAlgorithmType
+/// <summary>
+/// Algoritmos de hash seguros suportados (.NET 9.0)
+/// </summary>
+public enum SecureHashAlgorithm
 {
-    Md5,
-    Sha1,
+    /// <summary>SHA-256 (recomendado para uso geral)</summary>
     Sha256,
+    /// <summary>SHA-384 (segurança extra)</summary>
     Sha384,
-    Sha512
+    /// <summary>SHA-512 (máxima segurança)</summary>
+    Sha512,
+    /// <summary>SHA3-256 (algoritmo mais moderno)</summary>
+    Sha3_256,
+    /// <summary>SHA3-384</summary>
+    Sha3_384,
+    /// <summary>SHA3-512</summary>
+    Sha3_512
 }
 
 /// <summary>
-///     This class generates and compares hashes using MD5, SHA1, SHA256, SHA384,
-///     and SHA512 hashing algorithms. Before computing a hash, it appends a
-///     randomly generated salt to the plain text, and stores this salt appended
-///     to the result. To verify another plain text value against the given hash,
-///     this class will retrieve the salt value from the hash string and use it
-///     when computing a new hash of the plain text. Appending a salt value to
-///     the hash may not be the most efficient approach, so when using hashes in
-///     a real-life application, you may choose to store them separately. You may
-///     also opt to keep results as byte arrays instead of converting them into
-///     base64-encoded strings.
+/// Implementação moderna e segura para hash com salt (.NET 9.0)
+/// Remove algoritmos inseguros (MD5, SHA1) e usa apenas algoritmos seguros
 /// </summary>
-public class SimpleHash
+public static class SecureHash
 {
-    [Obsolete("Obsolete")]
-    public static string ComputeMd5HashFromFile(Stream file)
+    private const int DefaultSaltSize = 32; // 256 bits
+    private const int MinSaltSize = 16;     // 128 bits mínimo
+    private const int MaxSaltSize = 64;     // 512 bits máximo
+
+    /// <summary>
+    /// Gera hash seguro para texto com salt aleatório
+    /// </summary>
+    /// <param name="plainText">Texto a ser hasheado</param>
+    /// <param name="algorithm">Algoritmo de hash (padrão: SHA-256)</param>
+    /// <param name="options">Opções de configuração</param>
+    /// <returns>Hash em Base64 com salt anexado</returns>
+    /// <exception cref="ArgumentException">Quando parâmetros são inválidos</exception>
+    public static string ComputeHash(string plainText, 
+        SecureHashAlgorithm algorithm = SecureHashAlgorithm.Sha256, 
+        HashOptions? options = null)
     {
-        MD5 md5 = new MD5CryptoServiceProvider();
-        var retVal = md5.ComputeHash(file);
-        file.Close();
+        ArgumentException.ThrowIfNullOrWhiteSpace(plainText, nameof(plainText));
+        
+        options ??= HashOptions.Default;
+        ValidateOptions(options);
 
-        var sb = new StringBuilder();
+        // Gera salt criptograficamente seguro
+        var saltSize = options.SaltSize ?? DefaultSaltSize;
+        Span<byte> salt = stackalloc byte[saltSize];
+        RandomNumberGenerator.Fill(salt);
 
-        foreach (var t in retVal)
-            sb.Append(t.ToString("x2"));
-
-        return sb.ToString();
-    }
-
-    public static bool VerifyMd5HashFromFile(Stream file, string hashKey)
-    {
-        var hash = ComputeMd5HashFromFile(file);
-        return hash == hashKey;
+        return ComputeHashInternal(plainText, algorithm, salt, options);
     }
 
     /// <summary>
-    ///     Generates a hash for the given plain text value and returns a
-    ///     base64-encoded result. Before the hash is computed, a random salt
-    ///     is generated and appended to the plain text. This salt is stored at
-    ///     the end of the hash value, so it can be used later for hash
-    ///     verification.
+    /// Gera hash com salt específico (para testes ou casos especiais)
     /// </summary>
-    /// <param name="plainText">
-    ///     Plaintext value to be hashed. The function does not check whether
-    ///     this parameter is null.
-    /// </param>
-    /// <param name="hashAlgorithm">
-    ///     Name of the hash algorithm. Allowed values are: "MD5", "SHA1",
-    ///     "SHA256", "SHA384", and "SHA512" (if any other value is specified
-    ///     MD5 hashing algorithm will be used). This value is case-insensitive.
-    /// </param>
-    /// <param name="saltBytes">
-    ///     Salt bytes. This parameter can be null, in which case a random salt
-    ///     value will be generated.
-    /// </param>
-    /// <returns>
-    ///     Hash value formatted as a base64-encoded string.
-    /// </returns>
-    [Obsolete("Obsolete")]
-    public static string ComputeHash(string plainText,
-        HashAlgorithmType hashAlgorithm,
-        byte[] saltBytes)
+    /// <param name="plainText">Texto a ser hasheado</param>
+    /// <param name="algorithm">Algoritmo de hash</param>
+    /// <param name="salt">Salt específico</param>
+    /// <param name="options">Opções de configuração</param>
+    /// <returns>Hash em Base64 com salt anexado</returns>
+    public static string ComputeHash(string plainText, 
+        SecureHashAlgorithm algorithm, 
+        ReadOnlySpan<byte> salt, 
+        HashOptions? options = null)
     {
-        // If salt is not specified, generate it on the fly.
-        if (saltBytes == null)
-        {
-            // Define min and max salt sizes.
-            const int minSaltSize = 4;
-            const int maxSaltSize = 8;
+        ArgumentException.ThrowIfNullOrWhiteSpace(plainText, nameof(plainText));
+        
+        if (salt.Length < MinSaltSize)
+            throw new ArgumentException($"Salt deve ter pelo menos {MinSaltSize} bytes", nameof(salt));
 
-            // Generate a random number for the size of the salt.
-            var random = new Random();
-            var saltSize = random.Next(minSaltSize, maxSaltSize);
+        options ??= HashOptions.Default;
+        ValidateOptions(options);
 
-            // Allocate a byte array, which will hold the salt.
-            saltBytes = new byte[saltSize];
-
-            // Initialize a random number generator.
-            var rng = new RNGCryptoServiceProvider();
-
-            // Fill the salt with cryptographically strong byte values.
-            rng.GetNonZeroBytes(saltBytes);
-        }
-
-        // Convert plain text into a byte array.
-        var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
-
-        // Allocate array, which will hold plain text and salt.
-        var plainTextWithSaltBytes =
-            new byte[plainTextBytes.Length + saltBytes.Length];
-
-        // Copy plain text bytes into resulting array.
-        for (var i = 0; i < plainTextBytes.Length; i++)
-            plainTextWithSaltBytes[i] = plainTextBytes[i];
-
-        // Append salt bytes to the resulting array.
-        for (var i = 0; i < saltBytes.Length; i++)
-            plainTextWithSaltBytes[plainTextBytes.Length + i] = saltBytes[i];
-
-        // Because we support multiple hashing algorithms, we must define
-        // hash object as a common (abstract) base class. We will specify the
-        // actual hashing algorithm class later during object creation.
-        HashAlgorithm hash;
-
-        // Initialize appropriate hashing algorithm class.
-        switch (hashAlgorithm)
-        {
-            case HashAlgorithmType.Sha1:
-                hash = new SHA1Managed();
-                break;
-
-            case HashAlgorithmType.Sha256:
-                hash = new SHA256Managed();
-                break;
-
-            case HashAlgorithmType.Sha384:
-                hash = new SHA384Managed();
-                break;
-
-            case HashAlgorithmType.Sha512:
-                hash = new SHA512Managed();
-                break;
-
-            default:
-                hash = new MD5CryptoServiceProvider();
-                break;
-        }
-
-        // Compute hash value of our plain text with appended salt.
-        var hashBytes = hash.ComputeHash(plainTextWithSaltBytes);
-
-        // Create array which will hold hash and original salt bytes.
-        var hashWithSaltBytes = new byte[hashBytes.Length +
-                                         saltBytes.Length];
-
-        // Copy hash bytes into resulting array.
-        for (var i = 0; i < hashBytes.Length; i++)
-            hashWithSaltBytes[i] = hashBytes[i];
-
-        // Append salt bytes to the result.
-        for (var i = 0; i < saltBytes.Length; i++)
-            hashWithSaltBytes[hashBytes.Length + i] = saltBytes[i];
-
-        // Convert result into a base64-encoded string.
-        var hashValue = Convert.ToBase64String(hashWithSaltBytes);
-
-        // Return the result.
-        return hashValue;
+        return ComputeHashInternal(plainText, algorithm, salt, options);
     }
 
     /// <summary>
-    ///     Compares a hash of the specified plain text value to a given hash
-    ///     value. Plain text is hashed with the same salt value as the original
-    ///     hash.
+    /// Verifica se o texto corresponde ao hash fornecido
     /// </summary>
-    /// <param name="plainText">
-    ///     Plain text to be verified against the specified hash. The function
-    ///     does not check whether this parameter is null.
-    /// </param>
-    /// <param name="hashAlgorithm">
-    ///     Name of the hash algorithm. Allowed values are: "MD5", "SHA1",
-    ///     "SHA256", "SHA384", and "SHA512" (if any other value is specified,
-    ///     MD5 hashing algorithm will be used). This value is case-insensitive.
-    /// </param>
-    /// <param name="hashValue">
-    ///     Base64-encoded hash value produced by ComputeHash function. This value
-    ///     includes the original salt appended to it.
-    /// </param>
-    /// <returns>
-    ///     If computed hash mathes the specified hash the function the return
-    ///     value is true; otherwise, the function returns false.
-    /// </returns>
-    public static bool VerifyHash(string plainText,
-        HashAlgorithmType hashAlgorithm,
-        string hashValue)
+    /// <param name="plainText">Texto a ser verificado</param>
+    /// <param name="hashValue">Hash em Base64 para comparação</param>
+    /// <param name="algorithm">Algoritmo usado no hash original</param>
+    /// <param name="options">Opções de configuração</param>
+    /// <returns>True se o texto corresponde ao hash</returns>
+    public static bool VerifyHash(string plainText, 
+        string hashValue, 
+        SecureHashAlgorithm algorithm = SecureHashAlgorithm.Sha256,
+        HashOptions? options = null)
     {
-        // Convert base64-encoded hash value into a byte array.
-        var hashWithSaltBytes = Convert.FromBase64String(hashValue);
+        ArgumentException.ThrowIfNullOrWhiteSpace(plainText, nameof(plainText));
+        ArgumentException.ThrowIfNullOrWhiteSpace(hashValue, nameof(hashValue));
+        
+        options ??= HashOptions.Default;
 
-        // We must know size of hash (without salt).
-        int hashSizeInBits;
-
-        // Size of hash is based on the specified algorithm.
-        switch (hashAlgorithm)
+        try
         {
-            case HashAlgorithmType.Sha1:
-                hashSizeInBits = 160;
-                break;
+            // Decodifica hash + salt
+            var hashWithSalt = Convert.FromBase64String(hashValue);
+            var hashSize = GetHashSize(algorithm);
+            
+            if (hashWithSalt.Length < hashSize + MinSaltSize)
+                return false;
 
-            case HashAlgorithmType.Sha256:
-                hashSizeInBits = 256;
-                break;
-
-            case HashAlgorithmType.Sha384:
-                hashSizeInBits = 384;
-                break;
-
-            case HashAlgorithmType.Sha512:
-                hashSizeInBits = 512;
-                break;
-
-            default: // Must be MD5
-                hashSizeInBits = 128;
-                break;
+            // Extrai salt do final
+            var salt = hashWithSalt.AsSpan()[hashSize..];
+            
+            // Recalcula hash com o mesmo salt
+            var expectedHash = ComputeHashInternal(plainText, algorithm, salt, options);
+            
+            // Comparação resistente a timing attacks
+            return CryptographicOperations.FixedTimeEquals(
+                Convert.FromBase64String(hashValue),
+                Convert.FromBase64String(expectedHash));
         }
-
-        // Convert size of hash from bits to bytes.
-        var hashSizeInBytes = hashSizeInBits / 8;
-
-        // Make sure that the specified hash value is long enough.
-        if (hashWithSaltBytes.Length < hashSizeInBytes)
+        catch (Exception ex) when (ex is FormatException or ArgumentException)
+        {
             return false;
+        }
+    }
 
-        // Allocate array to hold original salt bytes retrieved from hash.
-        var saltBytes = new byte[hashWithSaltBytes.Length -
-                                 hashSizeInBytes];
+    /// <summary>
+    /// Computa hash de arquivo de forma assíncrona
+    /// </summary>
+    /// <param name="filePath">Caminho do arquivo</param>
+    /// <param name="algorithm">Algoritmo de hash</param>
+    /// <param name="cancellationToken">Token de cancelamento</param>
+    /// <returns>Hash do arquivo em hexadecimal</returns>
+    public static async Task<string> ComputeFileHashAsync(string filePath, 
+        SecureHashAlgorithm algorithm = SecureHashAlgorithm.Sha256,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(filePath, nameof(filePath));
 
-        // Copy salt from the end of the hash to the new array.
-        for (var i = 0; i < saltBytes.Length; i++)
-            saltBytes[i] = hashWithSaltBytes[hashSizeInBytes + i];
+        if (!File.Exists(filePath))
+            throw new FileNotFoundException($"Arquivo não encontrado: {filePath}");
 
-        // Compute a new hash string.
-        var expectedHashString =
-            ComputeHash(plainText, hashAlgorithm, saltBytes);
+        using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 
+            bufferSize: 4096, useAsync: true);
+        
+        return await ComputeStreamHashAsync(fileStream, algorithm, cancellationToken);
+    }
 
-        // If the computed hash matches the specified hash,
-        // the plain text value must be correct.
-        return hashValue == expectedHashString;
+    /// <summary>
+    /// Computa hash de stream de forma assíncrona
+    /// </summary>
+    /// <param name="stream">Stream a ser hasheada</param>
+    /// <param name="algorithm">Algoritmo de hash</param>
+    /// <param name="cancellationToken">Token de cancelamento</param>
+    /// <returns>Hash em hexadecimal</returns>
+    public static async Task<string> ComputeStreamHashAsync(Stream stream, 
+        SecureHashAlgorithm algorithm = SecureHashAlgorithm.Sha256,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(stream, nameof(stream));
+
+        if (!stream.CanRead)
+            throw new ArgumentException("Stream deve ser legível", nameof(stream));
+
+        using var hashAlg = CreateHashAlgorithm(algorithm);
+        var hashBytes = await hashAlg.ComputeHashAsync(stream, cancellationToken);
+        
+        return Convert.ToHexString(hashBytes).ToLowerInvariant();
+    }
+
+    /// <summary>
+    /// Verifica integridade de arquivo comparando com hash esperado
+    /// </summary>
+    /// <param name="filePath">Caminho do arquivo</param>
+    /// <param name="expectedHash">Hash esperado em hexadecimal</param>
+    /// <param name="algorithm">Algoritmo de hash</param>
+    /// <param name="cancellationToken">Token de cancelamento</param>
+    /// <returns>True se o arquivo está íntegro</returns>
+    public static async Task<bool> VerifyFileIntegrityAsync(string filePath, 
+        string expectedHash,
+        SecureHashAlgorithm algorithm = SecureHashAlgorithm.Sha256,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var actualHash = await ComputeFileHashAsync(filePath, algorithm, cancellationToken);
+            
+            // Normaliza hashes para comparação
+            var expected = expectedHash.Replace("-", "").ToLowerInvariant();
+            var actual = actualHash.Replace("-", "").ToLowerInvariant();
+            
+            return CryptographicOperations.FixedTimeEquals(
+                Encoding.UTF8.GetBytes(expected),
+                Encoding.UTF8.GetBytes(actual));
+        }
+        catch
+        {
+            return false;
+        }
+    }
+    /// <param name="algorithm">Algoritmo a ser verificado</param>
+    /// <returns>True se o algoritmo está disponível</returns>
+    public static bool IsAlgorithmSupported(SecureHashAlgorithm algorithm)
+    {
+        try
+        {
+            using var hashAlg = CreateHashAlgorithm(algorithm);
+            return true;
+        }
+        catch (NotSupportedException)
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Retorna lista de algoritmos suportados na plataforma atual
+    /// </summary>
+    /// <returns>Array com algoritmos disponíveis</returns>
+    public static SecureHashAlgorithm[] GetSupportedAlgorithms()
+    {
+        var allAlgorithms = Enum.GetValues<SecureHashAlgorithm>();
+        return allAlgorithms.Where(IsAlgorithmSupported).ToArray();
+    }
+    /// <param name="filePath">Caminho do arquivo</param>
+    /// <param name="expectedHash">Hash esperado em hexadecimal</param>
+    /// <param name="algorithm">Algoritmo de hash</param>
+    /// <param name="cancellationToken">Token de cancelamento</param>
+    /// <returns>True se o arquivo está íntegro</returns>
+
+    /// <summary>
+    /// Implementação interna para computar hash
+    /// </summary>
+    private static string ComputeHashInternal(string plainText, 
+        SecureHashAlgorithm algorithm, 
+        ReadOnlySpan<byte> salt, 
+        HashOptions options)
+    {
+        // Converte texto para bytes
+        var maxTextBytes = Encoding.UTF8.GetMaxByteCount(plainText.Length);
+        using var textBuffer = SecureMemory.Allocate<byte>(maxTextBytes);
+        var actualTextBytes = Encoding.UTF8.GetBytes(plainText, textBuffer.Span);
+        var textSpan = textBuffer.Span[..actualTextBytes];
+
+        // Combina texto + salt
+        var combinedSize = textSpan.Length + salt.Length;
+        using var combinedBuffer = SecureMemory.Allocate<byte>(combinedSize);
+        var combinedSpan = combinedBuffer.Span;
+        
+        textSpan.CopyTo(combinedSpan);
+        salt.CopyTo(combinedSpan[textSpan.Length..]);
+
+        // Computa hash
+        using var hashAlg = CreateHashAlgorithm(algorithm);
+        Span<byte> hashBytes = stackalloc byte[GetHashSize(algorithm)];
+        
+        if (!hashAlg.TryComputeHash(combinedSpan, hashBytes, out var bytesWritten))
+            throw new CryptographicException("Erro ao computar hash");
+
+        // Combina hash + salt para resultado final
+        var resultSize = bytesWritten + salt.Length;
+        var result = new byte[resultSize];
+        var resultSpan = result.AsSpan();
+        
+        hashBytes[..bytesWritten].CopyTo(resultSpan);
+        salt.CopyTo(resultSpan[bytesWritten..]);
+
+        return Convert.ToBase64String(result);
+    }
+
+    /// <summary>
+    /// Cria instância do algoritmo de hash
+    /// </summary>
+    private static HashAlgorithm CreateHashAlgorithm(SecureHashAlgorithm algorithm) => algorithm switch
+    {
+        SecureHashAlgorithm.Sha256 => SHA256.Create(),
+        SecureHashAlgorithm.Sha384 => SHA384.Create(),
+        SecureHashAlgorithm.Sha512 => SHA512.Create(),
+        SecureHashAlgorithm.Sha3_256 => SHA3_256.Create(),
+        SecureHashAlgorithm.Sha3_384 => SHA3_384.Create(),
+        SecureHashAlgorithm.Sha3_512 => SHA3_512.Create(),
+        _ => throw new ArgumentException($"Algoritmo não suportado: {algorithm}")
+    };
+
+    /// <summary>
+    /// Retorna tamanho do hash em bytes
+    /// </summary>
+    private static int GetHashSize(SecureHashAlgorithm algorithm) => algorithm switch
+    {
+        SecureHashAlgorithm.Sha256 or SecureHashAlgorithm.Sha3_256 => 32,
+        SecureHashAlgorithm.Sha384 or SecureHashAlgorithm.Sha3_384 => 48,
+        SecureHashAlgorithm.Sha512 or SecureHashAlgorithm.Sha3_512 => 64,
+        _ => throw new ArgumentException($"Algoritmo não suportado: {algorithm}")
+    };
+
+    /// <summary>
+    /// Valida opções de configuração
+    /// </summary>
+    private static void ValidateOptions(HashOptions options)
+    {
+        if (options.SaltSize.HasValue)
+        {
+            var saltSize = options.SaltSize.Value;
+            if (saltSize < MinSaltSize || saltSize > MaxSaltSize)
+                throw new ArgumentException($"Tamanho do salt deve estar entre {MinSaltSize} e {MaxSaltSize} bytes");
+        }
+    }
+}
+
+/// <summary>
+/// Opções de configuração para operações de hash
+/// </summary>
+public sealed record HashOptions
+{
+    /// <summary>
+    /// Tamanho do salt em bytes (padrão: 32 bytes)
+    /// </summary>
+    public int? SaltSize { get; init; }
+
+    /// <summary>
+    /// Configuração padrão
+    /// </summary>
+    public static HashOptions Default { get; } = new();
+
+    /// <summary>
+    /// Configuração de alta segurança
+    /// </summary>
+    public static HashOptions HighSecurity { get; } = new()
+    {
+        SaltSize = 64 // 512 bits
+    };
+
+    /// <summary>
+    /// Configuração compacta (menor overhead)
+    /// </summary>
+    public static HashOptions Compact { get; } = new()
+    {
+        SaltSize = 16 // 128 bits
+    };
+}
+
+/// <summary>
+/// Gerenciador de memória segura para operações de hash
+/// </summary>
+file static class SecureMemory
+{
+    public static SecureBuffer<T> Allocate<T>(int length) where T : unmanaged
+        => new(length);
+}
+
+/// <summary>
+/// Buffer seguro com limpeza automática
+/// </summary>
+file sealed class SecureBuffer<T> : IDisposable where T : unmanaged
+{
+    private readonly T[] _buffer;
+    private bool _disposed;
+
+    public SecureBuffer(int length)
+    {
+        _buffer = GC.AllocateUninitializedArray<T>(length, pinned: true);
+    }
+
+    public Span<T> Span => _disposed 
+        ? throw new ObjectDisposedException(nameof(SecureBuffer<T>)) 
+        : _buffer.AsSpan();
+
+    public void Dispose()
+    {
+        if (!_disposed)
+        {
+            // Limpa memória convertendo para bytes
+            var byteSpan = MemoryMarshal.AsBytes(_buffer.AsSpan());
+            CryptographicOperations.ZeroMemory(byteSpan);
+            _disposed = true;
+        }
+    }
+}
+
+/// <summary>
+/// Métodos de extensão para facilitar o uso
+/// </summary>
+public static class SecureHashExtensions
+{
+    /// <summary>
+    /// Gera hash seguro da string
+    /// </summary>
+    public static string ToSecureHash(this string text, SecureHashAlgorithm algorithm = SecureHashAlgorithm.Sha256)
+        => SecureHash.ComputeHash(text, algorithm);
+
+    /// <summary>
+    /// Verifica se a string corresponde ao hash
+    /// </summary>
+    public static bool VerifyAgainstHash(this string text, string hash, SecureHashAlgorithm algorithm = SecureHashAlgorithm.Sha256)
+        => SecureHash.VerifyHash(text, hash, algorithm);
+
+    /// <summary>
+    /// Computa hash de arquivo de forma assíncrona
+    /// </summary>
+    public static Task<string> ComputeFileHashAsync(this FileInfo fileInfo, 
+        SecureHashAlgorithm algorithm = SecureHashAlgorithm.Sha256,
+        CancellationToken cancellationToken = default)
+        => SecureHash.ComputeFileHashAsync(fileInfo.FullName, algorithm, cancellationToken);
+}
+
+// Exemplos de uso para .NET 9.0:
+public class SecureHashUsageExamples
+{
+    public void BasicUsage()
+    {
+        const string password = "MinhaS3nh@Forte2024!";
+        
+        // Hash com salt automático
+        var hash = password.ToSecureHash();
+        Console.WriteLine($"Hash gerado: {hash}");
+        
+        // Verificação
+        var isValid = password.VerifyAgainstHash(hash);
+        Console.WriteLine($"Senha válida: {isValid}");
+        
+        // Hash com algoritmo específico
+        var sha512Hash = SecureHash.ComputeHash(password, SecureHashAlgorithm.Sha512);
+        var sha3Hash = SecureHash.ComputeHash(password, SecureHashAlgorithm.Sha3_256);
+    }
+
+    public void AdvancedUsage()
+    {
+        const string sensitiveData = "Dados ultra-secretos";
+        
+        // Hash com configuração de alta segurança
+        var secureHash = SecureHash.ComputeHash(sensitiveData, 
+            SecureHashAlgorithm.Sha3_512, 
+            HashOptions.HighSecurity);
+        
+        // Verificação com mesmas configurações
+        var isValid = SecureHash.VerifyHash(sensitiveData, secureHash, 
+            SecureHashAlgorithm.Sha3_512, 
+            HashOptions.HighSecurity);
+            
+        Console.WriteLine($"Verificação de alta segurança: {isValid}");
+    }
+
+    public async Task FileIntegrityUsage()
+    {
+        const string filePath = @"C:\temp\document.pdf";
+        
+        // Computa hash do arquivo
+        var fileHash = await SecureHash.ComputeFileHashAsync(filePath, SecureHashAlgorithm.Sha256);
+        Console.WriteLine($"Hash do arquivo: {fileHash}");
+        
+        // Verifica integridade
+        var isIntegral = await SecureHash.VerifyFileIntegrityAsync(filePath, fileHash);
+        Console.WriteLine($"Arquivo íntegro: {isIntegral}");
+        
+        // Usando extension method
+        var fileInfo = new FileInfo(filePath);
+        var hash2 = await fileInfo.ComputeFileHashAsync(SecureHashAlgorithm.Sha3_256);
+    }
+
+    public void CustomSaltUsage()
+    {
+        const string text = "Dados com salt customizado";
+        
+        // Salt customizado
+        var customSalt = new byte[32];
+        RandomNumberGenerator.Fill(customSalt);
+        
+        var hash = SecureHash.ComputeHash(text, SecureHashAlgorithm.Sha256, customSalt);
+        var isValid = SecureHash.VerifyHash(text, hash, SecureHashAlgorithm.Sha256);
+        
+        Console.WriteLine($"Hash com salt customizado válido: {isValid}");
+    }
+
+    public void PlatformCompatibilityUsage()
+    {
+        const string data = "Teste de compatibilidade";
+        
+        // Verifica algoritmos disponíveis
+        var supportedAlgorithms = SecureHash.GetSupportedAlgorithms();
+        Console.WriteLine($"Algoritmos suportados: {string.Join(", ", supportedAlgorithms)}");
+        
+        // Tenta usar SHA3 com fallback
+        SecureHashAlgorithm algorithm;
+        if (SecureHash.IsAlgorithmSupported(SecureHashAlgorithm.Sha3_256))
+        {
+            algorithm = SecureHashAlgorithm.Sha3_256;
+            Console.WriteLine("Usando SHA3-256 (mais moderno)");
+        }
+        else
+        {
+            algorithm = SecureHashAlgorithm.Sha256;
+            Console.WriteLine("Usando SHA-256 (fallback compatível)");
+        }
+        
+        var hash = SecureHash.ComputeHash(data, algorithm);
+        Console.WriteLine($"Hash gerado: {hash}");
+    }
+
+    public void ErrorHandlingUsage()
+    {
+        const string data = "Teste com tratamento de erro";
+        
+        try
+        {
+            // Tenta usar algoritmo que pode não estar disponível
+            var hash = SecureHash.ComputeHash(data, SecureHashAlgorithm.Sha3_512);
+            Console.WriteLine($"SHA3-512 hash: {hash}");
+        }
+        catch (NotSupportedException ex)
+        {
+            Console.WriteLine($"SHA3 não suportado: {ex.Message}");
+            
+            // Fallback para algoritmo garantidamente disponível
+            var fallbackHash = SecureHash.ComputeHash(data, SecureHashAlgorithm.Sha256);
+            Console.WriteLine($"Fallback SHA-256 hash: {fallbackHash}");
+        }
+    }
+
+    public void PerformanceOptimizedUsage()
+    {
+        // Para cenários que requerem performance máxima
+        const string data = "Performance crítica";
+        
+        // Usa configuração compacta (menor overhead)
+        var compactHash = SecureHash.ComputeHash(data, 
+            SecureHashAlgorithm.Sha256, 
+            HashOptions.Compact);
+            
+        Console.WriteLine($"Hash compacto: {compactHash}");
     }
 }

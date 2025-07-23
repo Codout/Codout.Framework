@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Data;
+using Codout.Framework.DAL.Entity;
 
 namespace Codout.Framework.DAL;
 
 public interface IUnitOfWork : IDisposable
 {
-    void BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
-    void Commit(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
+    void Commit();
+    void Commit(IsolationLevel isolationLevel);
     void Rollback();
+    void BeginTransaction();
+    void BeginTransaction(IsolationLevel isolationLevel);
+    T InTransaction<T>(Func<T> work) where T : class, IEntity;
 }

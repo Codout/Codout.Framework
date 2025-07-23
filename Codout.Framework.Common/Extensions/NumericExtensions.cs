@@ -8,7 +8,7 @@ namespace Codout.Framework.Common.Extensions;
 /// <summary>
 ///     Extensões comuns para tipos relacionadas a números.
 /// </summary>
-public static class Numeric
+public static class NumericExtensions
 {
     #region IsNaturalNumber
 

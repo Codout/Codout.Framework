@@ -7,7 +7,7 @@ namespace Codout.Framework.Common.Extensions;
 /// <summary>
 ///     Extensões comuns para tipos relacionadas a objetos.
 /// </summary>
-public static class Objects
+public static class ObjectExtensions
 {
     #region ChangeTypeTo<T>
 

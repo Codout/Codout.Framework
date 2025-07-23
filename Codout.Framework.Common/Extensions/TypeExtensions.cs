@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Codout.Framework.Common.Extensions;
 
-public static class Types
+public static class TypeExtensions
 {
     public static bool IsAssignableToGenericType(this Type givenType, Type genericType)
     {

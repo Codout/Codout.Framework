@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using Codout.Framework.Common.Extensions;
 
-namespace Codout.Framework.Common.Extensions;
+namespace Codout.Framework.Common.Helpers;
 
 /// <summary>
 ///     Extensões comuns para tipos relacionadas ao Inflector.
@@ -205,7 +206,7 @@ public static class Inflector
     /// <returns></returns>
     public static string ToTitleCase(this string word)
     {
-        return Regex.Replace(ToHumanCase(AddUnderscores(word)), @"\b([a-z])",
+        return Regex.Replace(word.AddUnderscores().ToHumanCase(), @"\b([a-z])",
             match => match.Captures[0].Value.ToUpper());
     }
 
@@ -220,7 +221,7 @@ public static class Inflector
     /// <returns></returns>
     public static string ToHumanCase(this string lowercaseAndUnderscoredWord)
     {
-        return MakeInitialCaps(Regex.Replace(lowercaseAndUnderscoredWord, @"_", " "));
+        return Regex.Replace(lowercaseAndUnderscoredWord, @"_", " ").MakeInitialCaps();
     }
 
     #endregion
@@ -249,7 +250,7 @@ public static class Inflector
     /// <returns></returns>
     public static string ToPascalCase(this string lowercaseAndUnderscoredWord)
     {
-        return ToPascalCase(lowercaseAndUnderscoredWord, true);
+        return lowercaseAndUnderscoredWord.ToPascalCase(true);
     }
 
     #endregion
@@ -302,7 +303,7 @@ public static class Inflector
     /// <returns></returns>
     public static string ToCamelCase(this string lowercaseAndUnderscoredWord)
     {
-        return MakeInitialLowerCase(ToPascalCase(lowercaseAndUnderscoredWord));
+        return lowercaseAndUnderscoredWord.ToPascalCase().MakeInitialLowerCase();
     }
 
     #endregion

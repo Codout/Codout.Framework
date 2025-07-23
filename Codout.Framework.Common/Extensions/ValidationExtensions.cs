@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using Codout.Framework.Common.Constants;
 
 namespace Codout.Framework.Common.Extensions;
 
 /// <summary>
 ///     Extensões comuns para tipos relacionadas a validações.
 /// </summary>
-public static class Validation
+public static class ValidationExtensions
 {
     #region IsAlpha
 

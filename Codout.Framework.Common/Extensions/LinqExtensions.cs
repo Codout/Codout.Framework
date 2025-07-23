@@ -5,7 +5,7 @@ namespace Codout.Framework.Common.Extensions;
 /// <summary>
 ///     Extensões comuns para tipos relacionadas a Linq.
 /// </summary>
-public static class Linq
+public static class LinqExtensions
 {
     #region ParseObjectValue
 
