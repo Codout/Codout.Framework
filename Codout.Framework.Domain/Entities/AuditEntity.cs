@@ -1,7 +1,7 @@
 ﻿using System;
 using Codout.Framework.Domain.Interfaces;
 
-namespace Codout.Framework.Domain;
+namespace Codout.Framework.Domain.Entities;
 
 [Serializable]
 public abstract class AuditEntity<TId> : Entity<TId>, IAudit

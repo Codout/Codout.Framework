@@ -2,7 +2,7 @@
 using Codout.DynamicLinq;
 using Codout.Framework.Api.Client;
 using Codout.Framework.Application.Interfaces;
-using Codout.Framework.Domain;
+using Codout.Framework.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

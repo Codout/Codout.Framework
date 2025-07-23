@@ -1,6 +1,6 @@
 ﻿namespace Codout.Framework.Domain.Interfaces;
 
-public interface ICodeSequence
+public interface ISequence
 {
     long Code { get; set; }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Codout.Framework.Domain;
+namespace Codout.Framework.Domain.Base;
 
 /// <summary>
 ///     Provides a standard base class for facilitating comparison of objects.
@@ -38,10 +38,10 @@ public abstract class BaseObject
     private static Dictionary<Type, IEnumerable<PropertyInfo>> _signaturePropertiesDictionary;
 
     /// <summary>
-    ///     Determines whether the specified <see cref="System.Object" /> is equal to this instance.
+    ///     Determines whether the specified <see cref="object" /> is equal to this instance.
     /// </summary>
-    /// <param name="obj">The <see cref="Object" /> to compare with the current <see cref="Object" />.</param>
-    /// <returns><c>true</c> if the specified <see cref="Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
+    /// <param name="obj">The <see cref="object" /> to compare with the current <see cref="object" />.</param>
+    /// <returns><c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
     public override bool Equals(object obj)
     {
         var compareTo = obj as BaseObject;
@@ -79,7 +79,7 @@ public abstract class BaseObject
 
             hashCode = propertyInfos.Select(property => property.GetValue(this, null))
                 .Where(value => value != null)
-                .Aggregate(hashCode, (current, value) => (current * HashMultiplier) ^ value.GetHashCode());
+                .Aggregate(hashCode, (current, value) => current * HashMultiplier ^ value.GetHashCode());
 
             if (propertyInfos.Any()) return hashCode;
 
@@ -127,7 +127,7 @@ public abstract class BaseObject
                 let valueToCompareTo = property.GetValue(compareTo, null)
                 where valueOfThisObject != null || valueToCompareTo != null
                 where
-                    (valueOfThisObject == null) ^ (valueToCompareTo == null) ||
+                    valueOfThisObject == null ^ valueToCompareTo == null ||
                     !valueOfThisObject.Equals(valueToCompareTo)
                 select valueOfThisObject).Any())
             return false;

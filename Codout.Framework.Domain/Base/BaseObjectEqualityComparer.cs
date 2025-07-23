@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Codout.Framework.Domain;
+namespace Codout.Framework.Domain.Base;
 
 /// <summary>
 ///     Provides a comparer for supporting LINQ methods such as Intersect, Union and Distinct.
@@ -31,7 +31,7 @@ internal class BaseObjectEqualityComparer<T> : IEqualityComparer<T>
         // comparing two null values is consistent with the C# language
         if (firstObject == null && secondObject == null) return true;
 
-        if ((firstObject == null) ^ (secondObject == null)) return false;
+        if (firstObject == null ^ secondObject == null) return false;
 
         return firstObject.Equals(secondObject);
     }

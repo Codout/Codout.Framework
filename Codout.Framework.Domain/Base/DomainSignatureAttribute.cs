@@ -1,6 +1,6 @@
 using System;
 
-namespace Codout.Framework.Domain;
+namespace Codout.Framework.Domain.Base;
 
 /// <summary>
 ///     Facilitates indicating which property(s) describe the unique signature of an

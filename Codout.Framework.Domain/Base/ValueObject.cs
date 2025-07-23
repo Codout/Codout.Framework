@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Codout.Framework.Domain;
+namespace Codout.Framework.Domain.Base;
 
 /// <summary>
 ///     Provides a standard base class for facilitating comparison of value objects using all the object's properties.

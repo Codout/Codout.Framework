@@ -4,8 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using Codout.Framework.DAL.Entity;
+using Codout.Framework.Domain.Base;
 
-namespace Codout.Framework.Domain;
+namespace Codout.Framework.Domain.Entities;
 
 /// <summary>
 ///     For a discussion of this object, see
@@ -66,10 +67,10 @@ public abstract class Entity<TId> : ValidatableObject, IEntity<TId>
     }
 
     /// <summary>
-    ///     Determines whether the specified <see cref="System.Object" /> is equal to this instance.
+    ///     Determines whether the specified <see cref="object" /> is equal to this instance.
     /// </summary>
     /// <param name="obj">The <see cref="object" /> to compare with the current <see cref="object" />.</param>
-    /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
+    /// <returns><c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
     public override bool Equals(object obj)
     {
         var compareTo = obj as Entity<TId>;
@@ -111,7 +112,7 @@ public abstract class Entity<TId> : ValidatableObject, IEntity<TId>
                 // identically valued properties, even if they're of two different types, 
                 // so we include the object's type in the hash calculation
                 var hashCode = GetType().GetHashCode();
-                _cachedHashcode = (hashCode * HashMultiplier) ^ Id.GetHashCode();
+                _cachedHashcode = hashCode * HashMultiplier ^ Id.GetHashCode();
             }
 
         return _cachedHashcode.Value;

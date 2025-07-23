@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Codout.Framework.Domain;
+namespace Codout.Framework.Domain.Base;
 
 /// <summary>
 ///     Serves as the base class for objects that are validatable.
