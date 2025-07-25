@@ -9,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using NHibernate;
 using NHibernate.Cfg;
-using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
 
 namespace Codout.Framework.NH;
@@ -50,37 +49,35 @@ public class SessionFactoryProvider : IHostedService, IDisposable
         if (!File.Exists(xmlPath))
             throw new FileNotFoundException($"Arquivo NHibernate não encontrado: {xmlPath}");
 
-        var cfg = new Configuration();
-        cfg.Configure(xmlPath);
-        
-        // Obter nome da connection string do XML
-        var connectionStringName = cfg.Properties[NHibernate.Cfg.Environment.ConnectionStringName];
+        var baseCfg = new Configuration().Configure(xmlPath);
 
+        var connectionStringName = baseCfg.Properties[NHibernate.Cfg.Environment.ConnectionStringName];
         if (string.IsNullOrEmpty(connectionStringName))
             throw new InvalidOperationException("Connection string name não encontrada no XML.");
 
-        // Agora carrega a connection string do appsettings.json
         var connectionString = _configuration.GetConnectionString(connectionStringName);
-
         if (string.IsNullOrEmpty(connectionString))
             throw new InvalidOperationException($"Connection string '{connectionStringName}' não encontrada em appsettings.json.");
 
-        cfg.SetProperty(NHibernate.Cfg.Environment.ConnectionString, connectionString);
+        baseCfg.SetProperty(NHibernate.Cfg.Environment.ConnectionString, connectionString);
 
-        var fluentlyCfg = Fluently.Configure(cfg);
+        var fluent = Fluently.Configure(baseCfg);
 
         var assemblyNames = _configuration.GetSection("NHibernate:MappingAssemblies").Get<string[]>();
         var assemblies = assemblyNames.Select(name => Assembly.Load(new AssemblyName(name))).ToArray();
 
         foreach (var assembly in assemblies)
-            fluentlyCfg.Mappings(m => m.FluentMappings.AddFromAssembly(assembly));    
+            fluent.Mappings(m => m.FluentMappings.AddFromAssembly(assembly));
 
-        var autoUpdate = _configuration.GetValue<bool>("NHibernate:AutoUpdateSchema");
-        if (autoUpdate)
-            new SchemaUpdate(cfg).Execute(useStdOut: true, doUpdate: true);
+        // Aqui sim: build da config com mapeamentos aplicados
+        var finalCfg = fluent.BuildConfiguration();
 
-        return fluentlyCfg.BuildSessionFactory();
+        if (_configuration.GetValue<bool>("NHibernate:AutoUpdateSchema"))
+            new SchemaUpdate(finalCfg).Execute(useStdOut: true, doUpdate: true);
+
+        return finalCfg.BuildSessionFactory();
     }
+
 
     // IHostedService: nenhuma ação na inicialização
     public Task StartAsync(CancellationToken cancellationToken) => Task.CompletedTask;
