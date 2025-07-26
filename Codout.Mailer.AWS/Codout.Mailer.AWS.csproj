@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
-		<Version>4.1.1</Version>
 		<Authors>Clovis Coli Jr</Authors>
+		<Version>5.0.0</Version>
 		<Company>Codout</Company>
 		<Description>Sender da Amazon Simple Email Service para envio de E-mails utilizando a biblioteca Codout.Mailer</Description>
 		<Copyright>Codout</Copyright>

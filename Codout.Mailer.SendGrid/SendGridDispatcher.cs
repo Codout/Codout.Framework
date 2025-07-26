@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using Codout.Mailer.Helpers;
+using Codout.Mailer.Interfaces;
 using Codout.Mailer.Models;
 using SendGrid;
 using SendGrid.Helpers.Mail;
@@ -11,7 +12,7 @@ using Attachment = System.Net.Mail.Attachment;
 
 namespace Codout.Mailer.SendGrid;
 
-public class SendGridDispatcher : ICodoutMailerDispatcher
+public class SendGridDispatcher : IMailerDispatcher
 {
     private readonly SendGridSettings _sendGridSettings;
 

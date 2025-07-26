@@ -10,14 +10,12 @@ public static class Extensions
 
         stream.Position = 0;
 
-        using (var ms = new MemoryStream())
+        using var ms = new MemoryStream();
+        while (true)
         {
-            while (true)
-            {
-                var read = stream.Read(buffer, 0, buffer.Length);
-                if (read <= 0) return ms.ToArray();
-                ms.Write(buffer, 0, read);
-            }
+            var read = stream.Read(buffer, 0, buffer.Length);
+            if (read <= 0) return ms.ToArray();
+            ms.Write(buffer, 0, read);
         }
     }
 }

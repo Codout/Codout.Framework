@@ -7,13 +7,14 @@ using Amazon;
 using Amazon.Runtime;
 using Amazon.SimpleEmailV2;
 using Amazon.SimpleEmailV2.Model;
+using Codout.Mailer.Interfaces;
 using Codout.Mailer.Models;
 using MimeKit;
 using ContentType = MimeKit.ContentType;
 
 namespace Codout.Mailer.AWS;
 
-public class AWSDispatcher(AWSSettings settings) : ICodoutMailerDispatcher
+public class AWSDispatcher(AWSSettings settings) : IMailerDispatcher
 {
     public async Task<MailerResponse> Send(MailAddress from,
         MailAddress to,
