@@ -1,66 +1,66 @@
 # 📧 Codout.Mailer
 
-Biblioteca robusta e extensível para envio de e-mails em aplicações .NET 9, com suporte a templates Razor, multiple providers (SendGrid, AWS SES) e observabilidade completa.
+Robust and extensible library for sending emails in .NET 9 applications, with support for Razor templates, multiple providers (SendGrid, AWS SES), and complete observability.
 
-## 🚀 Características
+## 🚀 Features
 
-- ✅ **Templates Razor**: Renderização de e-mails HTML usando RazorLight
-- ✅ **Multiple Providers**: Suporte a SendGrid e AWS SES
-- ✅ **Dependency Injection**: Integração nativa com ASP.NET Core DI
-- ✅ **Observabilidade**: Tracing distribuído e métricas com OpenTelemetry
-- ✅ **Health Checks**: Monitoramento de saúde dos serviços
-- ✅ **Cache Inteligente**: Cache de templates compilados para performance
-- ✅ **Retry Policy**: Tentativas automáticas com exponential backoff
-- ✅ **Configuração Flexível**: Configuração via appsettings.json e código
+- ✅ **Razor Templates**: HTML email rendering using RazorLight
+- ✅ **Multiple Providers**: Support for SendGrid and AWS SES
+- ✅ **Dependency Injection**: Native integration with ASP.NET Core DI
+- ✅ **Observability**: Distributed tracing and metrics with OpenTelemetry
+- ✅ **Health Checks**: Service health monitoring
+- ✅ **Smart Caching**: Compiled template caching for performance
+- ✅ **Retry Policy**: Automatic retries with exponential backoff
+- ✅ **Flexible Configuration**: Configuration via appsettings.json and code
 
-## 📦 Instalação
+## 📦 Installation
 
-### Pacote Principal
+### Main Package
 ```
 dotnet add package Codout.Mailer
 ```
 
-### Provedores Específicos
+### Specific Providers
 ```
-# Para SendGrid
+# For SendGrid
 dotnet add package Codout.Mailer.SendGrid
 
-# Para AWS SES
+# For AWS SES
 dotnet add package Codout.Mailer.AWS
 ```
 
-## ⚙️ Configuração
+## ⚙️ Configuration
 
-### 1. **Injeção de Dependência no Program.cs**
+### 1. **Dependency Injection in Program.cs**
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuração básica do mailer
+// Basic mailer configuration
 builder.Services.AddMailer(builder.Configuration, options =>
 {
-    // Define onde estão os templates embarcados no seu projeto
+    // Define where the embedded templates are located in your project
     options.TemplateRootType = typeof(Program);
 });
 
-// Escolha do provedor de e-mail
+// Choose email provider
 builder.Services.AddMailerWithSendGrid(builder.Configuration);
-// OU
+// OR
 // builder.Services.AddMailerWithAws(builder.Configuration);
 
-// Registra seu serviço de e-mail personalizado
+// Register your custom email service
 builder.Services.AddScoped<EmailService>();
 
 var app = builder.Build();
 ```
 
-### 2. **Configurações no appsettings.json**
+### 2. **Settings in appsettings.json**
 
 ```json
 {
   "MailerSettings": {
-    "DefaultFromName": "Sistema de Email",
-    "DefaultFromEmail": "noreply@exemplo.com"
+    "DefaultFromName": "Email System",
+    "DefaultFromEmail": "noreply@example.com"
   },
   "MailerOptions": {
     "TemplateRenderTimeoutSeconds": 30,
@@ -82,22 +82,22 @@ var app = builder.Build();
     }
   },
   "SendGridSettings": {
-    "ApiKey": "SG.sua-api-key-aqui",
+    "ApiKey": "SG.your-api-key-here",
     "SandboxMode": false
   },
   "AWSSettings": {
     "RegionEndpoint": "us-east-1",
-    "AccessKey": "sua-access-key",
-    "SecretKey": "sua-secret-key"
+    "AccessKey": "your-access-key",
+    "SecretKey": "your-secret-key"
   }
 }
 ```
 
-## 🏗️ Implementação no Seu Projeto
+## 🏗️ Implementation in Your Project
 
-### 1. **Criando Sua Classe EmailService**
+### 1. **Creating Your EmailService Class**
 
-Crie uma classe que herda de `MailerService` no seu projeto:
+Create a class that inherits from `MailerService` in your project:
 
 ```csharp
 // Services/EmailService.cs
@@ -123,50 +123,50 @@ public class EmailService : MailerService
     }
 
     /// <summary>
-    /// Envia e-mail de boas-vindas para novos usuários
+    /// Sends welcome email to new users
     /// </summary>
     public async Task<MailerResponse> Welcome(WelcomeModel model)
     {
-        return await Send("Welcome", model, "Bem-vindo à nossa plataforma!");
+        return await Send("Welcome", model, "Welcome to our platform!");
     }
 
     /// <summary>
-    /// Envia e-mail de recuperação de senha
+    /// Sends password reset email
     /// </summary>
     public async Task<MailerResponse> PasswordReset(PasswordResetModel model)
     {
-        return await Send("PasswordReset", model, "Recuperação de senha");
+        return await Send("PasswordReset", model, "Password Recovery");
     }
 
     /// <summary>
-    /// Envia e-mail de confirmação de cadastro
+    /// Sends registration confirmation email
     /// </summary>
     public async Task<MailerResponse> ConfirmRegistration(ConfirmRegistrationModel model)
     {
-        return await Send("ConfirmRegistration", model, "Confirme seu cadastro");
+        return await Send("ConfirmRegistration", model, "Confirm your registration");
     }
 
     /// <summary>
-    /// Envia e-mail de notificação de pedido
+    /// Sends order notification email
     /// </summary>
     public async Task<MailerResponse> OrderNotification(OrderNotificationModel model)
     {
-        return await Send("OrderNotification", model, $"Pedido #{model.OrderNumber} - Status Atualizado");
+        return await Send("OrderNotification", model, $"Order #{model.OrderNumber} - Status Updated");
     }
 
     /// <summary>
-    /// Envia relatório mensal com anexo
+    /// Sends monthly report with attachment
     /// </summary>
     public async Task<MailerResponse> MonthlyReport(MonthlyReportModel model, Attachment[] attachments = null)
     {
-        return await Send("MonthlyReport", model, $"Relatório Mensal - {model.Month:MMMM yyyy}", attachments);
+        return await Send("MonthlyReport", model, $"Monthly Report - {model.Month:MMMM yyyy}", attachments);
     }
 }
 ```
 
-### 2. **Criando os Modelos de E-mail**
+### 2. **Creating Email Models**
 
-Crie uma pasta `Models/Email` e adicione os modelos para cada tipo de e-mail:
+Create a `Models/Email` folder and add models for each email type:
 
 ```csharp
 // Models/Email/WelcomeModel.cs
@@ -179,8 +179,8 @@ public class WelcomeModel : MailerModelBase
 {
     public string Name { get; set; }
     public string ActivationLink { get; set; }
-    public string CompanyName { get; set; } = "Minha Empresa";
-    public string SupportEmail { get; set; } = "suporte@minhaempresa.com";
+    public string CompanyName { get; set; } = "My Company";
+    public string SupportEmail { get; set; } = "support@mycompany.com";
 }
 ```
 
@@ -259,11 +259,11 @@ public class MonthlyReportModel : MailerModelBase
 }
 ```
 
-## 📝 Criando Templates de E-mail
+## 📝 Creating Email Templates
 
-### 1. **Estrutura de Pastas**
+### 1. **Folder Structure**
 
-Crie a seguinte estrutura no seu projeto:
+Create the following structure in your project:
 
 ```
 YourProject/
@@ -276,11 +276,11 @@ YourProject/
 │   └── MonthlyReport.cshtml
 ```
 
-### 2. **Template Base (_Layout.cshtml)**
+### 2. **Base Template (_Layout.cshtml)**
 
 ```html
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -330,114 +330,114 @@ YourProject/
 <body>
     <div class="container">
         <div class="header">
-            <h1 style="color: #007bff; margin: 0;">Minha Empresa</h1>
+            <h1 style="color: #007bff; margin: 0;">My Company</h1>
         </div>
         
         @RenderBody()
         
         <div class="footer">
-            <p>© 2025 Minha Empresa. Todos os direitos reservados.</p>
-            <p>Este e-mail foi enviado automaticamente. Não responda a este e-mail.</p>
+            <p>© 2025 My Company. All rights reserved.</p>
+            <p>This email was sent automatically. Please do not reply to this email.</p>
         </div>
     </div>
 </body>
 </html>
 ```
 
-### 3. **Template de Boas-vindas (Welcome.cshtml)**
+### 3. **Welcome Template (Welcome.cshtml)**
 
 ```html
 @model YourProject.Models.Email.WelcomeModel
 @{
     Layout = "_Layout";
-    ViewBag.Title = "Bem-vindo";
+    ViewBag.Title = "Welcome";
 }
 
-<h2>Bem-vindo, @Model.Name!</h2>
+<h2>Welcome, @Model.Name!</h2>
 
-<p>Obrigado por se cadastrar na nossa plataforma. Estamos muito felizes em tê-lo conosco!</p>
+<p>Thank you for signing up for our platform. We're very happy to have you with us!</p>
 
-<p>Para começar a usar todos os recursos, clique no botão abaixo para ativar sua conta:</p>
+<p>To start using all features, click the button below to activate your account:</p>
 
 <div style="text-align: center; margin: 30px 0;">
-    <a href="@Model.ActivationLink" class="btn">Ativar Minha Conta</a>
+    <a href="@Model.ActivationLink" class="btn">Activate My Account</a>
 </div>
 
-<p>Se você não conseguir clicar no botão, copie e cole o link abaixo no seu navegador:</p>
+<p>If you can't click the button, copy and paste the link below into your browser:</p>
 <p style="word-break: break-all; font-size: 12px; color: #666;">@Model.ActivationLink</p>
 
 <hr style="margin: 30px 0; border: 1px solid #eee;">
 
-<p>Se você tiver alguma dúvida, nossa equipe de suporte está sempre pronta para ajudar:</p>
-<p>📧 E-mail: <a href="mailto:@Model.SupportEmail">@Model.SupportEmail</a></p>
+<p>If you have any questions, our support team is always ready to help:</p>
+<p>📧 Email: <a href="mailto:@Model.SupportEmail">@Model.SupportEmail</a></p>
 
 <p>
-    Atenciosamente,<br>
-    <strong>Equipe @Model.CompanyName</strong>
+    Best regards,<br>
+    <strong>@Model.CompanyName Team</strong>
 </p>
 ```
 
-### 4. **Template de Recuperação de Senha (PasswordReset.cshtml)**
+### 4. **Password Reset Template (PasswordReset.cshtml)**
 
 ```html
 @model YourProject.Models.Email.PasswordResetModel
 @{
     Layout = "_Layout";
-    ViewBag.Title = "Recuperação de Senha";
+    ViewBag.Title = "Password Recovery";
 }
 
-<h2>Olá, @Model.Name!</h2>
+<h2>Hello, @Model.Name!</h2>
 
-<p>Recebemos uma solicitação para redefinir a senha da sua conta.</p>
+<p>We received a request to reset your account password.</p>
 
 <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 4px; margin: 20px 0;">
-    <strong>⚠️ Informações importantes:</strong>
+    <strong>⚠️ Important information:</strong>
     <ul style="margin: 10px 0; padding-left: 20px;">
-        <li>Este link expira em: <strong>@Model.ExpiresAt.ToString("dd/MM/yyyy HH:mm")</strong></li>
-        <li>Solicitação feita do IP: <strong>@Model.IpAddress</strong></li>
+        <li>This link expires on: <strong>@Model.ExpiresAt.ToString("MM/dd/yyyy HH:mm")</strong></li>
+        <li>Request made from IP: <strong>@Model.IpAddress</strong></li>
     </ul>
 </div>
 
-<p>Se foi você quem solicitou, clique no botão abaixo para redefinir sua senha:</p>
+<p>If you made this request, click the button below to reset your password:</p>
 
 <div style="text-align: center; margin: 30px 0;">
-    <a href="@Model.ResetLink" class="btn">Redefinir Senha</a>
+    <a href="@Model.ResetLink" class="btn">Reset Password</a>
 </div>
 
-<p>Se você não solicitou esta alteração, pode ignorar este e-mail com segurança. Sua senha permanecerá inalterada.</p>
+<p>If you didn't request this change, you can safely ignore this email. Your password will remain unchanged.</p>
 
 <p style="font-size: 12px; color: #666;">
-    Por segurança, este link só pode ser usado uma vez e expira automaticamente.
+    For security, this link can only be used once and expires automatically.
 </p>
 ```
 
-### 5. **Template de Pedido (OrderNotification.cshtml)**
+### 5. **Order Template (OrderNotification.cshtml)**
 
 ```html
 @model YourProject.Models.Email.OrderNotificationModel
 @{
     Layout = "_Layout";
-    ViewBag.Title = "Status do Pedido";
+    ViewBag.Title = "Order Status";
 }
 
-<h2>Olá, @Model.CustomerName!</h2>
+<h2>Hello, @Model.CustomerName!</h2>
 
-<p>Temos uma atualização sobre seu pedido:</p>
+<p>We have an update about your order:</p>
 
 <div style="background-color: #d4edda; border: 1px solid #c3e6cb; padding: 20px; border-radius: 4px; margin: 20px 0;">
-    <h3 style="margin-top: 0; color: #155724;">Pedido #@Model.OrderNumber</h3>
+    <h3 style="margin-top: 0; color: #155724;">Order #@Model.OrderNumber</h3>
     <p><strong>Status:</strong> @Model.Status</p>
-    <p><strong>Data do Pedido:</strong> @Model.OrderDate.ToString("dd/MM/yyyy")</p>
+    <p><strong>Order Date:</strong> @Model.OrderDate.ToString("MM/dd/yyyy")</p>
     <p><strong>Total:</strong> @Model.TotalAmount.ToString("C")</p>
 </div>
 
-<h3>Itens do Pedido:</h3>
+<h3>Order Items:</h3>
 <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
     <thead>
         <tr style="background-color: #f8f9fa;">
-            <th style="border: 1px solid #dee2e6; padding: 8px; text-align: left;">Produto</th>
-            <th style="border: 1px solid #dee2e6; padding: 8px; text-align: center;">Qtd</th>
-            <th style="border: 1px solid #dee2e6; padding: 8px; text-align: right;">Preço</th>
+            <th style="border: 1px solid #dee2e6; padding: 8px; text-align: left;">Product</th>
+            <th style="border: 1px solid #dee2e6; padding: 8px; text-align: center;">Qty</th>
+            <th style="border: 1px solid #dee2e6; padding: 8px; text-align: right;">Price</th>
         </tr>
     </thead>
     <tbody>
@@ -455,16 +455,16 @@ YourProject/
 @if (!string.IsNullOrEmpty(Model.TrackingUrl))
 {
     <div style="text-align: center; margin: 30px 0;">
-        <a href="@Model.TrackingUrl" class="btn">Rastrear Pedido</a>
+        <a href="@Model.TrackingUrl" class="btn">Track Order</a>
     </div>
 }
 
-<p>Obrigado por escolher nossa loja!</p>
+<p>Thank you for choosing our store!</p>
 ```
 
-## 🎯 Utilizando no Controller
+## 🎯 Using in Controllers
 
-### 1. **Injeção no Controller**
+### 1. **Controller Injection**
 
 ```csharp
 [ApiController]
@@ -482,13 +482,13 @@ public class UserController : ControllerBase
 }
 ```
 
-### 2. **Enviando E-mails**
+### 2. **Sending Emails**
 
 ```csharp
 [HttpPost("register")]
 public async Task<IActionResult> Register([FromBody] RegisterRequest request)
 {
-    // Lógica de cadastro do usuário...
+    // User registration logic...
     
     try
     {
@@ -500,33 +500,33 @@ public async Task<IActionResult> Register([FromBody] RegisterRequest request)
             Name = request.Name,
             To = new MailAddress(request.Email, request.Name),
             ActivationLink = activationLink,
-            CompanyName = "Minha Empresa",
-            SupportEmail = "suporte@minhaempresa.com"
+            CompanyName = "My Company",
+            SupportEmail = "support@mycompany.com"
         });
 
         if (response.Sent)
         {
-            _logger.LogInformation("Email de boas-vindas enviado para {Email}", request.Email);
-            return Ok(new { message = "Usuário cadastrado! Verifique seu e-mail para ativar a conta." });
+            _logger.LogInformation("Welcome email sent to {Email}", request.Email);
+            return Ok(new { message = "User registered! Check your email to activate your account." });
         }
         else
         {
-            _logger.LogWarning("Falha ao enviar email para {Email}: {Errors}", 
+            _logger.LogWarning("Failed to send email to {Email}: {Errors}", 
                 request.Email, string.Join(", ", response.ErrorMessages));
-            return Ok(new { message = "Usuário cadastrado, mas houve problema no envio do email." });
+            return Ok(new { message = "User registered, but there was an issue sending the email." });
         }
     }
     catch (Exception ex)
     {
-        _logger.LogError(ex, "Erro ao enviar email de boas-vindas para {Email}", request.Email);
-        return Ok(new { message = "Usuário cadastrado com sucesso!" });
+        _logger.LogError(ex, "Error sending welcome email to {Email}", request.Email);
+        return Ok(new { message = "User registered successfully!" });
     }
 }
 
 [HttpPost("forgot-password")]
 public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
 {
-    // Lógica de recuperação de senha...
+    // Password recovery logic...
     
     var resetLink = Url.Action("ResetPassword", "User", 
         new { token = resetToken }, Request.Scheme);
@@ -540,13 +540,13 @@ public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest
         IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString()
     });
 
-    return Ok(new { message = "Se o e-mail existir, você receberá instruções para redefinir a senha." });
+    return Ok(new { message = "If the email exists, you will receive instructions to reset your password." });
 }
 ```
 
-## 📋 Configuração dos Templates como Embedded Resources
+## 📋 Configuring Templates as Embedded Resources
 
-Para que os templates sejam encontrados pelo RazorLight, adicione no seu `.csproj`:
+For templates to be found by RazorLight, add to your `.csproj`:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk.Web">
@@ -562,26 +562,26 @@ Para que os templates sejam encontrados pelo RazorLight, adicione no seu `.cspro
 </Project>
 ```
 
-## 🚀 Exemplo Completo de Uso
+## 🚀 Complete Usage Example
 
 ```csharp
 // Program.cs
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuração do Mailer
+// Mailer configuration
 builder.Services.AddMailer(builder.Configuration, options =>
 {
-    options.TemplateRootType = typeof(Program); // Importante: define onde estão os templates
+    options.TemplateRootType = typeof(Program); // Important: defines where templates are located
     options.DevelopmentMode = builder.Environment.IsDevelopment();
 });
 
-// Provedor de e-mail
+// Email provider
 builder.Services.AddMailerWithSendGrid(builder.Configuration);
 
-// Seu serviço personalizado
+// Your custom service
 builder.Services.AddScoped<EmailService>();
 
-// Outros serviços...
+// Other services...
 builder.Services.AddControllers();
 
 var app = builder.Build();
@@ -591,36 +591,36 @@ app.MapControllers();
 app.Run();
 ```
 
-## 🔧 Configurações Avançadas
+## 🔧 Advanced Configurations
 
-### **Performance e Cache**
+### **Performance and Cache**
 ```csharp
 builder.Services.AddMailer(builder.Configuration, options =>
 {
-    // Cache de templates mais agressivo
+    // More aggressive template caching
     options.TemplateCacheSize = 500;
     options.TemplateCacheLifetimeMinutes = 120;
     
-    // Timeouts otimizados
+    // Optimized timeouts
     options.TemplateRenderTimeoutSeconds = 15;
     options.EmailSendTimeoutSeconds = 30;
 });
 ```
 
-### **Ambiente de Desenvolvimento**
+### **Development Environment**
 ```csharp
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddMailer(builder.Configuration, options =>
     {
         options.DevelopmentMode = true;
-        options.RazorLight.EnableHotReload = true; // Recarrega templates automaticamente
-        options.EnableDistributedTracing = false; // Menos overhead em dev
+        options.RazorLight.EnableHotReload = true; // Automatically reload templates
+        options.EnableDistributedTracing = false; // Less overhead in dev
     });
 }
 ```
 
-### **Configuração de Retry**
+### **Retry Configuration**
 ```csharp
 builder.Services.AddMailer(builder.Configuration, options =>
 {
@@ -629,21 +629,21 @@ builder.Services.AddMailer(builder.Configuration, options =>
 });
 ```
 
-## 📊 Monitoramento e Observabilidade
+## 📊 Monitoring and Observability
 
 ### **Health Checks**
 ```csharp
-// Automaticamente adicionado quando usar AddMailer()
+// Automatically added when using AddMailer()
 app.MapHealthChecks("/health");
 ```
 
-### **Métricas e Tracing**
-A biblioteca automaticamente gera:
-- **Traces**: Para cada envio de email
-- **Métricas**: Contadores de emails enviados/falhados
-- **Logs estruturados**: Para debugging e auditoria
+### **Metrics and Tracing**
+The library automatically generates:
+- **Traces**: For each email send operation
+- **Metrics**: Counters for sent/failed emails
+- **Structured logs**: For debugging and auditing
 
-## 🚨 Tratamento de Erros
+## 🚨 Error Handling
 
 ```csharp
 try
@@ -652,62 +652,62 @@ try
     
     if (!response.Sent)
     {
-        // Email não foi enviado
-        _logger.LogWarning("Falha no envio: {Errors}", 
+        // Email was not sent
+        _logger.LogWarning("Send failure: {Errors}", 
             string.Join(", ", response.ErrorMessages));
     }
 }
 catch (TemplateNotFoundException ex)
 {
-    _logger.LogError("Template não encontrado: {Template}", ex.TemplateName);
+    _logger.LogError("Template not found: {Template}", ex.TemplateName);
 }
 catch (EmailProviderException ex)
 {
-    _logger.LogError("Erro do provedor de email: {Error}", ex.Message);
+    _logger.LogError("Email provider error: {Error}", ex.Message);
 }
 catch (Exception ex)
 {
-    _logger.LogError(ex, "Erro inesperado ao enviar email");
+    _logger.LogError(ex, "Unexpected error sending email");
 }
 ```
 
-## 📋 Configurações Disponíveis
+## 📋 Available Configurations
 
-| Configuração | Descrição | Padrão |
+| Configuration | Description | Default |
 |-------------|-----------|---------|
-| `TemplateRootType` | Tipo raiz para templates embarcados | `null` |
-| `TemplateRenderTimeoutSeconds` | Timeout para renderização | `30` |
-| `EmailSendTimeoutSeconds` | Timeout para envio | `60` |
-| `EnableTemplateCache` | Habilita cache de templates | `true` |
-| `TemplateCacheSize` | Tamanho do cache | `100` |
-| `MaxRetryAttempts` | Tentativas de reenvio | `3` |
-| `RetryBaseDelayMs` | Delay base para retry | `1000` |
-| `EnableDistributedTracing` | Habilita tracing | `true` |
-| `DevelopmentMode` | Modo de desenvolvimento | `false` |
+| `TemplateRootType` | Root type for embedded templates | `null` |
+| `TemplateRenderTimeoutSeconds` | Rendering timeout | `30` |
+| `EmailSendTimeoutSeconds` | Send timeout | `60` |
+| `EnableTemplateCache` | Enable template caching | `true` |
+| `TemplateCacheSize` | Cache size | `100` |
+| `MaxRetryAttempts` | Retry attempts | `3` |
+| `RetryBaseDelayMs` | Base delay for retry | `1000` |
+| `EnableDistributedTracing` | Enable tracing | `true` |
+| `DevelopmentMode` | Development mode | `false` |
 
-## 🔧 Dicas e Boas Práticas
+## 🔧 Tips and Best Practices
 
-### ✅ **Do's (Faça)**
-- ✅ Sempre herde de `MailerService` para sua classe personalizada
-- ✅ Crie modelos específicos herdando de `MailerModelBase`
-- ✅ Use templates Razor organizados em pastas
-- ✅ Configure `TemplateRootType` no DI
-- ✅ Trate exceções ao enviar e-mails
-- ✅ Use logging para auditoria
+### ✅ **Do's**
+- ✅ Always inherit from `MailerService` for your custom class
+- ✅ Create specific models inheriting from `MailerModelBase`
+- ✅ Use Razor templates organized in folders
+- ✅ Configure `TemplateRootType` in DI
+- ✅ Handle exceptions when sending emails
+- ✅ Use logging for auditing
 
-### ❌ **Don'ts (Não Faça)**
-- ❌ Não use `IMailerService` diretamente nos controllers
-- ❌ Não esqueça de configurar templates como Embedded Resources
-- ❌ Não exponha erros de envio para o usuário final
-- ❌ Não envie e-mails sem validação dos dados
+### ❌ **Don'ts**
+- ❌ Don't use `IMailerService` directly in controllers
+- ❌ Don't forget to configure templates as Embedded Resources
+- ❌ Don't expose send errors to end users
+- ❌ Don't send emails without data validation
 
-## 📚 Próximos Passos
+## 📚 Next Steps
 
-1. **Templates Avançados**: Criar layouts responsivos
-2. **Internacionalização**: Suporte a múltiplos idiomas
-3. **Fila de E-mails**: Integração com background services
-4. **Analytics**: Rastreamento de abertura e cliques
+1. **Advanced Templates**: Create responsive layouts
+2. **Internationalization**: Support for multiple languages
+3. **Email Queue**: Integration with background services
+4. **Analytics**: Open and click tracking
 
 ---
 
-Agora você tem tudo o que precisa para implementar um sistema robusto de envio de e-mails! 🎉
+Now you have everything you need to implement a robust email sending system! 🎉
