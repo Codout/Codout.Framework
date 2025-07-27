@@ -6,20 +6,17 @@ using System.Threading.Tasks;
 using Codout.Mailer.Helpers;
 using Codout.Mailer.Interfaces;
 using Codout.Mailer.Models;
+using Codout.Mailer.SendGrid.Configuration;
+using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using Attachment = System.Net.Mail.Attachment;
 
 namespace Codout.Mailer.SendGrid;
 
-public class SendGridDispatcher : IMailerDispatcher
+public class SendGridDispatcher(IOptions<SendGridSettings> sendGridSettings) : IMailerDispatcher
 {
-    private readonly SendGridSettings _sendGridSettings;
-
-    public SendGridDispatcher(SendGridSettings sendGridSettings)
-    {
-        _sendGridSettings = sendGridSettings;
-    }
+    private readonly SendGridSettings _sendGridSettings = sendGridSettings.Value;
 
     public async Task<MailerResponse> Send(MailAddress from, MailAddress to, string subject, string htmlContent,
         string plainTextContent = null, Attachment[] attachments = null)
@@ -33,7 +30,7 @@ public class SendGridDispatcher : IMailerDispatcher
             plainTextContent,
             htmlContent);
 
-        if (attachments != null && attachments.Length > 0)
+        if (attachments is { Length: > 0 })
             foreach (var attachment in attachments)
             {
                 var bytes = attachment.ContentStream.ReadFully();
@@ -55,7 +52,7 @@ public class SendGridDispatcher : IMailerDispatcher
             return new MailerResponse
             {
                 Sent = false,
-                ErrorMessages = new List<string>(new[] { e.Message })
+                ErrorMessages = new List<string>([e.Message])
             };
         }
     }

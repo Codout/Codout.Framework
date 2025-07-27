@@ -7,15 +7,19 @@ using Amazon;
 using Amazon.Runtime;
 using Amazon.SimpleEmailV2;
 using Amazon.SimpleEmailV2.Model;
+using Codout.Mailer.AWS.Configuration;
 using Codout.Mailer.Interfaces;
 using Codout.Mailer.Models;
+using Microsoft.Extensions.Options;
 using MimeKit;
 using ContentType = MimeKit.ContentType;
 
 namespace Codout.Mailer.AWS;
 
-public class AWSDispatcher(AWSSettings settings) : IMailerDispatcher
+public class AWSDispatcher(IOptions<AWSSettings> settings) : IMailerDispatcher
 {
+    private readonly AWSSettings _settings = settings.Value;
+
     public async Task<MailerResponse> Send(MailAddress from,
         MailAddress to,
         string subject,
@@ -26,8 +30,8 @@ public class AWSDispatcher(AWSSettings settings) : IMailerDispatcher
         try
         {
             var client = new AmazonSimpleEmailServiceV2Client(
-                new BasicAWSCredentials(settings.AccessKey, settings.SecretKey),
-                RegionEndpoint.GetBySystemName(settings.RegionEndpoint));
+                new BasicAWSCredentials(_settings.AccessKey, _settings.SecretKey),
+                RegionEndpoint.GetBySystemName(_settings.RegionEndpoint));
 
             // Montar e-mail usando MimeKit (recomendado)
             var message = new MimeMessage();

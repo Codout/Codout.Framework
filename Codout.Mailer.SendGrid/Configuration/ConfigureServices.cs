@@ -15,6 +15,8 @@ public static class ConfigureServices
         IConfiguration configuration,
         Action<MailerOptions>? configureOptions = null)
     {
+        services.AddOptions<SendGridSettings>().Bind(configuration.GetSection(SendGridSettings.SectionName));
+
         return services
             .AddMailer(configuration, configureOptions)
             .AddScoped<IMailerDispatcher, SendGridDispatcher>();

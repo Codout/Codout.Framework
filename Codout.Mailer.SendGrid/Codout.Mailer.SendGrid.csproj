@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
 		<Authors>Clovis Coli Jr</Authors>
-		<Version>5.0.0</Version>
+		<Version>5.0.5</Version>
 		<Company>Codout</Company>
 		<Description>Sender da SendGrid para envio de E-mails utilizando a biblioteca Codout.Mailer</Description>
 		<Copyright>Codout</Copyright>

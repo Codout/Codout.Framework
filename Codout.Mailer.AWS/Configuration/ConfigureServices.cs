@@ -13,10 +13,12 @@ public static class ConfigureServices
     /// </summary>
     public static IServiceCollection AddMailerWithAws(this IServiceCollection services,
         IConfiguration configuration,
-        Action<MailerOptions>? configureOptions = null)
+        Action<MailerOptions>? options = null)
     {
-        return services
-            .AddMailer(configuration, configureOptions)
+        services.AddOptions<AWSSettings>().Bind(configuration.GetSection(AWSSettings.SectionName));
+
+        return services 
+            .AddMailer(configuration, options)
             .AddScoped<IMailerDispatcher, AWSDispatcher>();
     }
 }
