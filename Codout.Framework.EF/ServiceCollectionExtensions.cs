@@ -7,7 +7,7 @@ namespace Codout.Framework.EF;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddCodoutEFCore<T>(this IServiceCollection services, IConfiguration configuration) where T : DbContext
+    public static IServiceCollection AddEFCore<T>(this IServiceCollection services, IConfiguration configuration) where T : DbContext
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         if (string.IsNullOrEmpty(connectionString))

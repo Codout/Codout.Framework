@@ -11,6 +11,6 @@ namespace Codout.Framework.Domain.Base;
 /// </remarks>
 [Serializable]
 [AttributeUsage(AttributeTargets.Property)]
-internal class DomainSignatureAttribute : Attribute
+public class DomainSignatureAttribute : Attribute
 {
 }

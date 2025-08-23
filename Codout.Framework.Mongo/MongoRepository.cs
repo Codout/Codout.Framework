@@ -14,10 +14,10 @@ namespace Codout.Framework.Mongo;
 ///     Repositório genérico de dados para MongoDB
 /// </summary>
 /// <typeparam name="T">Classe que define o tipo do repositório</typeparam>
-public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
+public class MongoRepository<T>(MongoDbContext context) : IRepository<T>
     where T : class, IEntity
 {
-    public readonly IMongoDatabase MongoDatabase = mongoDatabase;
+    private readonly IMongoCollection<T> _collection = context.GetCollection<T>();
 
     private bool _disposed;
 
@@ -25,35 +25,35 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     ///     Retorna todos os objetos do repositório (pode ser lento)
     /// </summary>
     /// <returns>Lista de objetos</returns>
-    public IQueryable<T> All()
+    public virtual IQueryable<T> All()
     {
-        return GetCollection<T>().AsQueryable();
+        return _collection.AsQueryable();
     }
 
-    public IQueryable<T> AllReadOnly()
+    public virtual IQueryable<T> AllReadOnly()
     {
-        return GetCollection<T>().AsQueryable();
+        return _collection.AsQueryable();
     }
 
     /// <summary>
     ///     Delete o objeto indicado do repositório de dados
     /// </summary>
     /// <param name="entity">Objeto a ser deletado</param>
-    public void Delete(T entity)
+    public virtual void Delete(T entity)
     {
-        GetCollection<T>().DeleteOne(Builders<T>.Filter.Eq("_id", BsonValue.Create(GetIdValue(entity))));
+        _collection.DeleteOne(Builders<T>.Filter.Eq("_id", BsonValue.Create(GetIdValue(entity))));
     }
 
     /// <summary>
     ///     Exclui uma lista de objetos conforme o filtro
     /// </summary>
     /// <param name="predicate">Filtro de objetos a serem deletados</param>
-    public void Delete(Expression<Func<T, bool>> predicate)
+    public virtual void Delete(Expression<Func<T, bool>> predicate)
     {
-        GetCollection<T>().DeleteMany(Builders<T>.Filter.Where(predicate));
+        _collection.DeleteMany(Builders<T>.Filter.Where(predicate));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);
@@ -64,14 +64,14 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     /// </summary>
     /// <param name="predicate">Lista de objetos</param>
     /// <returns></returns>
-    public IQueryable<T> Where(Expression<Func<T, bool>> predicate)
+    public virtual IQueryable<T> Where(Expression<Func<T, bool>> predicate)
     {
         return All().Where(predicate);
     }
 
-    public IQueryable<T> WhereReadOnly(Expression<Func<T, bool>> predicate)
+    public virtual IQueryable<T> WhereReadOnly(Expression<Func<T, bool>> predicate)
     {
-        return GetCollection<T>().AsQueryable().Where(predicate);
+        return _collection.AsQueryable().Where(predicate);
     }
 
     /// <summary>
@@ -82,13 +82,13 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     /// <param name="index">Indica o índice da paginação</param>
     /// <param name="size">Tamanho da página</param>
     /// <returns>Lista de objetos</returns>
-    public IQueryable<T> WherePaged(Expression<Func<T, bool>> filter, out int total, int index = 0, int size = 50)
+    public virtual IQueryable<T> WherePaged(Expression<Func<T, bool>> filter, out int total, int index = 0, int size = 50)
     {
         var skipCount = index * size;
 
         var resetSet = filter != null
             ? Where(filter).AsQueryable()
-            : GetCollection<T>().AsQueryable();
+            : _collection.AsQueryable();
 
         resetSet = skipCount == 0
             ? resetSet.Take(size)
@@ -104,7 +104,7 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     /// </summary>
     /// <param name="predicate">Filtro</param>
     /// <returns>objeto</returns>
-    public T Get(Expression<Func<T, bool>> predicate)
+    public virtual T Get(Expression<Func<T, bool>> predicate)
     {
         return Where(predicate).SingleOrDefault();
     }
@@ -114,12 +114,12 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     /// </summary>
     /// <param name="key">Key do objeto</param>
     /// <returns>objeto</returns>
-    public T Get(object key)
+    public virtual T Get(object key)
     {
         if (!ObjectId.TryParse(key.ToString(), out var id))
             return null;
 
-        return GetCollection<T>().Find(Builders<T>.Filter.Eq("_id", BsonValue.Create(id))).FirstOrDefault();
+        return _collection.Find(Builders<T>.Filter.Eq("_id", BsonValue.Create(id))).FirstOrDefault();
     }
 
     /// <summary>
@@ -127,7 +127,7 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     /// </summary>
     /// <param name="key">Key do objeto</param>
     /// <returns>Objeto</returns>
-    public T Load(object key)
+    public virtual T Load(object key)
     {
         throw new NotSupportedException();
     }
@@ -137,27 +137,27 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     /// </summary>
     /// <param name="entity">Objeto a ser mesclado</param>
     /// <returns>Retorna o mesmo objeto, para o caso de retornar algum Id gerado</returns>
-    public T Merge(T entity)
+    public virtual T Merge(T entity)
     {
         throw new NotSupportedException();
     }
 
-    public T Refresh(T entity)
+    public virtual T Refresh(T entity)
     {
         throw new NotSupportedException();
     }
 
-    public async Task<T> GetAsync(Expression<Func<T, bool>> predicate)
+    public virtual async Task<T> GetAsync(Expression<Func<T, bool>> predicate)
     {
-        return await (await GetCollection<T>().FindAsync(predicate)).FirstOrDefaultAsync();
+        return await (await _collection.FindAsync(predicate)).FirstOrDefaultAsync();
     }
 
-    public async Task<T> GetAsync(object key)
+    public virtual async Task<T> GetAsync(object key)
     {
         if (!ObjectId.TryParse(key.ToString(), out var id))
             return null;
 
-        return await (await GetCollection<T>().FindAsync(Builders<T>.Filter.Eq("_id", BsonValue.Create(id))))
+        return await (await _collection.FindAsync(Builders<T>.Filter.Eq("_id", BsonValue.Create(id))))
             .FirstOrDefaultAsync();
     }
 
@@ -166,52 +166,52 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
         throw new NotSupportedException();
     }
 
-    public async Task DeleteAsync(T entity)
+    public virtual async Task DeleteAsync(T entity)
     {
-        await GetCollection<T>().DeleteOneAsync(Builders<T>.Filter.Eq("_id", BsonValue.Create(GetIdValue(entity))));
+        await _collection.DeleteOneAsync(Builders<T>.Filter.Eq("_id", BsonValue.Create(GetIdValue(entity))));
     }
 
-    public async Task DeleteAsync(Expression<Func<T, bool>> predicate)
+    public virtual async Task DeleteAsync(Expression<Func<T, bool>> predicate)
     {
-        await GetCollection<T>().DeleteManyAsync(Builders<T>.Filter.Where(predicate));
+        await _collection.DeleteManyAsync(Builders<T>.Filter.Where(predicate));
     }
 
-    public async Task<T> SaveAsync(T entity)
+    public virtual async Task<T> SaveAsync(T entity)
     {
-        await GetCollection<T>().InsertOneAsync(entity);
+        await _collection.InsertOneAsync(entity);
         return entity;
     }
 
-    public async Task<T> SaveOrUpdateAsync(T entity)
+    public virtual async Task<T> SaveOrUpdateAsync(T entity)
     {
         if (entity.IsTransient())
-            await GetCollection<T>().InsertOneAsync(entity);
+            await _collection.InsertOneAsync(entity);
         else
-            await GetCollection<T>()
+            await _collection
                 .ReplaceOneAsync(Builders<T>.Filter.Eq("_id", BsonValue.Create(GetIdValue(entity))), entity);
 
         return entity;
     }
 
-    public async Task UpdateAsync(T entity)
+    public virtual async Task UpdateAsync(T entity)
     {
-        await GetCollection<T>()
+        await _collection
             .ReplaceOneAsync(Builders<T>.Filter.Eq("_id", BsonValue.Create(GetIdValue(entity))), entity);
     }
 
-    public Task<T> MergeAsync(T entity)
+    public virtual Task<T> MergeAsync(T entity)
     {
         throw new NotSupportedException();
     }
 
-    public Task<T> RefreshAsync(T entity)
+    public virtual Task<T> RefreshAsync(T entity)
     {
         throw new NotSupportedException();
     }
 
-    public IQueryable<T> IncludeMany(params Expression<Func<T, object>>[] includes)
+    public virtual IQueryable<T> IncludeMany(params Expression<Func<T, object>>[] includes)
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 
     /// <summary>
@@ -219,9 +219,9 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     /// </summary>
     /// <param name="entity">Objeto a ser salvo</param>
     /// <returns>Retorna o mesmo objeto, para o caso de retornar algum Id gerado</returns>
-    public T Save(T entity)
+    public virtual T Save(T entity)
     {
-        GetCollection<T>().InsertOne(entity);
+        _collection.InsertOne(entity);
         return entity;
     }
 
@@ -230,16 +230,16 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     /// </summary>
     /// <param name="entity">Objeto a ser salvo/atualizado</param>
     /// <returns>Retorna o mesmo objeto, para o caso de retornar algum Id gerado</returns>
-    public T SaveOrUpdate(T entity)
+    public virtual T SaveOrUpdate(T entity)
     {
         if (entity.IsTransient())
         {
-            GetCollection<T>().InsertOne(entity);
+            _collection.InsertOne(entity);
         }
         else
         {
             var filter = Builders<T>.Filter.Eq("_id", BsonValue.Create(GetIdValue(entity)));
-            GetCollection<T>().ReplaceOne(filter, entity);
+            _collection.ReplaceOne(filter, entity);
         }
 
         return entity;
@@ -249,14 +249,9 @@ public class MongoCollection<T>(IMongoDatabase mongoDatabase) : IRepository<T>
     ///     Atualiza o objeto no repositório
     /// </summary>
     /// <param name="entity">Objeto a ser atulizado</param>
-    public void Update(T entity)
+    public virtual void Update(T entity)
     {
-        GetCollection<T>().ReplaceOne(Builders<T>.Filter.Eq("_id", BsonValue.Create(GetIdValue(entity))), entity);
-    }
-
-    public IMongoCollection<TEntity> GetCollection<TEntity>()
-    {
-        return MongoDatabase.GetCollection<TEntity>(typeof(TEntity).Name.ToLower());
+        _collection.ReplaceOne(Builders<T>.Filter.Eq("_id", BsonValue.Create(GetIdValue(entity))), entity);
     }
 
     protected virtual void Dispose(bool disposing)
