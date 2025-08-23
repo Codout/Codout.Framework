@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
 		<Authors>Clovis Coli Jr</Authors>
-		<Version>5.0.5</Version>
+		<Version>5.0.6</Version>
 		<Company>Codout</Company>
 		<Description>Sender da Amazon Simple Email Service para envio de E-mails utilizando a biblioteca Codout.Mailer</Description>
 		<Copyright>Codout</Copyright>
@@ -17,8 +17,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AWSSDK.SimpleEmailV2" Version="4.0.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="9.0.6" />
+		<PackageReference Include="AWSSDK.SimpleEmailV2" Version="4.0.4.1" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="9.0.8" />
 		<PackageReference Include="MimeKit" Version="4.13.0" />
 	</ItemGroup>
 

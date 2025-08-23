@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
 		<Authors>Clovis Coli Jr</Authors>
-		<Version>5.0.5</Version>
+		<Version>5.0.6</Version>
 		<Company>Codout</Company>
 		<Description>Biblioteca para envio de e-mails</Description>
 		<Copyright>Codout</Copyright>
@@ -17,7 +17,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="HtmlAgilityPack" Version="1.12.1" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.12.2" />
 		<PackageReference Include="RazorLight" Version="2.3.1" />
 	</ItemGroup>
 
