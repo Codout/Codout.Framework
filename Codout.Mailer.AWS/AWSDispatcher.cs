@@ -27,6 +27,16 @@ public class AWSDispatcher(IOptions<AWSSettings> settings) : IMailerDispatcher
         string plainTextContent = null,
         System.Net.Mail.Attachment[] attachments = null)
     {
+        
+        if (string.IsNullOrWhiteSpace(_settings.AccessKey))
+            throw new InvalidOperationException("AWS Access Key is not configured.");
+        
+        if (string.IsNullOrWhiteSpace(_settings.RegionEndpoint))
+            throw new InvalidOperationException("AWS Region Endpoint is not configured.");
+        
+        if (string.IsNullOrWhiteSpace(_settings.SecretKey))
+            throw new InvalidOperationException("AWS Secret Key is not configured.");
+
         try
         {
             var client = new AmazonSimpleEmailServiceV2Client(
@@ -80,7 +90,7 @@ public class AWSDispatcher(IOptions<AWSSettings> settings) : IMailerDispatcher
 
             return new MailerResponse
             {
-                Sent = response.HttpStatusCode == System.Net.HttpStatusCode.Accepted,
+                Sent = response.HttpStatusCode is System.Net.HttpStatusCode.Accepted or System.Net.HttpStatusCode.OK,
                 ErrorMessages = [response.MessageId]
             };
         }
