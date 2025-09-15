@@ -1,24 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
-	</PropertyGroup>
-
-	<PropertyGroup>
 		<Description>Biblioteca de funções para imagens</Description>
-		<Version>5.0.6</Version>
-		<Authors>Clovis Coli Jr</Authors>
-		<Company>Codout</Company>
-		<Copyright>Codout</Copyright>
-		<PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-		<PackageIconUrl></PackageIconUrl>
-		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
 		<PackageTags>Codout;Framework;Images;</PackageTags>
-		<PackageIcon>logo-nuget.png</PackageIcon>
-		<PackageOutputPath>$(SolutionDir)Packages</PackageOutputPath>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>

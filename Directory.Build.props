@@ -1,0 +1,23 @@
+<Project>
+	<PropertyGroup>
+		<Version>5.0.7</Version>
+		<Authors>Clovis Coli Jr</Authors>
+		<Company>Codout</Company>
+		<Copyright>Codout</Copyright>
+		<PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
+		<PackageOutputPath>$(SolutionDir)Packages</PackageOutputPath>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<TargetFramework>net9.0</TargetFramework>
+
+		<!-- Add other global properties as needed -->
+		<PackageIcon>logo-nuget.png</PackageIcon>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\logo-nuget.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+</Project>

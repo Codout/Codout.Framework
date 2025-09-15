@@ -1,25 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
-	</PropertyGroup>
-
-	<PropertyGroup>
 		<Description>Bliblioteca abstrata de implementação para Web API Restfull</Description>
-		<Version>5.0.6</Version>
-		<Authors>Clovis Coli Jr</Authors>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<Copyright>Codout</Copyright>
 		<PackageIconUrl></PackageIconUrl>
 		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>Codout</PackageTags>
-		<Company>Codout</Company>
-		<PackageIcon>logo-nuget.png</PackageIcon>
-		<PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
 		<LangVersion>latest</LangVersion>
-		<PackageOutputPath>$(SolutionDir)Packages</PackageOutputPath>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>

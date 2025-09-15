@@ -15,6 +15,8 @@ namespace Codout.Framework.Common.Security;
 /// </summary>
 public enum SecureHashAlgorithm
 {
+    /// <summary>MD5 (insecure, legacy only)</summary>
+    Md5,
     /// <summary>SHA-256 (recomendado para uso geral)</summary>
     Sha256,
     /// <summary>SHA-384 (segurança extra)</summary>
@@ -281,6 +283,7 @@ public static class SecureHash
     /// </summary>
     private static HashAlgorithm CreateHashAlgorithm(SecureHashAlgorithm algorithm) => algorithm switch
     {
+        SecureHashAlgorithm.Md5 => MD5.Create(), // ⚠️ MD5 is insecure, use only for legacy compatibility
         SecureHashAlgorithm.Sha256 => SHA256.Create(),
         SecureHashAlgorithm.Sha384 => SHA384.Create(),
         SecureHashAlgorithm.Sha512 => SHA512.Create(),
@@ -295,6 +298,7 @@ public static class SecureHash
     /// </summary>
     private static int GetHashSize(SecureHashAlgorithm algorithm) => algorithm switch
     {
+        SecureHashAlgorithm.Md5 => 16, // 128 bits
         SecureHashAlgorithm.Sha256 or SecureHashAlgorithm.Sha3_256 => 32,
         SecureHashAlgorithm.Sha384 or SecureHashAlgorithm.Sha3_384 => 48,
         SecureHashAlgorithm.Sha512 or SecureHashAlgorithm.Sha3_512 => 64,

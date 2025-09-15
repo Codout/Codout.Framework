@@ -1,19 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
-		<PackageIcon>logo-nuget.png</PackageIcon>
-		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
-		<PackageTags>Codout;Framework;DynamicLinq</PackageTags>
-		<Authors>Clovis Coli Jr</Authors>
-		<Company>Codout</Company>
 		<Description>Wrapper para datasource de lista paginada</Description>
-		<PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-		<Copyright>Codout</Copyright>
-		<Version>5.0.6</Version>
-		<PackageOutputPath>$(SolutionDir)Packages</PackageOutputPath>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageTags>Codout;Framework;DynamicLinq</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>

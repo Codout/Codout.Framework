@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.1.32328.378
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11010.61 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codout.Framework.Common", "Codout.Framework.Common\Codout.Framework.Common.csproj", "{281F92E8-F224-4036-858E-F04203D9107B}"
 EndProject
@@ -50,6 +50,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codout.Framework.Storage.Azure", "Codout.Framework.Storage.Azure\Codout.Framework.Storage.Azure.csproj", "{FA89B3EA-E38C-4F35-A3DA-828D1274956F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codout.Image.Extensions", "Codout.Image.Extensions\Codout.Image.Extensions.csproj", "{7A5F8194-FBD0-47C0-A8F8-1EB68662BE1E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{FC263E95-C691-4101-AFF2-35269EF424C8}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

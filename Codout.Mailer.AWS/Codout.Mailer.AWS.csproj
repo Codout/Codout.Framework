@@ -1,24 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
-		<Authors>Clovis Coli Jr</Authors>
-		<Version>5.0.7</Version>
-		<Company>Codout</Company>
 		<Description>Sender da Amazon Simple Email Service para envio de E-mails utilizando a biblioteca Codout.Mailer</Description>
-		<Copyright>Codout</Copyright>
-		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
 		<PackageTags>Codout;Framework;Mail;Email;Mailer;SendGrid;</PackageTags>
-		<RepositoryType>git</RepositoryType>
-		<PackageIcon>logo-nuget.png</PackageIcon>
-		<PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-		<PackageOutputPath>$(SolutionDir)Packages</PackageOutputPath>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AWSSDK.SimpleEmailV2" Version="4.0.5" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="9.0.8" />
+		<PackageReference Include="AWSSDK.SimpleEmailV2" Version="4.0.5.1" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="9.0.9" />
 		<PackageReference Include="MimeKit" Version="4.13.0" />
 	</ItemGroup>
 

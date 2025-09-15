@@ -1,21 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<Title>Codout Frameword Storage Azure</Title>
-		<Authors>Clovis Coli Jr</Authors>
-		<Company>Codout</Company>
 		<Description>Implementação da interface IStorage do Codout.Framework.Storage para uso do storage do Azure</Description>
-		<Copyright>Codout</Copyright>
-		<PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-		<PackageIcon>logo-nuget.png</PackageIcon>
-		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
 		<PackageTags>Codout;Framework;Storage;Azure;</PackageTags>
-		<Version>5.0.6</Version>
-		<PackageOutputPath>$(SolutionDir)Packages</PackageOutputPath>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>

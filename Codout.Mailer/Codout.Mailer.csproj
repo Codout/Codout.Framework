@@ -1,19 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
-		<Authors>Clovis Coli Jr</Authors>
-		<Version>5.0.7</Version>
-		<Company>Codout</Company>
 		<Description>Biblioteca para envio de e-mails</Description>
-		<Copyright>Codout</Copyright>
-		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
 		<PackageTags>Codout;Framework;Mail;Email;Mailer;</PackageTags>
-		<RepositoryType>git</RepositoryType>
-		<PackageIcon>logo-nuget.png</PackageIcon>
-		<PackageProjectUrl>https://github.com/Codout/Codout.Framework</PackageProjectUrl>
-		<PackageOutputPath>$(SolutionDir)Packages</PackageOutputPath>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
