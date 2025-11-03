@@ -20,4 +20,6 @@ public interface IStorage
     Task<Uri> CopyTo(string fromContainer, string toContainer, string fileName, CancellationToken cancellationToken);
 
     Uri GetBlobUri(string container, string fileName);
+
+    Task<bool> Exists(string container, string fileName);
 }

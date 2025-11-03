@@ -10,14 +10,12 @@ using HeyRed.Mime;
 
 namespace Codout.Framework.Storage.Azure;
 
-public class AzureStorage(AzureSettings settings) : IStorage
+public class AzureStorage(string connectionString) : IStorage
 {
     private BlobServiceClient _client;
-    public AzureSettings Settings { get; } = settings;
+    public string ConnectionString { get; } = connectionString;
 
-    public BlobServiceClient Client => _client ??= new BlobServiceClient(Settings.UseDevelopmentStorage
-        ? "UseDevelopmentStorage=true"
-        : $"DefaultEndpointsProtocol={Settings.Protocol};AccountName={Settings.AccountName};AccountKey={Settings.AccountKey};BlobEndpoint={Settings.Url};");
+    public BlobServiceClient Client => _client ??= new BlobServiceClient(ConnectionString);
 
     public async Task<Uri> Upload(Stream file, string container, string fileName, CancellationToken cancellationToken)
     {
