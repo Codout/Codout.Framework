@@ -2,17 +2,11 @@
 
 	<PropertyGroup>
 		<Description>Bliblioteca abstrata de implementação para Web API Restfull</Description>
-		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-		<Copyright>Codout</Copyright>
-		<PackageIconUrl></PackageIconUrl>
-		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
 		<PackageTags>Codout</PackageTags>
-		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="15.0.1" />
+		<PackageReference Include="AutoMapper" Version="15.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -23,13 +17,6 @@
 		<ProjectReference Include="..\Codout.DynamicLinq\Codout.DynamicLinq.csproj" />
 		<ProjectReference Include="..\Codout.Framework.Application\Codout.Framework.Application.csproj" />
 		<ProjectReference Include="..\Codout.Framework.DAL\Codout.Framework.DAL.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="..\logo-nuget.png">
-			<Pack>True</Pack>
-			<PackagePath></PackagePath>
-		</None>
 	</ItemGroup>
 
 	<Import Project="..\Codout.Framework.Api.Shared\Codout.Framework.Api.Shared.projitems" Label="Shared" />

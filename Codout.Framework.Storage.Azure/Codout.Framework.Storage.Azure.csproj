@@ -5,15 +5,7 @@
 		<Title>Codout Frameword Storage Azure</Title>
 		<Description>Implementação da interface IStorage do Codout.Framework.Storage para uso do storage do Azure</Description>
 		<PackageTags>Codout;Framework;Storage;Azure;</PackageTags>
-		<Version>5.1.0</Version>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<None Include="..\logo-nuget.png">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Azure.Storage.Blobs" Version="12.26.0" />

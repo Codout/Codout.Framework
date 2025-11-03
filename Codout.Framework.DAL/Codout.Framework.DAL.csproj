@@ -1,16 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<LangVersion>latest</LangVersion>
 		<Description>Interface da Biblioteca de persistência do Framework da Codout</Description>
 		<PackageTags>Codout;Framework;ORM;DAL</PackageTags>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<None Include="..\logo-nuget.png">
-			<Pack>True</Pack>
-			<PackagePath></PackagePath>
-		</None>
-	</ItemGroup>
 
 </Project>

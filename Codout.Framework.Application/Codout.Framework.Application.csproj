@@ -3,24 +3,16 @@
 	<PropertyGroup>
 		<Description>Bliblioteca de implementação base da camada Application Service</Description>
 		<PackageTags>Codout</PackageTags>
-		<PackageIconUrl />
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="15.0.1" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
+		<PackageReference Include="AutoMapper" Version="15.1.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.10" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Codout.DynamicLinq\Codout.DynamicLinq.csproj" />
 		<ProjectReference Include="..\Codout.Framework.Domain\Codout.Framework.Domain.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="..\logo-nuget.png">
-			<Pack>True</Pack>
-			<PackagePath></PackagePath>
-		</None>
 	</ItemGroup>
 
 	<Import Project="..\Codout.Framework.Dto.Shared\Codout.Framework.Dto.projitems" Label="Shared" />

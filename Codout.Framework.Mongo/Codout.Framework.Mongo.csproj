@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<LangVersion>latest</LangVersion>
 		<Description>Implementação da interface Codout.Framework.DAL para MongoDB</Description>
 		<PackageTags>Codout;Framework;ORM;DAL;MongoDB;</PackageTags>
 	</PropertyGroup>
@@ -11,15 +10,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\logo-nuget.png">
-			<Pack>True</Pack>
-			<PackagePath></PackagePath>
-		</None>
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.9" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.10" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.10" />
 		<PackageReference Include="MongoDB.Driver" Version="3.5.0" />
 	</ItemGroup>
 

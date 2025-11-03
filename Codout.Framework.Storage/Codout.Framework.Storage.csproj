@@ -5,14 +5,6 @@
 		<Title>Codout Frameword Storage</Title>
 		<Description>Camada de abstração para uso de storages</Description>
 		<PackageTags>Codout;Framework;Storage;</PackageTags>
-		<Version>5.1.0</Version>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<None Include="..\logo-nuget.png">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-	</ItemGroup>
 
 </Project>
