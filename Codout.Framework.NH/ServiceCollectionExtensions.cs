@@ -21,9 +21,9 @@ public static class ServiceCollectionExtensions
         // Registra ISessionFactory como singleton
         services.AddSingleton(provider => provider.GetRequiredService<SessionFactoryProvider>().Factory);
         // Registra ISession como scoped
-        services.AddScoped(sp => sp.GetRequiredService<ISessionFactory>().OpenSession());
+        services.AddScoped<ISession>(sp => sp.GetRequiredService<ISessionFactory>().OpenSession());
         // Registra IStatelessSession como scoped
-        services.AddScoped(sp => sp.GetRequiredService<ISessionFactory>().OpenStatelessSession());
+        services.AddScoped<IStatelessSession>(sp => sp.GetRequiredService<ISessionFactory>().OpenStatelessSession());
         // Hosted service para cleanup
         services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<SessionFactoryProvider>());
 

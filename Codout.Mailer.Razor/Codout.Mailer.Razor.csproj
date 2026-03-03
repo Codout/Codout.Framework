@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Description>Implementação do template engine para Codout.Mailer utilizando a engine Razor nativa do ASP.NET Core</Description>
+		<PackageTags>Codout;Framework;Mail;Email;Mailer;Razor;</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Codout.Mailer\Codout.Mailer.csproj" />
+	</ItemGroup>
+
+</Project>

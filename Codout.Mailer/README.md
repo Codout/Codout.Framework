@@ -1,10 +1,10 @@
 # 📧 Codout.Mailer
 
-Robust and extensible library for sending emails in .NET 9 applications, with support for Razor templates, multiple providers (SendGrid, AWS SES), and complete observability.
+Robust and extensible library for sending emails in .NET 10 applications, with support for Razor templates, multiple providers (SendGrid, AWS SES), and complete observability.
 
 ## 🚀 Features
 
-- ✅ **Razor Templates**: HTML email rendering using RazorLight
+- ✅ **Razor Templates**: HTML email rendering using ASP.NET Core's native Razor engine
 - ✅ **Multiple Providers**: Support for SendGrid and AWS SES
 - ✅ **Dependency Injection**: Native integration with ASP.NET Core DI
 - ✅ **Observability**: Distributed tracing and metrics with OpenTelemetry
@@ -18,6 +18,11 @@ Robust and extensible library for sending emails in .NET 9 applications, with su
 ### Main Package
 ```
 dotnet add package Codout.Mailer
+```
+
+### Razor Template Engine
+```
+dotnet add package Codout.Mailer.Razor
 ```
 
 ### Specific Providers
@@ -37,10 +42,13 @@ dotnet add package Codout.Mailer.AWS
 var builder = WebApplication.CreateBuilder(args);
 
 // Basic mailer configuration
-builder.Services.AddMailer(builder.Configuration, options =>
+builder.Services.AddMailer(builder.Configuration);
+
+// Razor template engine (uses ASP.NET Core's native Razor engine)
+builder.Services.AddMailerRazor(options =>
 {
-    // Define where the embedded templates are located in your project
-    options.TemplateRootType = typeof(Program);
+    options.TemplateAssembly = typeof(Program).Assembly;
+    options.RootNamespace = "YourProject.Templates";
 });
 
 // Choose email provider
@@ -62,25 +70,6 @@ var app = builder.Build();
     "DefaultFromName": "Email System",
     "DefaultFromEmail": "noreply@example.com"
   },
-  "MailerOptions": {
-    "TemplateRenderTimeoutSeconds": 30,
-    "EmailSendTimeoutSeconds": 60,
-    "EnableTemplateCache": true,
-    "TemplateCacheSize": 100,
-    "TemplateCacheLifetimeMinutes": 60,
-    "EnableDistributedTracing": true,
-    "EnableMetrics": true,
-    "MaxRetryAttempts": 3,
-    "RetryBaseDelayMs": 1000,
-    "DevelopmentMode": false,
-    "TracingPrefix": "Codout.Mailer",
-    "RazorLight": {
-      "DefaultNamespace": "Codout.Mailer.Templates",
-      "EnableRuntimeCompilation": true,
-      "EnableAssemblyCache": true,
-      "EnableHotReload": false
-    }
-  },
   "SendGridSettings": {
     "ApiKey": "SG.your-api-key-here",
     "SandboxMode": false
@@ -97,7 +86,7 @@ var app = builder.Build();
 
 ### 1. **Creating Your EmailService Class**
 
-Create a class that inherits from `MailerService` in your project:
+Create a class that inherits from `MailerServiceBase` in your project:
 
 ```csharp
 // Services/EmailService.cs
@@ -111,7 +100,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using YourProject.Models.Email;
 
-public class EmailService : MailerService
+public class EmailService : MailerServiceBase
 {
     public EmailService(
         IOptions<MailerSettings> mailerSettings,
@@ -546,13 +535,13 @@ public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest
 
 ## 📋 Configuring Templates as Embedded Resources
 
-For templates to be found by RazorLight, add to your `.csproj`:
+For templates to be found by the Razor engine, add to your `.csproj`:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -569,10 +558,14 @@ For templates to be found by RazorLight, add to your `.csproj`:
 var builder = WebApplication.CreateBuilder(args);
 
 // Mailer configuration
-builder.Services.AddMailer(builder.Configuration, options =>
+builder.Services.AddMailer(builder.Configuration);
+
+// Razor template engine (ASP.NET Core native)
+builder.Services.AddMailerRazor(options =>
 {
-    options.TemplateRootType = typeof(Program); // Important: defines where templates are located
-    options.DevelopmentMode = builder.Environment.IsDevelopment();
+    options.TemplateAssembly = typeof(Program).Assembly;
+    options.RootNamespace = "YourProject.Templates";
+    options.EnableCache = true;
 });
 
 // Email provider
@@ -593,40 +586,31 @@ app.Run();
 
 ## 🔧 Advanced Configurations
 
-### **Performance and Cache**
+### **Razor Template Engine**
 ```csharp
-builder.Services.AddMailer(builder.Configuration, options =>
+builder.Services.AddMailerRazor(options =>
 {
-    // More aggressive template caching
-    options.TemplateCacheSize = 500;
-    options.TemplateCacheLifetimeMinutes = 120;
-    
-    // Optimized timeouts
-    options.TemplateRenderTimeoutSeconds = 15;
-    options.EmailSendTimeoutSeconds = 30;
+    options.TemplateAssembly = typeof(Program).Assembly;
+    options.RootNamespace = "YourProject.Templates";
+    options.EnableCache = true; // Enables compiled template caching (default: true)
 });
 ```
 
-### **Development Environment**
+### **Custom Template Engine**
+
+You can implement `ITemplateEngine` to use any template engine of your choice:
+
 ```csharp
-if (builder.Environment.IsDevelopment())
+public class MyCustomTemplateEngine : ITemplateEngine
 {
-    builder.Services.AddMailer(builder.Configuration, options =>
+    public async Task<string> RenderAsync<T>(string templateKey, T model)
     {
-        options.DevelopmentMode = true;
-        options.RazorLight.EnableHotReload = true; // Automatically reload templates
-        options.EnableDistributedTracing = false; // Less overhead in dev
-    });
+        // Your custom rendering logic
+    }
 }
-```
 
-### **Retry Configuration**
-```csharp
-builder.Services.AddMailer(builder.Configuration, options =>
-{
-    options.MaxRetryAttempts = 5;
-    options.RetryBaseDelayMs = 1000; // 1s, 2s, 4s, 8s, 16s
-});
+// Register in DI
+builder.Services.AddScoped<ITemplateEngine, MyCustomTemplateEngine>();
 ```
 
 ## 📊 Monitoring and Observability
@@ -673,25 +657,28 @@ catch (Exception ex)
 
 ## 📋 Available Configurations
 
+### MailerSettings (appsettings.json)
+
 | Configuration | Description | Default |
-|-------------|-----------|---------|
-| `TemplateRootType` | Root type for embedded templates | `null` |
-| `TemplateRenderTimeoutSeconds` | Rendering timeout | `30` |
-| `EmailSendTimeoutSeconds` | Send timeout | `60` |
-| `EnableTemplateCache` | Enable template caching | `true` |
-| `TemplateCacheSize` | Cache size | `100` |
-| `MaxRetryAttempts` | Retry attempts | `3` |
-| `RetryBaseDelayMs` | Base delay for retry | `1000` |
-| `EnableDistributedTracing` | Enable tracing | `true` |
-| `DevelopmentMode` | Development mode | `false` |
+|-------------|-----------|--------|
+| `DefaultFromName` | Default sender name | `null` |
+| `DefaultFromEmail` | Default sender email | `null` |
+
+### RazorMailerOptions (Codout.Mailer.Razor)
+
+| Configuration | Description | Default |
+|-------------|-----------|--------|
+| `TemplateAssembly` | Assembly containing embedded Razor templates | `null` |
+| `RootNamespace` | Root namespace of embedded templates | `null` |
+| `EnableCache` | Enable compiled template caching | `true` |
 
 ## 🔧 Tips and Best Practices
 
 ### ✅ **Do's**
-- ✅ Always inherit from `MailerService` for your custom class
+- ✅ Always inherit from `MailerServiceBase` for your custom class
 - ✅ Create specific models inheriting from `MailerModelBase`
 - ✅ Use Razor templates organized in folders
-- ✅ Configure `TemplateRootType` in DI
+- ✅ Register a template engine via `AddMailerRazor()` or a custom `ITemplateEngine`
 - ✅ Handle exceptions when sending emails
 - ✅ Use logging for auditing
 

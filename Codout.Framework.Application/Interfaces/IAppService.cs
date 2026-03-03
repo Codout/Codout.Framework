@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Codout.Framework.DAL;
-using Codout.Framework.DAL.Entity;
-using Codout.Framework.DAL.Repository;
+using Codout.Framework.Data;
+using Codout.Framework.Data.Entity;
+using Codout.Framework.Data.Repository;
 
 namespace Codout.Framework.Application.Interfaces;
 

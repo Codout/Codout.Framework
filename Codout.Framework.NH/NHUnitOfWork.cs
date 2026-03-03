@@ -1,124 +1,149 @@
 ﻿using System;
 using System.Data;
-using Codout.Framework.DAL;
-using Codout.Framework.DAL.Entity;
+using System.Threading;
+using System.Threading.Tasks;
+using Codout.Framework.Data;
+using Codout.Framework.Data.Entity;
 using NHibernate;
 
 namespace Codout.Framework.NH;
 
 /// <summary>
-/// Implementação de Unit of Work para NHibernate,
-/// gerencia ciclo de vida de transações e sessões de forma segura.
+/// Implementação de Unit of Work para NHibernate com suporte completo async
 /// </summary>
-public class NHUnitOfWork : IUnitOfWork
+public class NHUnitOfWork(ISession session) : IUnitOfWork
 {
-    private readonly ISession _session;
-    private ITransaction _transaction;
+    private ITransaction? _transaction;
     private bool _disposed;
 
     /// <summary>
-    /// Cria uma nova instância de NHUnitOfWork com a sessão injetada.
+    /// Exposição da sessão ativa
     /// </summary>
-    /// <param name="session">Sessão NHibernate</param>
-    public NHUnitOfWork(ISession session)
-    {
-        _session = session ?? throw new ArgumentNullException(nameof(session));
-    }
+    public ISession Session => session ?? throw new ArgumentNullException(nameof(session));
 
-    /// <summary>
-    /// Exposição da sessão ativa.
-    /// </summary>
-    public ISession Session => _session;
+    #region Synchronous Transaction Methods
 
     public void BeginTransaction()
     {
         BeginTransaction(IsolationLevel.ReadCommitted);
     }
 
-    /// <summary>
-    /// Inicia uma transação se não houver nenhuma ativa.
-    /// </summary>
     public void BeginTransaction(IsolationLevel isolationLevel)
     {
-        if (_transaction is not { IsActive: true })
-        {
-            _transaction = _session.BeginTransaction(isolationLevel);
-        }
+        if (_transaction != null && _transaction.IsActive)
+            throw new InvalidOperationException("Uma transação já está em andamento.");
+
+        _transaction = Session.BeginTransaction(isolationLevel);
     }
 
-    /// <summary>
-    /// Executa uma operação dentro de transação, fazendo commit ou rollback automaticamente.
-    /// </summary>
-    public T InTransaction<T>(Func<T> work) where T : class, IEntity
+    public void Commit()
     {
-        if (work == null) throw new ArgumentNullException(nameof(work));
+        if (_transaction == null || !_transaction.IsActive)
+            throw new InvalidOperationException("Nenhuma transação ativa para commit. Chame BeginTransaction() primeiro.");
 
-        BeginTransaction();
         try
         {
-            var result = work();
-            Commit();
-            return result;
+            Session.Flush();
+            _transaction.Commit();
         }
         catch
         {
             Rollback();
             throw;
         }
-    }
-
-    public void Commit()
-    {
-        Commit(IsolationLevel.ReadCommitted);
-    }
-
-    /// <summary>
-    /// Persiste a transação ativa.
-    /// </summary>
-    public void Commit(IsolationLevel isolationLevel)
-    {
-        if (_transaction is not { IsActive: true })
-            BeginTransaction(isolationLevel);
-
-        try
-        {
-            _transaction.Commit();
-        }
-        catch
-        {
-            try
-            {
-                _transaction.Rollback();
-            }
-            catch
-            {
-                // Ignorar falha no rollback
-            }
-            throw;
-        }
         finally
         {
-            _transaction.Dispose();
+            _transaction?.Dispose();
             _transaction = null;
         }
     }
 
-    /// <summary>
-    /// Desfaz a transação ativa.
-    /// </summary>
+    public void Commit(IsolationLevel isolationLevel)
+    {
+        // IsolationLevel é definido no BeginTransaction
+        Commit();
+    }
+
     public void Rollback()
     {
-        if (_transaction is { IsActive: true })
+        if (_transaction == null)
+            return;
+
+        try
         {
-            try
-            {
+            if (_transaction.IsActive)
                 _transaction.Rollback();
-            }
-            catch
-            {
-                // Ignorar falha no rollback
-            }
-            finally
+        }
+        finally
+        {
+            _transaction?.Dispose();
+            _transaction = null;
+        }
+    }
+
+    public T InTransaction<T>(Func<T> work) where T : class, IEntity
+    {
+        if (work == null) throw new ArgumentNullException(nameof(work));
+
+        var shouldManageTransaction = _transaction == null;
+
+        if (shouldManageTransaction)
+            BeginTransaction();
+
+        try
+        {
+            var result = work();
+            
+            if (shouldManageTransaction)
+                Commit();
+            
+            return result;
+        }
+        catch
+        {
+            if (shouldManageTransaction)
+                Rollback();
+            throw;
+        }
+    }
+
+    #endregion
+
+    #region Asynchronous Transaction Methods
+
+    public Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        return BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+    }
+
+    public Task BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
+    {
+        if (_transaction != null && _transaction.IsActive)
+            throw new InvalidOperationException("Uma transação já está em andamento.");
+
+        // NHibernate BeginTransaction não é async nativo
+        _transaction = Session.BeginTransaction(isolationLevel);
+        return Task.CompletedTask;
+    }
+
+    public async Task CommitAsync(CancellationToken cancellationToken = default)
+    {
+        if (_transaction == null || !_transaction.IsActive)
+            throw new InvalidOperationException("Nenhuma transação ativa para commit. Chame BeginTransactionAsync() primeiro.");
+
+        try
+        {
+            await Session.FlushAsync(cancellationToken);
+            await _transaction.CommitAsync(cancellationToken);
+        }
+        catch
+        {
+            await RollbackAsync(cancellationToken);
+            throw;
+        }
+        finally
+        {
+            if (_transaction != null)
             {
                 _transaction.Dispose();
                 _transaction = null;
@@ -126,24 +151,104 @@ public class NHUnitOfWork : IUnitOfWork
         }
     }
 
-    /// <summary>
-    /// Libera a sessão e faz rollback caso ainda haja transação aberta.
-    /// </summary>
-    public void Dispose()
+    public async Task RollbackAsync(CancellationToken cancellationToken = default)
     {
-        if (_disposed) return;
+        if (_transaction == null)
+            return;
 
         try
         {
-            Rollback();
+            if (_transaction.IsActive)
+                await _transaction.RollbackAsync(cancellationToken);
+        }
+        finally
+        {
+            if (_transaction != null)
+            {
+                _transaction.Dispose();
+                _transaction = null;
+            }
+        }
+    }
+
+    public async Task<T> InTransactionAsync<T>(Func<Task<T>> work, CancellationToken cancellationToken = default) where T : class, IEntity
+    {
+        if (work == null) throw new ArgumentNullException(nameof(work));
+
+        var shouldManageTransaction = _transaction == null;
+
+        if (shouldManageTransaction)
+            await BeginTransactionAsync(cancellationToken);
+
+        try
+        {
+            var result = await work();
+            
+            if (shouldManageTransaction)
+                await CommitAsync(cancellationToken);
+            
+            return result;
+        }
+        catch
+        {
+            if (shouldManageTransaction)
+                await RollbackAsync(cancellationToken);
+            throw;
+        }
+    }
+
+    #endregion
+
+    #region IDisposable / IAsyncDisposable
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                try
+                {
+                    Rollback();
+                }
+                catch
+                {
+                    // Ignorar exceções no dispose
+                }
+
+                Session?.Dispose();
+            }
+
+            _disposed = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual async ValueTask DisposeAsyncCore()
+    {
+        try
+        {
+            await RollbackAsync();
         }
         catch
         {
             // Ignorar exceções no dispose
         }
 
-        _session.Dispose();
-        _disposed = true;
+        Session?.Dispose();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await DisposeAsyncCore();
+        Dispose(false);
         GC.SuppressFinalize(this);
     }
+
+    #endregion
 }

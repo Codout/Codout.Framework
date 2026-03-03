@@ -1,4 +1,4 @@
-﻿using Codout.Framework.DAL.Entity;
+﻿using Codout.Framework.Data.Entity;
 
 namespace Codout.Framework.Domain.Entities.Events;
 

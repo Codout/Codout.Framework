@@ -1,8 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<Description>Interface da Biblioteca de persistência do Framework da Codout</Description>
-		<PackageTags>Codout;Framework;ORM;DAL</PackageTags>
-	</PropertyGroup>
-
-</Project>

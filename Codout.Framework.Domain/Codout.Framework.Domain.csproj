@@ -6,12 +6,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Codout.Framework.DAL\Codout.Framework.DAL.csproj" />
+	  <ProjectReference Include="..\Codout.Framework.Data\Codout.Framework.Data.csproj" />
 	</ItemGroup>
 
 </Project>

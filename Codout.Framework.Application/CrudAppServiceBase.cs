@@ -4,8 +4,8 @@ using AutoMapper;
 using Codout.DynamicLinq;
 using Codout.Framework.Api.Client;
 using Codout.Framework.Application.Interfaces;
-using Codout.Framework.DAL;
-using Codout.Framework.DAL.Repository;
+using Codout.Framework.Data;
+using Codout.Framework.Data.Repository;
 using Codout.Framework.Domain.Entities;
 
 namespace Codout.Framework.Application;

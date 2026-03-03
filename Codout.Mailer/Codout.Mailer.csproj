@@ -1,13 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Description>Biblioteca para envio de e-mails</Description>
+		<Description>Biblioteca extensível para envio de e-mails com suporte a múltiplos providers (SendGrid, AWS SES), health checks e observabilidade. O template engine é plugável via ITemplateEngine (veja Codout.Mailer.Razor).</Description>
 		<PackageTags>Codout;Framework;Mail;Email;Mailer;</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
-		<PackageReference Include="RazorLight" Version="2.3.1" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.3" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="10.0.3" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.3" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.3" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.3" />
 	</ItemGroup>
 
 </Project>

@@ -1,5 +1,5 @@
 ﻿using System;
-using Codout.Framework.DAL.Repository;
+using Codout.Framework.Data.Repository;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 
@@ -24,7 +24,6 @@ public static class ConfigureServices
             return client.GetDatabase(databaseName);
         });
 
-        services.AddScoped<MongoDbContext>();
         services.AddScoped(typeof(IRepository<>), typeof(MongoRepository<>));
 
         return services;

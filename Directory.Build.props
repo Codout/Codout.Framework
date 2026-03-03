@@ -1,7 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
-		<Version>5.0.8</Version>
+		<Version>6.2.0</Version>
 		<Authors>Clovis Coli Jr</Authors>
 		<Company>Codout</Company>
 		<Copyright>Codout</Copyright>
@@ -9,7 +9,7 @@
 		<RepositoryUrl>https://github.com/Codout/Codout.Framework</RepositoryUrl>
 		<PackageOutputPath>$(SolutionDir)Packages</PackageOutputPath>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<RepositoryType>git</RepositoryType>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 

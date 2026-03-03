@@ -6,9 +6,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AWSSDK.SimpleEmailV2" Version="4.0.6.1" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="9.0.10" />
-		<PackageReference Include="MimeKit" Version="4.14.0" />
+		<PackageReference Include="AWSSDK.SimpleEmailV2" Version="4.0.11.6" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.3" />
+		<PackageReference Include="MimeKit" Version="4.15.0" />
 	</ItemGroup>
 
 	<ItemGroup>

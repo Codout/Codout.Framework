@@ -1,21 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
-using Codout.Framework.DAL.Entity;
-using Codout.Framework.DAL.Repository;
+using Codout.Framework.Data.Entity;
+using Codout.Framework.Data.Repository;
 using Microsoft.EntityFrameworkCore;
 
-public class EFRepository<T> : IRepository<T> where T : class, IEntity
-{
-    protected readonly DbContext Context;
-    protected DbSet<T> DbSet => Context.Set<T>();
-    private bool _disposed;
+namespace Codout.Framework.EF;
 
-    public EFRepository(DbContext context)
-    {
-        Context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+public class EFRepository<T>(DbContext context) : IRepository<T> where T : class, IEntity
+{
+    public DbContext Context { get; } = context ?? throw new ArgumentNullException(nameof(context));
+
+    public DbSet<T> DbSet => Context.Set<T>();
 
     public IQueryable<T> All() => DbSet;
 
@@ -87,25 +86,47 @@ public class EFRepository<T> : IRepository<T> where T : class, IEntity
 
     public T Refresh(T entity)
     {
+        ArgumentNullException.ThrowIfNull(entity);
         Context.Entry(entity).Reload();
         return entity;
     }
 
     public async Task<T> RefreshAsync(T entity)
     {
+        ArgumentNullException.ThrowIfNull(entity);
         await Context.Entry(entity).ReloadAsync();
         return entity;
+    }
+
+    public Task<T> RefreshAsync(T entity, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(entity);
+        return Task.FromResult(Refresh(entity));
     }
 
     public async Task<T> GetAsync(Expression<Func<T, bool>> predicate) =>
         await DbSet.SingleOrDefaultAsync(predicate);
 
+    public async Task<T> GetAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken) =>
+        await DbSet.SingleOrDefaultAsync(predicate, cancellationToken);
+
     public async Task<T> GetAsync(object key) =>
         await DbSet.FindAsync(key);
 
+    public async Task<T> GetAsync(object key, CancellationToken cancellationToken) =>
+        await DbSet.FindAsync([key], cancellationToken);
+
     public Task<T> LoadAsync(object key) => GetAsync(key);
 
+    public Task<T> LoadAsync(object key, CancellationToken cancellationToken) => GetAsync(key, cancellationToken);
+
     public Task DeleteAsync(T entity)
+    {
+        Delete(entity);
+        return Task.CompletedTask;
+    }
+
+    public Task DeleteAsync(T entity, CancellationToken cancellationToken)
     {
         Delete(entity);
         return Task.CompletedTask;
@@ -117,7 +138,19 @@ public class EFRepository<T> : IRepository<T> where T : class, IEntity
         DbSet.RemoveRange(entities);
     }
 
+    public async Task DeleteAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
+    {
+        var entities = await DbSet.Where(predicate).ToListAsync(cancellationToken);
+        DbSet.RemoveRange(entities);
+    }
+
     public Task<T> SaveAsync(T entity)
+    {
+        Save(entity);
+        return Task.FromResult(entity);
+    }
+
+    public Task<T> SaveAsync(T entity, CancellationToken cancellationToken)
     {
         Save(entity);
         return Task.FromResult(entity);
@@ -129,7 +162,19 @@ public class EFRepository<T> : IRepository<T> where T : class, IEntity
         return Task.FromResult(entity);
     }
 
+    public Task<T> SaveOrUpdateAsync(T entity, CancellationToken cancellationToken)
+    {
+        SaveOrUpdate(entity);
+        return Task.FromResult(entity);
+    }
+
     public Task UpdateAsync(T entity)
+    {
+        Update(entity);
+        return Task.CompletedTask;
+    }
+
+    public Task UpdateAsync(T entity, CancellationToken cancellationToken)
     {
         Update(entity);
         return Task.CompletedTask;
@@ -141,6 +186,24 @@ public class EFRepository<T> : IRepository<T> where T : class, IEntity
         return Task.FromResult(entity);
     }
 
+    public Task<T> MergeAsync(T entity, CancellationToken cancellationToken)
+    {
+        Merge(entity);
+        return Task.FromResult(entity);
+    }
+
+    public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default) =>
+        await DbSet.FirstOrDefaultAsync(predicate, cancellationToken);
+
+    public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default) =>
+        await DbSet.AnyAsync(predicate, cancellationToken);
+
+    public async Task<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default) =>
+        await DbSet.CountAsync(predicate, cancellationToken);
+
+    public async Task<List<T>> ToListAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default) =>
+        await DbSet.Where(predicate).ToListAsync(cancellationToken);
+
     public IQueryable<T> IncludeMany(params Expression<Func<T, object>>[] includes)
     {
         IQueryable<T> query = DbSet;
@@ -151,20 +214,20 @@ public class EFRepository<T> : IRepository<T> where T : class, IEntity
         return query;
     }
 
-    public void Dispose()
+    public IQueryable<T> IncludeMany(params string[] includes)
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
+        IQueryable<T> query = DbSet;
+
+        foreach (var include in includes)
+            query = query.Include(include);
+
+        return query;
     }
 
-    protected virtual void Dispose(bool disposing)
+    // Repository não deve dispor o DbContext - isso é responsabilidade do container DI ou UnitOfWork
+    public void Dispose()
     {
-        if (!_disposed)
-        {
-            if (disposing)
-                Context.Dispose();
-
-            _disposed = true;
-        }
+        // Intencionalmente vazio - o DbContext é gerenciado externamente
+        GC.SuppressFinalize(this);
     }
 }

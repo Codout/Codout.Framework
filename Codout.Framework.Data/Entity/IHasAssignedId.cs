@@ -1,4 +1,4 @@
-﻿namespace Codout.Framework.DAL.Entity;
+﻿namespace Codout.Framework.Data.Entity;
 
 /// <summary>
 ///     Defines the public members of a class that supports setting an assigned ID of an object.

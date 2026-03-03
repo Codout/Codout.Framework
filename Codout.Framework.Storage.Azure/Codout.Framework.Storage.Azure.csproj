@@ -2,14 +2,19 @@
 
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
-		<Title>Codout Frameword Storage Azure</Title>
-		<Description>Implementação da interface IStorage do Codout.Framework.Storage para uso do storage do Azure</Description>
-		<PackageTags>Codout;Framework;Storage;Azure;</PackageTags>
+		<Nullable>enable</Nullable>
+		<Title>Codout Framework Storage Azure</Title>
+		<Description>Implementação da interface IStorage do Codout.Framework.Storage para Azure Blob Storage</Description>
+		<PackageTags>Codout;Framework;Storage;Azure;BlobStorage;</PackageTags>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Azure.Storage.Blobs" Version="12.26.0" />
+		<PackageReference Include="Azure.Storage.Blobs" Version="12.27.0" />
 		<PackageReference Include="MimeTypesMap" Version="1.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.3" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>

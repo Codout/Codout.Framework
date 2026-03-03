@@ -1,4 +1,4 @@
-﻿namespace Codout.Framework.DAL.Entity;
+﻿namespace Codout.Framework.Data.Entity;
 
 /// <summary>
 ///     This serves as a base interface for <see cref="IEntity{TId}" /> and

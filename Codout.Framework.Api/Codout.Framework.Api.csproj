@@ -6,7 +6,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="15.1.0" />
+		<PackageReference Include="AutoMapper" Version="16.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -16,7 +16,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Codout.DynamicLinq\Codout.DynamicLinq.csproj" />
 		<ProjectReference Include="..\Codout.Framework.Application\Codout.Framework.Application.csproj" />
-		<ProjectReference Include="..\Codout.Framework.DAL\Codout.Framework.DAL.csproj" />
 	</ItemGroup>
 
 	<Import Project="..\Codout.Framework.Api.Shared\Codout.Framework.Api.Shared.projitems" Label="Shared" />

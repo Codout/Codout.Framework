@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using Codout.Framework.DAL.Entity;
+using Codout.Framework.Data.Entity;
 using Codout.Framework.Domain.Base;
 
 namespace Codout.Framework.Domain.Entities;

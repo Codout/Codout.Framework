@@ -2,9 +2,12 @@
 
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
-		<Title>Codout Frameword Storage</Title>
-		<Description>Camada de abstração para uso de storages</Description>
-		<PackageTags>Codout;Framework;Storage;</PackageTags>
+		<Nullable>enable</Nullable>
+		<Title>Codout Framework Storage</Title>
+		<Description>Camada de abstração para uso de storages (Azure, AWS S3, File System)</Description>
+		<PackageTags>Codout;Framework;Storage;Cloud;Azure;AWS;S3;</PackageTags>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
 	</PropertyGroup>
 
 </Project>
