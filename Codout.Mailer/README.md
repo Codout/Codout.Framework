@@ -3,7 +3,7 @@
 Robust and extensible library for sending emails in .NET 10 applications, with support for Razor templates, multiple providers (SendGrid, AWS SES), and complete observability.
 
 ## 🚀 Features
-
+ 
 - ✅ **Razor Templates**: HTML email rendering using ASP.NET Core's native Razor engine
 - ✅ **Multiple Providers**: Support for SendGrid and AWS SES
 - ✅ **Dependency Injection**: Native integration with ASP.NET Core DI
