@@ -107,12 +107,16 @@ public abstract class EFUnitOfWork<T>(T instance) : IUnitOfWork where T : DbCont
     }
 
     /// <summary>
-    /// Efetua o SaveChanges do contexto (sessão) em questão
+    /// Efetua o SaveChanges do contexto (sessão) em questão.
+    /// Se não houver transação ativa, faz apenas SaveChanges (auto-commit do EF Core).
     /// </summary>
     public void Commit()
     {
         if (_transaction == null)
-            throw new InvalidOperationException("Nenhuma transação ativa para commit. Chame BeginTransaction() primeiro.");
+        {
+            DbContext.SaveChanges();
+            return;
+        }
 
         try
         {

@@ -1,0 +1,56 @@
+{
+  "resources": [
+    {
+      "path": "/constitution/ui-crud",
+      "source": "docs/ai/constitution/ui-crud.md"
+    },
+    {
+      "path": "/catalog/components",
+      "source": "docs/ai/catalog/components.md"
+    },
+    {
+      "path": "/catalog/screen-patterns",
+      "source": "docs/ai/catalog/screen-patterns.md"
+    },
+    {
+      "path": "/catalog/anti-patterns",
+      "source": "docs/ai/catalog/anti-patterns.md"
+    },
+    {
+      "path": "/catalog/decision-flow",
+      "source": "docs/ai/catalog/decision-flow.md"
+    },
+    {
+      "path": "/references/gold",
+      "source": "docs/ai/references/gold"
+    },
+    {
+      "path": "/recipes/crud-standard",
+      "source": "docs/ai/recipes/crud-standard.md"
+    },
+    {
+      "path": "/recipes/grid-standard",
+      "source": "docs/ai/recipes/grid-standard.md"
+    },
+    {
+      "path": "/recipes/form-simple",
+      "source": "docs/ai/recipes/form-simple.md"
+    },
+    {
+      "path": "/recipes/form-complex",
+      "source": "docs/ai/recipes/form-complex.md"
+    },
+    {
+      "path": "/recipes/details-actions",
+      "source": "docs/ai/recipes/details-actions.md"
+    },
+    {
+      "path": "/recipes/authorization",
+      "source": "docs/ai/recipes/authorization.md"
+    },
+    {
+      "path": "/recipes/layout",
+      "source": "docs/ai/recipes/layout.md"
+    }
+  ]
+}

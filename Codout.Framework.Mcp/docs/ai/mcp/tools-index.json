@@ -1,0 +1,68 @@
+{
+  "tools": [
+    {
+      "name": "get_ui_constitution",
+      "resource": "/constitution/ui-crud"
+    },
+    {
+      "name": "get_component_catalog",
+      "resource": "/catalog/components"
+    },
+    {
+      "name": "get_screen_pattern",
+      "resource": "/catalog/screen-patterns"
+    },
+    {
+      "name": "find_gold_reference",
+      "resource": "/references/gold"
+    },
+    {
+      "name": "get_crud_recipe",
+      "resource": "/recipes/crud-standard"
+    },
+    {
+      "name": "get_grid_recipe",
+      "resource": "/recipes/grid-standard"
+    },
+    {
+      "name": "get_form_recipe",
+      "resource": "/recipes/form-complex"
+    },
+    {
+      "name": "get_details_actions_recipe",
+      "resource": "/recipes/details-actions"
+    },
+    {
+      "name": "get_authorization_recipe",
+      "resource": "/recipes/authorization"
+    },
+    {
+      "name": "get_layout_recipe",
+      "resource": "/recipes/layout"
+    },
+    {
+      "name": "list_anti_patterns",
+      "resource": "/catalog/anti-patterns"
+    },
+    {
+      "name": "get_decision_flow",
+      "resource": "/catalog/decision-flow"
+    },
+    {
+      "name": "get_gold_reference",
+      "resource": "/references/gold"
+    },
+    {
+      "name": "list_gold_references",
+      "resource": "/references/gold"
+    },
+    {
+      "name": "search_knowledge",
+      "resource": "/all"
+    },
+    {
+      "name": "get_server_status",
+      "resource": "/status"
+    }
+  ]
+}

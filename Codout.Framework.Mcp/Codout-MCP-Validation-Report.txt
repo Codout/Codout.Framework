@@ -1,0 +1,28 @@
+Codout MCP / AI pack validation report
+
+Validated against uploaded repositories:
+- /mnt/data/work/club/Codout.Club-master
+
+[OK] ReceivableAccountController: True -> Modules/Finance/Codout.Club.Finance.Web/Areas/Finance/Controllers/ReceivableAccountController.cs
+[OK] MembershipContractController: True -> Modules/Membership/Codout.Club.Membership.Web/Areas/Membership/Controllers/MembershipContractController.cs
+[OK] PersonController: True -> Modules/Core/Codout.Club.Core.Web/Areas/Core/Controllers/PersonController.cs
+[OK] PaymentGatewaySettingsController: True -> Modules/Finance/Codout.Club.Finance.PaymentGateway.Web/Areas/Finance/Controllers/PaymentGatewaySettingsController.cs
+[OK] ReservableResourceController: True -> Modules/Reservations/Codout.Club.Reservations.Web/Areas/Reservations/Controllers/ReservableResourceController.cs
+
+[OK] View exists: True -> Modules/Finance/Codout.Club.Finance.Web/Areas/Finance/Views/ReceivableAccount/_DataTable.cshtml
+[OK] View exists: True -> Modules/Finance/Codout.Club.Finance.Web/Areas/Finance/Views/ReceivableAccount/_EditOrCreate.cshtml
+[OK] View exists: True -> Modules/Finance/Codout.Club.Finance.Web/Areas/Finance/Views/ReceivableAccount/_PayModal.cshtml
+[OK] View exists: True -> Modules/Membership/Codout.Club.Membership.Web/Areas/Membership/Views/MembershipContract/_Details.cshtml
+[OK] View exists: True -> Modules/Core/Codout.Club.Core.Web/Areas/Core/Views/Shared/_PersonForm.cshtml
+[OK] View exists: True -> Modules/MemberPortal/Codout.Club.MemberPortal.Web/Areas/Portal/Views/Shared/_PortalAuthLayout.cshtml
+[OK] View exists: True -> Modules/MemberPortal/Codout.Club.MemberPortal.Web/Areas/Portal/Views/Dashboard/Index.cshtml
+
+Pack validations:
+[OK] JSON files parse successfully.
+[OK] Every MCP resource mapping points to an existing docs file.
+[OK] Gold reference markdown files exist.
+[OK] MCP tool names align with docs/mcp/tools-index.json.
+
+Build/runtime validation:
+[NOT RUN] dotnet restore / dotnet build
+Reason: this execution environment does not provide the dotnet CLI.

@@ -1,0 +1,43 @@
+{
+  "get_screen_pattern": {
+    "name": "crud-kpi",
+    "category": "pattern",
+    "purpose": "CRUD administrativo com KPIs e ações operacionais",
+    "whenToUse": [
+      "Quando a tela combina operação e leitura gerencial",
+      "Quando KPIs ajudam decisão de curto prazo",
+      "Quando existem modais auxiliares por intenção"
+    ],
+    "whenNotToUse": [
+      "Quando KPIs são apenas decorativos",
+      "Quando a tela é um cadastro simples"
+    ],
+    "requiredPieces": [
+      "CrudController ou estrutura CRUD equivalente",
+      "_DataTable",
+      "_EditOrCreate",
+      "KPIs objetivos",
+      "modais auxiliares nomeados por intenção"
+    ],
+    "antiPatterns": [
+      "Adicionar widgets decorativos",
+      "Misturar ações operacionais sem hierarquia",
+      "Quebrar o fluxo padrão do CRUD"
+    ],
+    "references": [
+      "ReceivableAccount"
+    ]
+  },
+  "find_gold_reference": {
+    "query": "financeiro com operacoes rapidas e indicadores",
+    "matches": [
+      {
+        "name": "receivable-account",
+        "module": "Finance",
+        "pattern": "Padrão C — CRUD com KPIs e ações operacionais",
+        "why": "Combina CRUD padrão com camada operacional rica. Mostra como KPIs convivem com listagem administrativa.",
+        "score": 7.0
+      }
+    ]
+  }
+}

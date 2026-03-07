@@ -1,7 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
-		<Version>6.2.0</Version>
+		<Version>6.2.2</Version>
 		<Authors>Clovis Coli Jr</Authors>
 		<Company>Codout</Company>
 		<Copyright>Codout</Copyright>
@@ -18,7 +18,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="..\logo-nuget.png">
+		<None Include="$(MSBuildThisFileDirectory)logo-nuget.png">
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
