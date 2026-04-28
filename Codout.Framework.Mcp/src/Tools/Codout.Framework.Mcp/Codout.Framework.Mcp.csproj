@@ -8,6 +8,14 @@
     <RootNamespace>Codout.Framework.Mcp</RootNamespace>
     <AssemblyName>Codout.Framework.Mcp</AssemblyName>
     <LangVersion>latest</LangVersion>
+
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>codout-mcp</ToolCommandName>
+    <PackageId>Codout.Framework.Mcp</PackageId>
+    <Title>Codout Framework MCP Server</Title>
+    <Description>Servidor MCP (Model Context Protocol) que expõe a constituição, catálogo, padrões de tela, recipes e referências ouro do ecossistema Codout para clientes como Claude Code, Claude Desktop, VSCode e Cursor.</Description>
+    <PackageTags>mcp;codout;ai;claude;model-context-protocol;dotnet-tool</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,6 +28,16 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\..\docs\ai\**\*.md">
+      <LogicalName>knowledge/%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\docs\ai\**\*.json">
+      <LogicalName>knowledge/%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

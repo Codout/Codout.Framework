@@ -1,10 +1,9 @@
 using System.Collections.Concurrent;
-using System.Text;
 using Codout.Framework.Mcp.Models;
 
 namespace Codout.Framework.Mcp.Services;
 
-public sealed class FileSystemAiKnowledgeRepository : IAiKnowledgeRepository
+public sealed class AiKnowledgeRepository : IAiKnowledgeRepository
 {
     private static readonly IReadOnlyDictionary<string, string> StaticDocuments = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
     {
@@ -22,12 +21,14 @@ public sealed class FileSystemAiKnowledgeRepository : IAiKnowledgeRepository
         ["layout-recipe"] = "recipes/layout.md",
     };
 
-    private readonly string _docsRoot;
+    private const string GoldReferencesDirectory = "references/gold";
+
+    private readonly IKnowledgeSource _source;
     private readonly ConcurrentDictionary<string, KnowledgeDocument> _cache = new(StringComparer.OrdinalIgnoreCase);
 
-    public FileSystemAiKnowledgeRepository(IDocsRootResolver docsRootResolver)
+    public AiKnowledgeRepository(IKnowledgeSource source)
     {
-        _docsRoot = docsRootResolver.Resolve();
+        _source = source;
     }
 
     public async Task<KnowledgeDocument> GetDocumentAsync(string key, CancellationToken cancellationToken = default)
@@ -42,18 +43,12 @@ public sealed class FileSystemAiKnowledgeRepository : IAiKnowledgeRepository
             throw new FileNotFoundException($"Knowledge document '{key}' was not mapped.");
         }
 
-        var fullPath = Path.Combine(_docsRoot, relativePath);
-        if (!File.Exists(fullPath))
-        {
-            throw new FileNotFoundException($"Knowledge document not found at '{fullPath}'.");
-        }
-
-        var content = await File.ReadAllTextAsync(fullPath, Encoding.UTF8, cancellationToken);
+        var content = await _source.ReadAllTextAsync(relativePath, cancellationToken);
         var document = new KnowledgeDocument(
             key,
             Path.GetFileNameWithoutExtension(relativePath),
             GetCategory(relativePath),
-            relativePath.Replace("\\", "/"),
+            relativePath.Replace('\\', '/'),
             content);
 
         _cache[key] = document;
@@ -133,13 +128,7 @@ public sealed class FileSystemAiKnowledgeRepository : IAiKnowledgeRepository
 
     public Task<IReadOnlyList<string>> ListGoldReferenceNamesAsync(CancellationToken cancellationToken = default)
     {
-        var root = Path.Combine(_docsRoot, "references", "gold");
-        if (!Directory.Exists(root))
-        {
-            return Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
-        }
-
-        IReadOnlyList<string> files = Directory.EnumerateFiles(root, "*.md", SearchOption.TopDirectoryOnly)
+        IReadOnlyList<string> files = _source.ListFiles(GoldReferencesDirectory, "*.md")
             .Select(Path.GetFileNameWithoutExtension)
             .Where(x => !string.IsNullOrWhiteSpace(x))
             .Select(x => x!)
@@ -151,19 +140,18 @@ public sealed class FileSystemAiKnowledgeRepository : IAiKnowledgeRepository
 
     public Task<RepositoryStatus> GetStatusAsync(CancellationToken cancellationToken = default)
     {
-        var goldRoot = Path.Combine(_docsRoot, "references", "gold");
-        var goldCount = Directory.Exists(goldRoot)
-            ? Directory.EnumerateFiles(goldRoot, "*.md", SearchOption.TopDirectoryOnly).Count()
-            : 0;
+        var goldCount = _source.ListFiles(GoldReferencesDirectory, "*.md").Count;
 
         return Task.FromResult(new RepositoryStatus(
-            DocsRootResolved: Directory.Exists(_docsRoot),
-            DocsRoot: _docsRoot,
+            DocsRootResolved: _source.IsResolved,
+            DocsRoot: _source.Description,
             StaticDocumentCount: StaticDocuments.Count,
             GoldReferenceCount: goldCount));
     }
 
-    private bool TryResolvePath(string key, out string relativePath)
+    internal static IReadOnlyDictionary<string, string> StaticDocumentMap => StaticDocuments;
+
+    private static bool TryResolvePath(string key, out string relativePath)
     {
         if (StaticDocuments.TryGetValue(key, out relativePath!))
         {
@@ -173,7 +161,7 @@ public sealed class FileSystemAiKnowledgeRepository : IAiKnowledgeRepository
         if (key.StartsWith("gold:", StringComparison.OrdinalIgnoreCase))
         {
             var name = key["gold:".Length..].Trim();
-            relativePath = Path.Combine("references", "gold", $"{name}.md");
+            relativePath = $"{GoldReferencesDirectory}/{name}.md";
             return true;
         }
 
@@ -183,7 +171,7 @@ public sealed class FileSystemAiKnowledgeRepository : IAiKnowledgeRepository
 
     private static string GetCategory(string relativePath)
     {
-        var normalized = relativePath.Replace("\\", "/");
+        var normalized = relativePath.Replace('\\', '/');
         return normalized.Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "misc";
     }
 
@@ -232,7 +220,7 @@ public sealed class FileSystemAiKnowledgeRepository : IAiKnowledgeRepository
     private static string? TryExtractBulletValue(string markdown, string key)
     {
         var prefix = $"- **{key}**:";
-        foreach (var line in markdown.Split(Environment.NewLine))
+        foreach (var line in markdown.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
         {
             if (line.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
             {
@@ -253,7 +241,7 @@ public sealed class FileSystemAiKnowledgeRepository : IAiKnowledgeRepository
         }
 
         var rest = markdown[(index + marker.Length)..].Trim();
-        var lines = rest.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+        var lines = rest.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
             .Where(x => x.StartsWith("- "))
             .Take(2)
             .ToArray();

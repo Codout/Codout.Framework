@@ -1,0 +1,53 @@
+name: Codout.Framework.Mcp CI
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'Codout.Framework.Mcp/**'
+      - '.github/workflows/mcp-ci.yml'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'Codout.Framework.Mcp/**'
+      - '.github/workflows/mcp-ci.yml'
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  PROJECT: Codout.Framework.Mcp/src/Tools/Codout.Framework.Mcp/Codout.Framework.Mcp.csproj
+  TESTS: Codout.Framework.Mcp/src/Tools/Codout.Framework.Mcp.Tests/Codout.Framework.Mcp.Tests.csproj
+  CONFIGURATION: Release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore "$PROJECT"
+
+      - name: Build
+        run: dotnet build "$PROJECT" --configuration "$CONFIGURATION" --no-restore
+
+      - name: Test
+        run: |
+          if [ -f "$TESTS" ]; then
+            dotnet restore "$TESTS"
+            dotnet test "$TESTS" --configuration "$CONFIGURATION" --verbosity normal
+          else
+            echo "No test project found, skipping."
+          fi
+
+      - name: Smoke test (--validate)
+        run: dotnet run --project "$PROJECT" --configuration "$CONFIGURATION" --no-build -- --validate
+
+      - name: Smoke test (--list-tools)
+        run: dotnet run --project "$PROJECT" --configuration "$CONFIGURATION" --no-build -- --list-tools

@@ -12,7 +12,7 @@ public sealed class DocsRootResolver : IDocsRootResolver
         _options = options.Value;
     }
 
-    public string Resolve()
+    public string? Resolve()
     {
         var candidates = new List<string>();
 
@@ -49,7 +49,7 @@ public sealed class DocsRootResolver : IDocsRootResolver
             }
         }
 
-        return Path.GetFullPath(Path.Combine(cwd, "docs", "ai"));
+        return null;
     }
 
     private static IEnumerable<string> EnumerateAncestors(string path)
