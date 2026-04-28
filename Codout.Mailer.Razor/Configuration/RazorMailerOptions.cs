@@ -1,15 +1,15 @@
-using System;
+ï»¿using System;
 using System.Reflection;
 
 namespace Codout.Mailer.Razor.Configuration;
 
 /// <summary>
-/// Opções de configuração para o template engine Razor do ASP.NET Core
+/// OpÃ§Ãµes de configuraÃ§Ã£o para o template engine Razor do ASP.NET Core
 /// </summary>
 public class RazorMailerOptions
 {
     /// <summary>
-    /// Assembly que contém os templates Razor embarcados como recursos
+    /// Assembly que contÃ©m os templates Razor embarcados como recursos
     /// </summary>
     public Assembly TemplateAssembly { get; set; }
 
@@ -19,7 +19,7 @@ public class RazorMailerOptions
     public string RootNamespace { get; set; }
 
     /// <summary>
-    /// Habilita o cache de templates compilados em memória
+    /// Habilita o cache de templates compilados em memÃ³ria
     /// </summary>
     public bool EnableCache { get; set; } = true;
 

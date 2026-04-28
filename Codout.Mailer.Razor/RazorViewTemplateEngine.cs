@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Threading.Tasks;
 using Codout.Mailer.Interfaces;
@@ -33,7 +33,7 @@ public class RazorViewTemplateEngine(
         {
             var searchedLocations = string.Join(", ", viewResult.SearchedLocations ?? []);
             throw new InvalidOperationException(
-                $"Template '{templateKey}' n�o encontrado. Locais pesquisados: {searchedLocations}");
+                $"Template '{templateKey}' não encontrado. Locais pesquisados: {searchedLocations}");
         }
 
         await using var writer = new StringWriter();

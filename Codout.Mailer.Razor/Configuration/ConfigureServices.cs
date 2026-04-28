@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using Codout.Mailer.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -8,8 +8,8 @@ namespace Codout.Mailer.Razor.Configuration;
 public static class ConfigureServices
 {
     /// <summary>
-    /// Registra o template engine Razor nativo do ASP.NET Core para renderização de templates de e-mail.
-    /// Deve ser chamado após <c>AddMailer()</c>.
+    /// Registra o template engine Razor nativo do ASP.NET Core para renderizaÃ§Ã£o de templates de e-mail.
+    /// Deve ser chamado apÃ³s <c>AddMailer()</c>.
     /// </summary>
     public static IServiceCollection AddMailerRazor(
         this IServiceCollection services,
@@ -32,3 +32,5 @@ public static class ConfigureServices
         return services;
     }
 }
+
+
