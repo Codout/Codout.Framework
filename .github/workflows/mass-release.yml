@@ -35,11 +35,32 @@ env:
 jobs:
   mass-release:
     runs-on: ubuntu-latest
-    if: inputs.confirm == 'PUBLISH'
+    # Note: the confirm input is validated explicitly in the first step of this
+    # job, not via a job-level `if:`. A job-level `if: inputs.confirm == 'PUBLISH'`
+    # silently marks the run as "Skipped" when the input does not match, which
+    # is awful for debugging — you cannot tell whether the workflow refused you
+    # or never started. The step-based check below fails loud with a clear
+    # error message.
     permissions:
       contents: read
 
     steps:
+      - name: Validate inputs
+        env:
+          CONFIRM: ${{ github.event.inputs.confirm }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+          INCLUDE_MCP: ${{ github.event.inputs.include_mcp }}
+        run: |
+          set -euo pipefail
+          echo "confirm=${CONFIRM:-<empty>}"
+          echo "dry_run=${DRY_RUN:-<empty>}"
+          echo "include_mcp=${INCLUDE_MCP:-<empty>}"
+          if [ "${CONFIRM:-}" != "PUBLISH" ]; then
+            echo "::error::The 'confirm' input must be exactly 'PUBLISH' (case-sensitive). Got '${CONFIRM:-<empty>}'."
+            exit 1
+          fi
+          echo "Confirm input OK."
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -81,7 +102,7 @@ jobs:
             echo "::endgroup::"
           done
 
-          if [ "${{ inputs.include_mcp }}" = "true" ]; then
+          if [ "${{ github.event.inputs.include_mcp }}" = "true" ]; then
             echo "::group::Pack mcp ($MCP_PROJECT)"
             dotnet pack "$MCP_PROJECT" --configuration "$CONFIGURATION" --output ./artifacts
             echo "::endgroup::"
@@ -98,7 +119,7 @@ jobs:
           if-no-files-found: error
 
       - name: Push to NuGet.org
-        if: inputs.dry_run != true
+        if: github.event.inputs.dry_run != 'true'
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
@@ -120,8 +141,8 @@ jobs:
           {
             echo "## Mass release summary"
             echo ""
-            echo "- Dry run: \`${{ inputs.dry_run }}\`"
-            echo "- Mcp included: \`${{ inputs.include_mcp }}\`"
+            echo "- Dry run: \`${{ github.event.inputs.dry_run }}\`"
+            echo "- Mcp included: \`${{ github.event.inputs.include_mcp }}\`"
             echo ""
             echo "### Packed artifacts"
             echo ""
