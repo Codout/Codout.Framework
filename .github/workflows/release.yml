@@ -45,11 +45,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Full history so the master-ancestry gate can resolve merge-base.
+          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
+
+      - name: Verify tag is on master
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          set -euo pipefail
+          git fetch origin master --quiet
+          if ! git merge-base --is-ancestor HEAD origin/master; then
+            echo "::error::Tag '${GITHUB_REF_NAME}' is not an ancestor of origin/master."
+            echo "Releases must be cut from commits that have been merged into master."
+            exit 1
+          fi
+          echo "Tag '${GITHUB_REF_NAME}' is on master: OK"
 
       - name: Resolve package and version
         id: resolve
@@ -80,25 +95,34 @@ jobs:
           echo "project=$PROJECT" | tee -a "$GITHUB_OUTPUT"
           echo "version=$VERSION" | tee -a "$GITHUB_OUTPUT"
 
-      - name: Restore
-        run: dotnet restore "${{ steps.resolve.outputs.project }}"
+      # Build + test the whole solution as a safety net. The solution currently
+      # has no tests registered in it (tests live in side projects with external
+      # infra dependencies, see appsettings.json), so `dotnet test` here is a
+      # no-op today and will pick up tests automatically once they are added.
+      - name: Restore (solution)
+        run: dotnet restore Codout.Framework.sln
 
-      - name: Build
-        run: dotnet build "${{ steps.resolve.outputs.project }}" --configuration "$CONFIGURATION" --no-restore
+      - name: Build (solution)
+        run: dotnet build Codout.Framework.sln --configuration "$CONFIGURATION" --no-restore
+
+      - name: Test (solution)
+        run: dotnet test Codout.Framework.sln --configuration "$CONFIGURATION" --no-build --verbosity normal
 
       - name: Pack
         run: |
           set -euo pipefail
           VERSION="${{ steps.resolve.outputs.version }}"
+          PROJECT="${{ steps.resolve.outputs.project }}"
+          # Pack performs its own restore/build for the target. Some packages
+          # (Cosmos, DocumentDB, etc.) are not part of Codout.Framework.sln, so
+          # we deliberately do NOT pass --no-build here.
           if [ -n "$VERSION" ]; then
-            dotnet pack "${{ steps.resolve.outputs.project }}" \
-              --configuration "$CONFIGURATION" --no-build \
+            dotnet pack "$PROJECT" --configuration "$CONFIGURATION" \
               -p:Version="$VERSION" \
               -p:PackageVersion="$VERSION" \
               --output ./artifacts
           else
-            dotnet pack "${{ steps.resolve.outputs.project }}" \
-              --configuration "$CONFIGURATION" --no-build \
+            dotnet pack "$PROJECT" --configuration "$CONFIGURATION" \
               --output ./artifacts
           fi
           ls -la ./artifacts

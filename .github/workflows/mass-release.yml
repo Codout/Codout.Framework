@@ -1,0 +1,131 @@
+name: Mass Release
+
+# One-shot workflow to publish every Codout.Framework package at the <Version>
+# currently pinned in its .csproj. Designed for the initial baseline release
+# after migrating to per-package versions (where most packages are at 6.2.2
+# and Codout.Framework.EF is at 6.3.0). Idempotent thanks to --skip-duplicate,
+# so it is safe to re-run.
+#
+# Recommended flow:
+#   1. Dispatch with dry_run = true to confirm the package list and artifacts.
+#   2. Re-dispatch with dry_run = false to publish.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type PUBLISH to confirm. Anything else is rejected.'
+        required: true
+      include_mcp:
+        description: 'Also release Codout.Framework.Mcp (otherwise excluded; use mcp-release.yml).'
+        type: boolean
+        default: false
+      dry_run:
+        description: 'Build and pack only; do not push to NuGet.org.'
+        type: boolean
+        default: true
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  CONFIGURATION: Release
+  MAPPING: .github/release-packages.json
+  MCP_PROJECT: Codout.Framework.Mcp/src/Tools/Codout.Framework.Mcp/Codout.Framework.Mcp.csproj
+
+jobs:
+  mass-release:
+    runs-on: ubuntu-latest
+    if: inputs.confirm == 'PUBLISH'
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Verify dispatched from master
+        run: |
+          set -euo pipefail
+          git fetch origin master --quiet
+          if ! git merge-base --is-ancestor HEAD origin/master; then
+            echo "::error::Mass release must be dispatched from a commit on master."
+            echo "Currently at $(git rev-parse HEAD); origin/master tip is $(git rev-parse origin/master)."
+            exit 1
+          fi
+          echo "Dispatched from a commit on master: OK"
+
+      - name: Restore + build + test (solution)
+        run: |
+          dotnet restore Codout.Framework.sln
+          dotnet build Codout.Framework.sln --configuration "$CONFIGURATION" --no-restore
+          dotnet test Codout.Framework.sln --configuration "$CONFIGURATION" --no-build --verbosity normal
+
+      - name: Pack every package
+        run: |
+          set -euo pipefail
+          mkdir -p ./artifacts
+
+          # Out-of-solution projects (Cosmos, DocumentDB, etc.) need their own
+          # restore/build, so we deliberately do NOT pass --no-build here.
+          for pkg in $(jq -r 'keys[]' "$MAPPING"); do
+            project=$(jq -r --arg p "$pkg" '.[$p]' "$MAPPING")
+            echo "::group::Pack $pkg ($project)"
+            dotnet pack "$project" --configuration "$CONFIGURATION" --output ./artifacts
+            echo "::endgroup::"
+          done
+
+          if [ "${{ inputs.include_mcp }}" = "true" ]; then
+            echo "::group::Pack mcp ($MCP_PROJECT)"
+            dotnet pack "$MCP_PROJECT" --configuration "$CONFIGURATION" --output ./artifacts
+            echo "::endgroup::"
+          fi
+
+          echo "Generated artifacts:"
+          ls -la ./artifacts
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: codout-framework-all-nupkg
+          path: ./artifacts/*.nupkg
+          if-no-files-found: error
+
+      - name: Push to NuGet.org
+        if: inputs.dry_run != true
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${NUGET_API_KEY:-}" ]; then
+            echo "::error::NUGET_API_KEY secret is not set; aborting."
+            exit 1
+          fi
+          # --skip-duplicate makes this idempotent: re-runs will not fail on
+          # already-published versions.
+          dotnet nuget push "./artifacts/*.nupkg" \
+            --api-key "$NUGET_API_KEY" \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## Mass release summary"
+            echo ""
+            echo "- Dry run: \`${{ inputs.dry_run }}\`"
+            echo "- Mcp included: \`${{ inputs.include_mcp }}\`"
+            echo ""
+            echo "### Packed artifacts"
+            echo ""
+            echo '```'
+            ls -1 ./artifacts 2>/dev/null || echo "(no artifacts directory)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
