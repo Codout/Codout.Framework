@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>6.2.2</Version>
+		<Version>6.3.0</Version>
 		<Product></Product>
 		<Description>Modulo Multitenancy da Codout para aplicações Asp.net Core</Description>
 		<PackageTags>Codout;Framework</PackageTags>
