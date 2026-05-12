@@ -14,4 +14,9 @@
     <Folder Include="Default\" />
   </ItemGroup>
 
+  <!-- Same shared-source import pattern used by Codout.Framework.Application and
+       Codout.Framework.Api.Client. Without it this project has zero .cs files,
+       MSBuild produces no assembly, and `dotnet pack` fails with NU5026. -->
+  <Import Project="..\Codout.Framework.Dto.Shared\Codout.Framework.Dto.projitems" Label="Shared" />
+
 </Project>
