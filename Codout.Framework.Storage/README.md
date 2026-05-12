@@ -1,24 +1,24 @@
 # Codout.Framework.Storage
 
-Abstração cloud-agnostic para operações de armazenamento de arquivos (Azure, AWS S3, File System).
+AbstraÃ§Ã£o cloud-agnostic para operaÃ§Ãµes de armazenamento de arquivos (Azure, AWS S3, File System).
 
 ## ?? Recursos
 
-- ? **Interface unificada** para múltiplos provedores
+- ? **Interface unificada** para mÃºltiplos provedores
 - ? **Async/await** com CancellationToken
 - ? **Metadata support** para arquivos
-- ? **SAS tokens** para acesso temporário
+- ? **SAS tokens** para acesso temporÃ¡rio
 - ? **List operations** para descoberta de arquivos
-- ? **Batch operations** para deletar múltiplos arquivos
+- ? **Batch operations** para deletar mÃºltiplos arquivos
 - ? **Progress reporting** para uploads
-- ? **Exceções customizadas** para tratamento específico
+- ? **ExceÃ§Ãµes customizadas** para tratamento especÃ­fico
 - ? **CDN support** para URLs otimizadas
 - ? **Thread-safe** implementations
 
-## ?? Instalação
+## ?? InstalaÃ§Ã£o
 
 ```bash
-# Abstrações
+# AbstraÃ§Ãµes
 dotnet add package Codout.Framework.Storage
 
 # Azure Blob Storage
@@ -31,7 +31,7 @@ dotnet add package Codout.Framework.Storage.AWS
 dotnet add package Codout.Framework.Storage.FileSystem
 ```
 
-## ?? Configuração
+## ?? ConfiguraÃ§Ã£o
 
 ### Azure Blob Storage
 
@@ -43,10 +43,10 @@ dotnet add package Codout.Framework.Storage.FileSystem
   }
 }
 
-// Program.cs - Básico
+// Program.cs - BÃ¡sico
 services.AddAzureStorage(configuration);
 
-// Program.cs - Avançado
+// Program.cs - AvanÃ§ado
 services.AddAzureStorage(options =>
 {
     options.ConnectionString = configuration.GetConnectionString("AzureStorage");
@@ -59,7 +59,7 @@ services.AddAzureStorage(options =>
 });
 ```
 
-## ?? Uso Básico
+## ?? Uso BÃ¡sico
 
 ### Upload
 
@@ -119,7 +119,7 @@ public async Task<Stream> GetStreamAsync(string fileName, CancellationToken ct =
 // Deletar um arquivo
 await _storage.DeleteAsync("documents", "file.pdf", ct);
 
-// Deletar múltiplos arquivos
+// Deletar mÃºltiplos arquivos
 var files = new[] { "file1.pdf", "file2.pdf", "file3.pdf" };
 await _storage.DeleteManyAsync("documents", files, ct);
 ```
@@ -165,17 +165,17 @@ var customData = new Dictionary<string, string>
 await _storage.SetMetadataAsync("documents", "file.pdf", customData, ct);
 ```
 
-### SAS Tokens (Acesso Temporário)
+### SAS Tokens (Acesso TemporÃ¡rio)
 
 ```csharp
-// Gerar URL com acesso temporário de 1 hora
+// Gerar URL com acesso temporÃ¡rio de 1 hora
 var sasUri = await _storage.GetSasUriAsync("documents", "file.pdf", TimeSpan.FromHours(1), ct);
 
 // Enviar ao cliente
 return Ok(new { downloadUrl = sasUri.ToString() });
 ```
 
-### Verificar Existência
+### Verificar ExistÃªncia
 
 ```csharp
 if (await _storage.ExistsAsync("documents", "file.pdf", ct))
@@ -184,7 +184,7 @@ if (await _storage.ExistsAsync("documents", "file.pdf", ct))
 }
 ```
 
-## ?? Operações Avançadas
+## ?? OperaÃ§Ãµes AvanÃ§adas
 
 ### Upload com Progress Bar
 
@@ -201,7 +201,7 @@ public async Task<Uri> UploadWithProgressBarAsync(Stream file, string fileName)
 }
 ```
 
-### Tratamento de Erros Específicos
+### Tratamento de Erros EspecÃ­ficos
 
 ```csharp
 try
@@ -210,7 +210,7 @@ try
 }
 catch (StorageNotFoundException ex)
 {
-    // Arquivo não encontrado
+    // Arquivo nÃ£o encontrado
     return NotFound($"File not found: {ex.FileName}");
 }
 catch (StorageContainerException ex)
@@ -220,20 +220,20 @@ catch (StorageContainerException ex)
 }
 catch (StorageException ex)
 {
-    // Erro genérico de storage
+    // Erro genÃ©rico de storage
     return StatusCode(500, $"Storage error: {ex.Message}");
 }
 ```
 
-### Múltiplos Provedores
+### MÃºltiplos Provedores
 
 ```csharp
-// Registrar múltiplos storage providers
+// Registrar mÃºltiplos storage providers
 services.AddAzureStorage(azureOptions);
 services.AddKeyedSingleton<IStorage>("aws", new AwsStorage(awsOptions));
 services.AddKeyedSingleton<IStorage>("local", new FileSystemStorage(fsOptions));
 
-// Usar específico
+// Usar especÃ­fico
 public class FileService
 {
     private readonly IStorage _primaryStorage;
@@ -281,39 +281,39 @@ public class StorageMetadata
 }
 ```
 
-## ?? Melhores Práticas
+## ?? Melhores PrÃ¡ticas
 
-1. **Use CancellationToken** em todas operações async
+1. **Use CancellationToken** em todas operaÃ§Ãµes async
 2. **Use GetStreamAsync** em vez de DownloadAsync para arquivos grandes (streaming)
-3. **Implemente retry logic** para operações críticas
-4. **Use SAS tokens** para acesso temporário em vez de URLs públicas
+3. **Implemente retry logic** para operaÃ§Ãµes crÃ­ticas
+4. **Use SAS tokens** para acesso temporÃ¡rio em vez de URLs pÃºblicas
 5. **Configure CDN** para melhor performance de leitura
-6. **Use metadata** para armazenar informações contextuais
+6. **Use metadata** para armazenar informaÃ§Ãµes contextuais
 7. **Valide nomes de arquivos** antes do upload
 8. **Implemente progress reporting** para uploads grandes
-9. **Use batch operations** para deletar múltiplos arquivos
-10. **Trate exceções específicas** (`StorageNotFoundException`, etc.)
+9. **Use batch operations** para deletar mÃºltiplos arquivos
+10. **Trate exceÃ§Ãµes especÃ­ficas** (`StorageNotFoundException`, etc.)
 
 ## ?? Novidades v10.0
 
 - ? **Nova interface IStorage** com naming convention async
 - ? **Metadata support** completo
-- ? **SAS tokens** para acesso temporário
+- ? **SAS tokens** para acesso temporÃ¡rio
 - ? **List operations** com prefixo
-- ? **Batch delete** para múltiplos arquivos
+- ? **Batch delete** para mÃºltiplos arquivos
 - ? **Progress reporting** em uploads
-- ? **Exceções customizadas** tipadas
+- ? **ExceÃ§Ãµes customizadas** tipadas
 - ? **CDN support** integrado
 - ? **Thread-safe** lazy loading
-- ? **Extensões DI** fluentes
+- ? **ExtensÃµes DI** fluentes
 - ? **Nullable reference types**
 
-## ?? Licença
+## ?? LicenÃ§a
 
 Propriedade da Codout
 
 ---
 
-**Versão:** 10.0.0  
-**Status:** Estável para produção  
+**VersÃ£o:** 10.0.0  
+**Status:** EstÃ¡vel para produÃ§Ã£o  
 **Target:** .NET 10

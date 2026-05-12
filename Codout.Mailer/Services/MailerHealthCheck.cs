@@ -12,7 +12,7 @@ public class MailerHealthCheck : IHealthCheck
     {
         try
         {
-            // Implementar verificação de conectividade
+            // Implementar verificaÃ§Ã£o de conectividade
             return HealthCheckResult.Healthy("Mailer service is healthy");
         }
         catch (Exception ex)

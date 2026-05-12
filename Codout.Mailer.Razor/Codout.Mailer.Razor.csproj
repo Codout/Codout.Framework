@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<Version>6.2.2</Version>
-		<Description>Implementação do template engine para Codout.Mailer utilizando a engine Razor nativa do ASP.NET Core</Description>
+		<Description>ImplementaÃ§Ã£o do template engine para Codout.Mailer utilizando a engine Razor nativa do ASP.NET Core</Description>
 		<PackageTags>Codout;Framework;Mail;Email;Mailer;Razor;</PackageTags>
 	</PropertyGroup>
 

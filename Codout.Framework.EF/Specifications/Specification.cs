@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Codout.Framework.EF.Specifications;
 
 /// <summary>
-/// Implementação base do Specification Pattern para Entity Framework Core
+/// ImplementaÃ§Ã£o base do Specification Pattern para Entity Framework Core
 /// </summary>
 public abstract class Specification<T> : ISpecification<T> where T : class, IEntity
 {
