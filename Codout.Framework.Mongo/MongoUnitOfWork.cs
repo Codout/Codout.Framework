@@ -9,7 +9,7 @@ using MongoDB.Driver;
 namespace Codout.Framework.Mongo;
 
 /// <summary>
-/// Unit of Work para MongoDB com suporte a transaÁıes (requer replica set)
+/// Unit of Work para MongoDB com suporte a transa√ß√µes (requer replica set)
 /// </summary>
 public class MongoUnitOfWork : IUnitOfWork
 {
@@ -32,7 +32,7 @@ public class MongoUnitOfWork : IUnitOfWork
     public void BeginTransaction(IsolationLevel isolationLevel)
     {
         if (_session != null)
-            throw new InvalidOperationException("Uma transaÁ„o j· est· em andamento.");
+            throw new InvalidOperationException("Uma transa√ß√£o j√° est√° em andamento.");
 
         _session = _client.StartSession();
         
@@ -46,7 +46,7 @@ public class MongoUnitOfWork : IUnitOfWork
     public void Commit()
     {
         if (_session == null || !_session.IsInTransaction)
-            throw new InvalidOperationException("Nenhuma transaÁ„o ativa para commit. Chame BeginTransaction() primeiro.");
+            throw new InvalidOperationException("Nenhuma transa√ß√£o ativa para commit. Chame BeginTransaction() primeiro.");
 
         try
         {
@@ -66,7 +66,7 @@ public class MongoUnitOfWork : IUnitOfWork
 
     public void Commit(IsolationLevel isolationLevel)
     {
-        // IsolationLevel È definido no BeginTransaction
+        // IsolationLevel √© definido no BeginTransaction
         Commit();
     }
 
@@ -125,7 +125,7 @@ public class MongoUnitOfWork : IUnitOfWork
     public async Task BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
     {
         if (_session != null)
-            throw new InvalidOperationException("Uma transaÁ„o j· est· em andamento.");
+            throw new InvalidOperationException("Uma transa√ß√£o j√° est√° em andamento.");
 
         _session = await _client.StartSessionAsync(cancellationToken: cancellationToken);
         
@@ -139,7 +139,7 @@ public class MongoUnitOfWork : IUnitOfWork
     public async Task CommitAsync(CancellationToken cancellationToken = default)
     {
         if (_session == null || !_session.IsInTransaction)
-            throw new InvalidOperationException("Nenhuma transaÁ„o ativa para commit. Chame BeginTransactionAsync() primeiro.");
+            throw new InvalidOperationException("Nenhuma transa√ß√£o ativa para commit. Chame BeginTransactionAsync() primeiro.");
 
         try
         {
@@ -251,7 +251,7 @@ public class MongoUnitOfWork : IUnitOfWork
     #endregion
 
     /// <summary>
-    /// ObtÈm a sess„o MongoDB atual (para uso em operaÁıes dentro da transaÁ„o)
+    /// Obt√©m a sess√£o MongoDB atual (para uso em opera√ß√µes dentro da transa√ß√£o)
     /// </summary>
     public IClientSessionHandle? CurrentSession => _session;
 }

@@ -1,25 +1,25 @@
 # Codout.Framework.NH
 
-ImplementaÁ„o do padr„o Repository e Unit of Work para NHibernate.
+Implementa√ß√£o do padr√£o Repository e Unit of Work para NHibernate.
 
 ## ?? Recursos
 
 - ? **Repository Pattern** com NHibernate
-- ? **Unit of Work Pattern** com transaÁıes
+- ? **Unit of Work Pattern** com transa√ß√µes
 - ? **Async/await completo** com CancellationToken
-- ? **MÈtodos auxiliares** (FirstOrDefault, Any, Count, ToList)
+- ? **M√©todos auxiliares** (FirstOrDefault, Any, Count, ToList)
 - ? **FluentNHibernate** suportado
 - ? **IAsyncDisposable** suportado
 - ? **Nullable Reference Types** habilitado
-- ? **DocumentaÁ„o XML** completa
+- ? **Documenta√ß√£o XML** completa
 
-## ?? InstalaÁ„o
+## ?? Instala√ß√£o
 
 ```bash
 dotnet add package Codout.Framework.NH
 ```
 
-## ?? ConfiguraÁ„o
+## ?? Configura√ß√£o
 
 ### appsettings.json
 
@@ -67,7 +67,7 @@ services.AddScoped<ISession>(sp =>
 services.AddScoped<IUnitOfWork, NHUnitOfWork>();
 ```
 
-## ?? Uso B·sico
+## ?? Uso B√°sico
 
 ### Entidades
 
@@ -144,7 +144,7 @@ public class ProductRepository : NHRepository<Product>
 }
 ```
 
-### Unit of Work (com TransaÁıes)
+### Unit of Work (com Transa√ß√µes)
 
 ```csharp
 public class ProductService
@@ -182,7 +182,7 @@ var product = await _unitOfWork.InTransactionAsync(async () =>
 }, ct);
 ```
 
-## ?? OperaÁıes DisponÌveis
+## ?? Opera√ß√µes Dispon√≠veis
 
 ### Query Methods
 
@@ -199,10 +199,10 @@ var active = repository.Where(p => p.IsActive);
 // Read-only com filtro
 var activeReadOnly = repository.WhereReadOnly(p => p.IsActive);
 
-// PaginaÁ„o
+// Pagina√ß√£o
 var paged = repository.WherePaged(p => p.IsActive, out int total, index: 0, size: 20);
 
-// Get ˙nico
+// Get √∫nico
 var product = await repository.GetAsync(p => p.Id == id, ct);
 
 // FirstOrDefault
@@ -217,7 +217,7 @@ var count = await repository.CountAsync(p => p.IsActive, ct);
 // ToList
 var list = await repository.ToListAsync(p => p.Price > 100, ct);
 
-// Load (retorna proxy lazy - n„o È async nativo)
+// Load (retorna proxy lazy - n√£o √© async nativo)
 var proxy = repository.Load(id);
 ```
 
@@ -248,10 +248,10 @@ var refreshed = await repository.RefreshAsync(product, ct);
 
 ## ?? Eager Loading
 
-### NHibernate n„o suporta Include como EF Core
+### NHibernate n√£o suporta Include como EF Core
 
 ```csharp
-// ? N„o funciona
+// ? N√£o funciona
 var products = repository.IncludeMany(p => p.Category);
 
 // ? Use Fetch no LINQ
@@ -277,7 +277,7 @@ var products = session.CreateCriteria<Product>()
     .List<Product>();
 ```
 
-## ??? Mapeamento AvanÁado
+## ??? Mapeamento Avan√ßado
 
 ### Relacionamentos
 
@@ -324,7 +324,7 @@ public class ProductMap : ClassMap<Product>
 
 ## ?? Session Management
 
-### Acesso direto ‡ Session
+### Acesso direto √† Session
 
 ```csharp
 public class ProductRepository : NHRepository<Product>
@@ -345,7 +345,7 @@ public class ProductRepository : NHRepository<Product>
 }
 ```
 
-## ?? ConsideraÁıes NHibernate
+## ?? Considera√ß√µes NHibernate
 
 ### 1. Propriedades Virtuais
 
@@ -358,7 +358,7 @@ public class Product
     public virtual Category Category { get; set; }
 }
 
-// ? Errado - n„o permite lazy loading
+// ? Errado - n√£o permite lazy loading
 public class Product
 {
     public int Id { get; set; }
@@ -369,10 +369,10 @@ public class Product
 ### 2. Flush vs Commit
 
 ```csharp
-// Flush persiste no banco mas n„o comita a transaÁ„o
+// Flush persiste no banco mas n√£o comita a transa√ß√£o
 await Session.FlushAsync(ct);
 
-// Commit faz flush + commit da transaÁ„o
+// Commit faz flush + commit da transa√ß√£o
 await unitOfWork.CommitAsync(ct);
 ```
 
@@ -393,16 +393,16 @@ await repository.UpdateAsync(merged, ct);
 ### 4. Load vs Get
 
 ```csharp
-// Load - retorna proxy, lanÁa exceÁ„o se n„o existir quando acessado
-var proxy = repository.Load(id); // N„o acessa o banco ainda
+// Load - retorna proxy, lan√ßa exce√ß√£o se n√£o existir quando acessado
+var proxy = repository.Load(id); // N√£o acessa o banco ainda
 var name = proxy.Name; // Acessa o banco aqui
 
-// Get - retorna null se n„o existir
+// Get - retorna null se n√£o existir
 var product = await repository.GetAsync(id, ct); // Acessa o banco imediatamente
-if (product == null) { /* n„o existe */ }
+if (product == null) { /* n√£o existe */ }
 ```
 
-## ?? OperaÁıes com CancellationToken
+## ?? Opera√ß√µes com CancellationToken
 
 ```csharp
 var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
@@ -415,37 +415,37 @@ try
 }
 catch (OperationCanceledException)
 {
-    Console.WriteLine("OperaÁ„o cancelada pelo timeout");
+    Console.WriteLine("Opera√ß√£o cancelada pelo timeout");
 }
 ```
 
-## ?? Melhores Pr·ticas
+## ?? Melhores Pr√°ticas
 
 1. **Use propriedades virtual**: Permite lazy loading e proxies
 2. **Configure Cascade corretamente**: Evite orphan deletions acidentais
-3. **Use CancellationToken**: Sempre em operaÁıes async
+3. **Use CancellationToken**: Sempre em opera√ß√µes async
 4. **Flush antes de queries**: Se precisar dos dados persistidos
 5. **Evite N+1**: Use Fetch/FetchMany para eager loading
-6. **Configure Ìndices**: No banco ou via atributos
-7. **Use Stateless Session**: Para operaÁıes batch de alto volume
-8. **Use await using**: Para dispose autom·tico do UnitOfWork
+6. **Configure √≠ndices**: No banco ou via atributos
+7. **Use Stateless Session**: Para opera√ß√µes batch de alto volume
+8. **Use await using**: Para dispose autom√°tico do UnitOfWork
 9. **Evite lazy loading em loops**: Carregue dados antecipadamente
-10. **Configure cache de segundo nÌvel**: Para performance
+10. **Configure cache de segundo n√≠vel**: Para performance
 
-## ?? Õndices
+## ?? √çndices
 
 ```csharp
 public class ProductMap : ClassMap<Product>
 {
     public ProductMap()
     {
-        // Õndice ˙nico
+        // √çndice √∫nico
         Map(x => x.Name)
             .Not.Nullable()
             .Length(200)
             .UniqueKey("UK_Product_Name");
         
-        // Õndice composto
+        // √çndice composto
         Map(x => x.CategoryId).Index("IX_Product_Category_Active");
         Map(x => x.IsActive).Index("IX_Product_Category_Active");
     }
@@ -455,39 +455,39 @@ public class ProductMap : ClassMap<Product>
 ## ?? Novidades v10.0
 
 ### Novos Recursos
-- ? **MÈtodos auxiliares**: `FirstOrDefaultAsync`, `AnyAsync`, `CountAsync`, `ToListAsync`
+- ? **M√©todos auxiliares**: `FirstOrDefaultAsync`, `AnyAsync`, `CountAsync`, `ToListAsync`
 - ? **IAsyncDisposable** implementado no UnitOfWork
-- ? **Sobrecargas com CancellationToken** em todos mÈtodos async
-- ? **ValidaÁıes** com `ArgumentNullException.ThrowIfNull`
-- ? **Flush explÌcito** antes de commit para consistÍncia
+- ? **Sobrecargas com CancellationToken** em todos m√©todos async
+- ? **Valida√ß√µes** com `ArgumentNullException.ThrowIfNull`
+- ? **Flush expl√≠cito** antes de commit para consist√™ncia
 
 ### Melhorias
 - ? **Performance** otimizada em batch operations
-- ?? **DocumentaÁ„o XML** completa
+- ?? **Documenta√ß√£o XML** completa
 - ?? **Nullable reference types** habilitado
 - ?? **Thread-safe** implementation
 
-### CorreÁıes
-- ?? **TransaÁıes** agora fazem flush antes de commit
-- ?? **Dispose** correto de transaÁıes em exceÁıes
+### Corre√ß√µes
+- ?? **Transa√ß√µes** agora fazem flush antes de commit
+- ?? **Dispose** correto de transa√ß√µes em exce√ß√µes
 - ?? **LoadAsync** implementado corretamente
 
 ## ?? Links Relacionados
 
-- [Codout.Framework.Data](../Codout.Framework.Data/README.md) - AbstraÁıes base
-- [Codout.Framework.EF](../Codout.Framework.EF/README.md) - ImplementaÁ„o Entity Framework
-- [Codout.Framework.Mongo](../Codout.Framework.Mongo/README.md) - ImplementaÁ„o MongoDB
+- [Codout.Framework.Data](../Codout.Framework.Data/README.md) - Abstra√ß√µes base
+- [Codout.Framework.EF](../Codout.Framework.EF/README.md) - Implementa√ß√£o Entity Framework
+- [Codout.Framework.Mongo](../Codout.Framework.Mongo/README.md) - Implementa√ß√£o MongoDB
 - [NHibernate Documentation](https://nhibernate.info/doc/)
 - [FluentNHibernate](https://github.com/nhibernate/fluent-nhibernate)
 
-## ?? LicenÁa
+## ?? Licen√ßa
 
 Propriedade da Codout
 
 ---
 
-**Vers„o:** 10.0.0  
-**Status:** Est·vel para produÁ„o  
+**Vers√£o:** 10.0.0  
+**Status:** Est√°vel para produ√ß√£o  
 **Target:** .NET 10  
 **NHibernate:** 5.6.0  
 **FluentNHibernate:** 3.4.1

@@ -9,7 +9,7 @@ using Codout.Framework.EF.Interceptors;
 namespace Codout.Framework.EF;
 
 /// <summary>
-/// Builder fluente para configuraÁ„o avanÁada do Entity Framework Core
+/// Builder fluente para configura√ß√£o avan√ßada do Entity Framework Core
 /// </summary>
 public class EFCoreBuilder<TContext> where TContext : DbContext
 {
@@ -41,13 +41,13 @@ public class EFCoreBuilder<TContext> where TContext : DbContext
     }
 
     /// <summary>
-    /// Carrega a connection string da configuraÁ„o
+    /// Carrega a connection string da configura√ß√£o
     /// </summary>
     public EFCoreBuilder<TContext> WithConnectionStringFromConfiguration(string key = "DefaultConnection")
     {
         _connectionString = _configuration.GetConnectionString(key);
         if (string.IsNullOrEmpty(_connectionString))
-            throw new InvalidOperationException($"Connection string '{key}' n„o encontrada na configuraÁ„o.");
+            throw new InvalidOperationException($"Connection string '{key}' n√£o encontrada na configura√ß√£o.");
         return this;
     }
 
@@ -59,7 +59,7 @@ public class EFCoreBuilder<TContext> where TContext : DbContext
         _configureOptions = options =>
         {
             if (string.IsNullOrEmpty(_connectionString))
-                throw new InvalidOperationException("Connection string n„o configurada. Use WithConnectionString() primeiro.");
+                throw new InvalidOperationException("Connection string n√£o configurada. Use WithConnectionString() primeiro.");
 
             options.UseSqlServer(_connectionString, sqlOptions =>
             {
@@ -87,7 +87,7 @@ public class EFCoreBuilder<TContext> where TContext : DbContext
     }
 
     /// <summary>
-    /// Habilita auditoria autom·tica
+    /// Habilita auditoria autom√°tica
     /// </summary>
     public EFCoreBuilder<TContext> EnableAuditing()
     {
@@ -96,7 +96,7 @@ public class EFCoreBuilder<TContext> where TContext : DbContext
     }
 
     /// <summary>
-    /// Habilita soft delete autom·tico
+    /// Habilita soft delete autom√°tico
     /// </summary>
     public EFCoreBuilder<TContext> EnableSoftDelete()
     {
@@ -105,7 +105,7 @@ public class EFCoreBuilder<TContext> where TContext : DbContext
     }
 
     /// <summary>
-    /// Habilita logging de dados sensÌveis (apenas desenvolvimento)
+    /// Habilita logging de dados sens√≠veis (apenas desenvolvimento)
     /// </summary>
     public EFCoreBuilder<TContext> EnableSensitiveDataLogging()
     {
@@ -123,7 +123,7 @@ public class EFCoreBuilder<TContext> where TContext : DbContext
     }
 
     /// <summary>
-    /// Habilita retry autom·tico em falhas
+    /// Habilita retry autom√°tico em falhas
     /// </summary>
     public EFCoreBuilder<TContext> EnableRetryOnFailure(int maxRetryCount = 3, int maxRetryDelaySeconds = 30)
     {
@@ -143,7 +143,7 @@ public class EFCoreBuilder<TContext> where TContext : DbContext
     }
 
     /// <summary>
-    /// ConfiguraÁ„o customizada do DbContextOptionsBuilder
+    /// Configura√ß√£o customizada do DbContextOptionsBuilder
     /// </summary>
     public EFCoreBuilder<TContext> ConfigureOptions(Action<DbContextOptionsBuilder> configure)
     {
@@ -157,12 +157,12 @@ public class EFCoreBuilder<TContext> where TContext : DbContext
     }
 
     /// <summary>
-    /// Finaliza a configuraÁ„o e registra o DbContext
+    /// Finaliza a configura√ß√£o e registra o DbContext
     /// </summary>
     public IServiceCollection Build()
     {
         if (_configureOptions == null)
-            throw new InvalidOperationException("Provider n„o configurado. Use UseSqlServer() ou outro provider.");
+            throw new InvalidOperationException("Provider n√£o configurado. Use UseSqlServer() ou outro provider.");
 
         _services.AddDbContext<TContext>((serviceProvider, options) =>
         {
@@ -190,12 +190,12 @@ public class EFCoreBuilder<TContext> where TContext : DbContext
 }
 
 /// <summary>
-/// Extensıes do ServiceCollection para o builder
+/// Extens√µes do ServiceCollection para o builder
 /// </summary>
 public static class EFCoreBuilderExtensions
 {
     /// <summary>
-    /// Adiciona Entity Framework Core com configuraÁ„o fluente
+    /// Adiciona Entity Framework Core com configura√ß√£o fluente
     /// </summary>
     public static EFCoreBuilder<TContext> AddEFCore<TContext>(
         this IServiceCollection services,

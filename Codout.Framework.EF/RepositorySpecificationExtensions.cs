@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Codout.Framework.EF;
 
 /// <summary>
-/// Extensıes do Repository para suportar Specification Pattern
+/// Extens√µes do Repository para suportar Specification Pattern
 /// </summary>
 public static class RepositorySpecificationExtensions
 {

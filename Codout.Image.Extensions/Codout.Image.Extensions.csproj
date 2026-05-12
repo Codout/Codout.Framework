@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<Version>6.2.2</Version>
 		<Description>Biblioteca de funções para imagens</Description>
 		<PackageTags>Codout;Framework;Images;</PackageTags>
 	</PropertyGroup>

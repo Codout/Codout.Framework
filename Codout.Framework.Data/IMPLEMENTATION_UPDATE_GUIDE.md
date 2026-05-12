@@ -1,14 +1,14 @@
-# Guia de Atualização para Implementações
+# Guia de AtualizaÃ§Ã£o para ImplementaÃ§Ãµes
 
 ## ?? Objetivo
 
-Este guia ajuda mantenedores de implementações (`Codout.Framework.NH`, `Codout.Framework.Mongo`) a atualizar seus projetos para as novas interfaces do `Codout.Framework.Data` v10.0.
+Este guia ajuda mantenedores de implementaÃ§Ãµes (`Codout.Framework.NH`, `Codout.Framework.Mongo`) a atualizar seus projetos para as novas interfaces do `Codout.Framework.Data` v10.0.
 
-## ?? Mudanças Necessárias
+## ?? MudanÃ§as NecessÃ¡rias
 
 ### IRepository\<T\> - Novas Sobrecargas
 
-Todos os métodos async agora possuem sobrecargas com `CancellationToken`:
+Todos os mÃ©todos async agora possuem sobrecargas com `CancellationToken`:
 
 ```csharp
 // ? Adicionar estas sobrecarg
@@ -25,17 +25,17 @@ Task<T> MergeAsync(T entity, CancellationToken cancellationToken);
 Task<T> RefreshAsync(T entity, CancellationToken cancellationToken);
 ```
 
-### IRepository\<T\> - Novos Métodos Auxiliares
+### IRepository\<T\> - Novos MÃ©todos Auxiliares
 
 ```csharp
-// ? Implementar estes novos métodos
+// ? Implementar estes novos mÃ©todos
 Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
 Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
 Task<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
 Task<List<T>> ToListAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
 ```
 
-### IUnitOfWork - Métodos Async
+### IUnitOfWork - MÃ©todos Async
 
 ```csharp
 // ? Implementar suporte async completo
@@ -78,7 +78,7 @@ public class NHRepository<T> : IRepository<T> where T : class, IEntity
 ```csharp
 public class NHRepository<T> : IRepository<T> where T : class, IEntity
 {
-    // Manter método original para retrocompatibilidade
+    // Manter mÃ©todo original para retrocompatibilidade
     public async Task<T> GetAsync(Expression<Func<T, bool>> predicate)
     {
         return await GetAsync(predicate, CancellationToken.None);
@@ -90,7 +90,7 @@ public class NHRepository<T> : IRepository<T> where T : class, IEntity
         return await Session.Query<T>().SingleOrDefaultAsync(predicate, cancellationToken);
     }
     
-    // Novos métodos auxiliares
+    // Novos mÃ©todos auxiliares
     public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
     {
         return await Session.Query<T>().FirstOrDefaultAsync(predicate, cancellationToken);
@@ -132,7 +132,7 @@ public class MongoRepository<T> : IRepository<T> where T : class, IEntity
 ```csharp
 public class MongoRepository<T> : IRepository<T> where T : class, IEntity
 {
-    // Manter método original
+    // Manter mÃ©todo original
     public async Task<T> GetAsync(Expression<Func<T, bool>> predicate)
     {
         return await GetAsync(predicate, CancellationToken.None);
@@ -144,7 +144,7 @@ public class MongoRepository<T> : IRepository<T> where T : class, IEntity
         return await Collection.Find(predicate).SingleOrDefaultAsync(cancellationToken);
     }
     
-    // Novos métodos auxiliares
+    // Novos mÃ©todos auxiliares
     public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
     {
         return await Collection.Find(predicate).FirstOrDefaultAsync(cancellationToken);
@@ -167,16 +167,16 @@ public class MongoRepository<T> : IRepository<T> where T : class, IEntity
 }
 ```
 
-## ?? Checklist de Atualização
+## ?? Checklist de AtualizaÃ§Ã£o
 
 ### IRepository\<T\>
 
-- [ ] Adicionar sobrecargas com `CancellationToken` em todos métodos async existentes
+- [ ] Adicionar sobrecargas com `CancellationToken` em todos mÃ©todos async existentes
 - [ ] Implementar `FirstOrDefaultAsync`
 - [ ] Implementar `AnyAsync`
 - [ ] Implementar `CountAsync`
 - [ ] Implementar `ToListAsync`
-- [ ] Redirecionar métodos antigos para novos (passando `CancellationToken.None`)
+- [ ] Redirecionar mÃ©todos antigos para novos (passando `CancellationToken.None`)
 
 ### IUnitOfWork
 
@@ -189,35 +189,35 @@ public class MongoRepository<T> : IRepository<T> where T : class, IEntity
 
 ### Testes
 
-- [ ] Testar todos os novos métodos
+- [ ] Testar todos os novos mÃ©todos
 - [ ] Testar cancelamento com `CancellationToken`
-- [ ] Testar transações async
+- [ ] Testar transaÃ§Ãµes async
 - [ ] Verificar retrocompatibilidade
 
-## ?? Referência: Entity Framework Core
+## ?? ReferÃªncia: Entity Framework Core
 
-O `Codout.Framework.EF` já está completamente atualizado. Use-o como referência:
+O `Codout.Framework.EF` jÃ¡ estÃ¡ completamente atualizado. Use-o como referÃªncia:
 
 - **Arquivo**: `Codout.Framework.EF\EFRepository.cs`
 - **Arquivo**: `Codout.Framework.EF\EFUnitOfWork.cs`
 
 ## ?? Dicas
 
-1. **Não quebre retrocompatibilidade**: Mantenha os métodos antigos chamando os novos
-2. **Use `CancellationToken.None`**: Como padrão para métodos sem parâmetro
+1. **NÃ£o quebre retrocompatibilidade**: Mantenha os mÃ©todos antigos chamando os novos
+2. **Use `CancellationToken.None`**: Como padrÃ£o para mÃ©todos sem parÃ¢metro
 3. **Teste cancelamento**: Verifique se `CancellationToken` realmente cancela
-4. **Documente**: Adicione XML comments nos novos métodos
+4. **Documente**: Adicione XML comments nos novos mÃ©todos
 
 ## ?? Suporte
 
 Se encontrar dificuldades:
 
-1. Consulte a implementação do `Codout.Framework.EF`
-2. Revise a documentação no `Codout.Framework.Data\README.md`
+1. Consulte a implementaÃ§Ã£o do `Codout.Framework.EF`
+2. Revise a documentaÃ§Ã£o no `Codout.Framework.Data\README.md`
 3. Contate a equipe de arquitetura
 
 ---
 
-**Versão**: 10.0.0  
-**Status**: Aguardando atualização de NH e Mongo  
+**VersÃ£o**: 10.0.0  
+**Status**: Aguardando atualizaÃ§Ã£o de NH e Mongo  
 **Prioridade**: Alta

@@ -1,7 +1,10 @@
 ###############################################################################
-# Set default behavior to automatically normalize line endings.
+# Set default behavior to automatically normalize line endings to LF on commit.
+# Repository convention is UTF-8 + LF for all text files. Encoding itself is
+# enforced via .editorconfig (charset = utf-8); .gitattributes only handles
+# line endings here.
 ###############################################################################
-* text=auto
+* text=auto eol=lf
 
 ###############################################################################
 # Set default behavior for command prompt diff.

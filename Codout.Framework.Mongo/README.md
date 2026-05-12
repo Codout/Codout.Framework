@@ -1,18 +1,18 @@
 # Codout.Framework.Mongo
 
-ImplementaÁ„o do padr„o Repository e Unit of Work para MongoDB.
+Implementa√ß√£o do padr√£o Repository e Unit of Work para MongoDB.
 
 ## ?? Recursos
 
 - ? **Repository Pattern** com MongoDB
-- ? **Unit of Work Pattern** com suporte a transaÁıes (replica set)
+- ? **Unit of Work Pattern** com suporte a transa√ß√µes (replica set)
 - ? **Async/await completo** com CancellationToken
-- ? **MÈtodos auxiliares** (FirstOrDefault, Any, Count, ToList)
+- ? **M√©todos auxiliares** (FirstOrDefault, Any, Count, ToList)
 - ? **IAsyncDisposable** suportado
 - ? **Nullable Reference Types** habilitado
-- ? **DocumentaÁ„o XML** completa
+- ? **Documenta√ß√£o XML** completa
 
-## ?? InstalaÁ„o
+## ?? Instala√ß√£o
 
 ```bash
 dotnet add package Codout.Framework.Mongo
@@ -20,14 +20,14 @@ dotnet add package Codout.Framework.Mongo
 
 ## ?? Requisitos
 
-### TransaÁıes MongoDB
-Para usar transaÁıes (Unit of Work), vocÍ precisa:
+### Transa√ß√µes MongoDB
+Para usar transa√ß√µes (Unit of Work), voc√™ precisa:
 - ? MongoDB 4.0+ com **replica set** configurado
 - ? Ou MongoDB 4.2+ com **sharded cluster**
 
-**Nota**: TransaÁıes N√O funcionam em MongoDB standalone.
+**Nota**: Transa√ß√µes N√ÉO funcionam em MongoDB standalone.
 
-## ?? ConfiguraÁ„o
+## ?? Configura√ß√£o
 
 ### appsettings.json
 
@@ -69,7 +69,7 @@ services.AddScoped<MongoDbContext>();
 services.AddScoped<IUnitOfWork, MongoUnitOfWork>();
 ```
 
-## ?? Uso B·sico
+## ?? Uso B√°sico
 
 ### Entidades
 
@@ -124,7 +124,7 @@ public class ProductRepository : MongoRepository<Product>
 }
 ```
 
-### Unit of Work (com TransaÁıes)
+### Unit of Work (com Transa√ß√µes)
 
 ```csharp
 public class ProductService
@@ -162,7 +162,7 @@ var product = await _unitOfWork.InTransactionAsync(async () =>
 }, ct);
 ```
 
-## ?? OperaÁıes DisponÌveis
+## ?? Opera√ß√µes Dispon√≠veis
 
 ### Query Methods
 
@@ -176,10 +176,10 @@ var active = repository.Where(p => p.IsActive);
 // Read-only (mesma performance no MongoDB)
 var readOnly = repository.AllReadOnly();
 
-// PaginaÁ„o
+// Pagina√ß√£o
 var paged = repository.WherePaged(p => p.IsActive, out int total, index: 0, size: 20);
 
-// Get ˙nico
+// Get √∫nico
 var product = await repository.GetAsync(p => p.Id == id, ct);
 
 // FirstOrDefault
@@ -224,26 +224,26 @@ var merged = await repository.MergeAsync(product, ct);
 var refreshed = await repository.RefreshAsync(product, ct);
 ```
 
-## ?? LimitaÁıes do MongoDB
+## ?? Limita√ß√µes do MongoDB
 
 ### 1. Includes (Relacionamentos)
 
-MongoDB n„o suporta `Include` nativo como EF Core:
+MongoDB n√£o suporta `Include` nativo como EF Core:
 
 ```csharp
-// ? N„o funciona como esperado
+// ? N√£o funciona como esperado
 var products = repository.IncludeMany(p => p.Category);
 
-// ? Use agregaÁıes ou lookups do MongoDB
+// ? Use agrega√ß√µes ou lookups do MongoDB
 var collection = context.GetCollection<Product>();
 var productsWithCategory = await collection.Aggregate()
     .Lookup("categories", "categoryId", "_id", "category")
     .ToListAsync(ct);
 ```
 
-### 2. TransaÁıes
+### 2. Transa√ß√µes
 
-TransaÁıes requerem replica set:
+Transa√ß√µes requerem replica set:
 
 ```bash
 # Configurar replica set local (desenvolvimento)
@@ -256,13 +256,13 @@ mongosh
 
 ### 3. IQueryable Limitado
 
-O driver MongoDB suporta LINQ, mas n„o todos os operadores:
+O driver MongoDB suporta LINQ, mas n√£o todos os operadores:
 
 ```csharp
 // ? Funciona
 var products = repository.Where(p => p.Price > 100 && p.IsActive);
 
-// ?? Pode n„o funcionar
+// ?? Pode n√£o funcionar
 var products = repository.Where(p => p.Name.StartsWith("A") || p.Name.EndsWith("Z"));
 
 // ? Alternativa: usar filtros do MongoDB
@@ -272,7 +272,7 @@ var filter = Builders<Product>.Filter.Or(
 );
 ```
 
-## ?? OperaÁıes com CancellationToken
+## ?? Opera√ß√µes com CancellationToken
 
 ```csharp
 var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
@@ -285,7 +285,7 @@ try
 }
 catch (OperationCanceledException)
 {
-    Console.WriteLine("OperaÁ„o cancelada pelo timeout");
+    Console.WriteLine("Opera√ß√£o cancelada pelo timeout");
 }
 ```
 
@@ -302,21 +302,21 @@ catch (OperationCanceledException)
     ??? Product.cs
 ```
 
-## ?? Melhores Pr·ticas
+## ?? Melhores Pr√°ticas
 
 1. **Use ObjectId para IDs**: MongoDB funciona melhor com ObjectId
-2. **Configure Ìndices**: Use atributos `[BsonIndex]` ou configure via cÛdigo
-3. **Use CancellationToken**: Sempre em operaÁıes async
-4. **TransaÁıes apenas quando necess·rio**: TÍm overhead de performance
-5. **Evite queries muito complexas**: Use agregaÁıes do MongoDB diretamente
-6. **Configure Write Concern**: Para garantir persistÍncia em replica set
-7. **Use await using**: Para dispose autom·tico do UnitOfWork
+2. **Configure √≠ndices**: Use atributos `[BsonIndex]` ou configure via c√≥digo
+3. **Use CancellationToken**: Sempre em opera√ß√µes async
+4. **Transa√ß√µes apenas quando necess√°rio**: T√™m overhead de performance
+5. **Evite queries muito complexas**: Use agrega√ß√µes do MongoDB diretamente
+6. **Configure Write Concern**: Para garantir persist√™ncia em replica set
+7. **Use await using**: Para dispose autom√°tico do UnitOfWork
 8. **Valide ObjectId**: Antes de fazer queries por ID
 
-## ?? Õndices
+## ?? √çndices
 
 ```csharp
-// Via cÛdigo na configuraÁ„o
+// Via c√≥digo na configura√ß√£o
 var collection = database.GetCollection<Product>("products");
 
 var indexKeysDefinition = Builders<Product>.IndexKeys
@@ -332,38 +332,38 @@ await collection.Indexes.CreateOneAsync(
 ## ?? Novidades v10.0
 
 ### Novos Recursos
-- ? **MongoUnitOfWork** criado do zero com transaÁıes
-- ? **MÈtodos auxiliares**: `FirstOrDefaultAsync`, `AnyAsync`, `CountAsync`, `ToListAsync`
+- ? **MongoUnitOfWork** criado do zero com transa√ß√µes
+- ? **M√©todos auxiliares**: `FirstOrDefaultAsync`, `AnyAsync`, `CountAsync`, `ToListAsync`
 - ? **IAsyncDisposable** implementado
-- ? **Sobrecargas com CancellationToken** em todos mÈtodos async
-- ? **ValidaÁıes** com `ArgumentNullException.ThrowIfNull`
+- ? **Sobrecargas com CancellationToken** em todos m√©todos async
+- ? **Valida√ß√µes** com `ArgumentNullException.ThrowIfNull`
 
 ### Melhorias
-- ? **Performance** otimizada para operaÁıes batch
-- ?? **DocumentaÁ„o XML** completa
+- ? **Performance** otimizada para opera√ß√µes batch
+- ?? **Documenta√ß√£o XML** completa
 - ?? **Nullable reference types** habilitado
 - ?? **Thread-safe** implementation
 
-### CorreÁıes
-- ?? **GetIdValue** agora suporta m˙ltiplos tipos de ID
+### Corre√ß√µes
+- ?? **GetIdValue** agora suporta m√∫ltiplos tipos de ID
 - ?? **Exists** implementado corretamente
 - ?? **Load/Refresh** agora funcionam adequadamente
 
 ## ?? Links Relacionados
 
-- [Codout.Framework.Data](../Codout.Framework.Data/README.md) - AbstraÁıes base
-- [Codout.Framework.EF](../Codout.Framework.EF/README.md) - ImplementaÁ„o Entity Framework
-- [Codout.Framework.NH](../Codout.Framework.NH/README.md) - ImplementaÁ„o NHibernate
+- [Codout.Framework.Data](../Codout.Framework.Data/README.md) - Abstra√ß√µes base
+- [Codout.Framework.EF](../Codout.Framework.EF/README.md) - Implementa√ß√£o Entity Framework
+- [Codout.Framework.NH](../Codout.Framework.NH/README.md) - Implementa√ß√£o NHibernate
 - [MongoDB Driver .NET](https://www.mongodb.com/docs/drivers/csharp/current/)
 - [MongoDB Transactions](https://www.mongodb.com/docs/manual/core/transactions/)
 
-## ?? LicenÁa
+## ?? Licen√ßa
 
 Propriedade da Codout
 
 ---
 
-**Vers„o:** 10.0.0  
-**Status:** Est·vel para produÁ„o  
+**Vers√£o:** 10.0.0  
+**Status:** Est√°vel para produ√ß√£o  
 **Target:** .NET 10  
 **MongoDB Driver:** 3.5.1

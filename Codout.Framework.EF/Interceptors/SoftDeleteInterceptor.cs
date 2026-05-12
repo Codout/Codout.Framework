@@ -10,7 +10,7 @@ using Codout.Framework.Data.Auditing;
 namespace Codout.Framework.EF.Interceptors;
 
 /// <summary>
-/// Interceptor para soft delete autom·tico de entidades que implementam ISoftDeletable
+/// Interceptor para soft delete autom√°tico de entidades que implementam ISoftDeletable
 /// </summary>
 public class SoftDeleteInterceptor : SaveChangesInterceptor
 {

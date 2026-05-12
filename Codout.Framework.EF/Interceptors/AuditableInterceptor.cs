@@ -10,7 +10,7 @@ using Codout.Framework.Data.Auditing;
 namespace Codout.Framework.EF.Interceptors;
 
 /// <summary>
-/// Interceptor para auditoria autom·tica de entidades que implementam IAuditable
+/// Interceptor para auditoria autom√°tica de entidades que implementam IAuditable
 /// </summary>
 public class AuditableInterceptor : SaveChangesInterceptor
 {
@@ -68,7 +68,7 @@ public class AuditableInterceptor : SaveChangesInterceptor
 }
 
 /// <summary>
-/// Interface para entidades audit·veis
+/// Interface para entidades audit√°veis
 /// </summary>
 public interface IAuditable
 {
@@ -79,7 +79,7 @@ public interface IAuditable
 }
 
 /// <summary>
-/// Provider para obter o usu·rio atual (implementar conforme seu sistema de autenticaÁ„o)
+/// Provider para obter o usu√°rio atual (implementar conforme seu sistema de autentica√ß√£o)
 /// </summary>
 public interface ICurrentUserProvider
 {

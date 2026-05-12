@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<Version>6.2.2</Version>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<Title>Codout Framework Storage</Title>

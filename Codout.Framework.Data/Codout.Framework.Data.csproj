@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<Version>6.2.2</Version>
 		<Description>Interface da Biblioteca de persistência do Framework da Codout</Description>
 		<PackageTags>Codout;Framework;ORM;DAL;Repository;UnitOfWork;Specification;Auditing</PackageTags>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>

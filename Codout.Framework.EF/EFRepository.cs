@@ -64,11 +64,77 @@ public class EFRepository<T>(DbContext context) : IRepository<T> where T : class
     public T SaveOrUpdate(T entity)
     {
         ArgumentNullException.ThrowIfNull(entity);
-        if (entity.IsTransient())
-            DbSet.Add(entity);
-        else
-            Update(entity);
+
+        if (TryResolveTrackedOrAdd(entity, out var keyValues))
+            return entity;
+
+        var existing = DbSet.Find(keyValues);
+        ApplySaveOrUpdate(entity, existing);
         return entity;
+    }
+
+    // Returns true if no DB lookup is needed (already tracked, no PK metadata, or key unset → Add).
+    // When false, keyValues contains the primary-key values to look up.
+    private bool TryResolveTrackedOrAdd(T entity, out object[] keyValues)
+    {
+        keyValues = null;
+
+        var entry = Context.Entry(entity);
+
+        // Already tracked - EF knows what to do on SaveChanges.
+        if (entry.State != EntityState.Detached)
+            return true;
+
+        // For detached entities, decide insert vs. update by inspecting the primary key
+        // rather than IEntity.IsTransient(), which is unreliable when callers pre-assign
+        // the Id (e.g. Guid.NewGuid() in the constructor).
+        var primaryKey = Context.Model.FindEntityType(typeof(T))?.FindPrimaryKey();
+        if (primaryKey == null)
+        {
+            DbSet.Add(entity);
+            return true;
+        }
+
+        keyValues = primaryKey.Properties
+            .Select(p => entry.Property(p.Name).CurrentValue)
+            .ToArray();
+
+        if (keyValues.Any(IsUnsetKeyValue))
+        {
+            DbSet.Add(entity);
+            return true;
+        }
+
+        return false;
+    }
+
+    private void ApplySaveOrUpdate(T entity, T existing)
+    {
+        if (existing == null)
+        {
+            // Non-transient Id but row doesn't exist yet - new entity with a pre-assigned key
+            // (the case IsTransient() gets wrong).
+            DbSet.Add(entity);
+            return;
+        }
+
+        if (ReferenceEquals(existing, entity))
+        {
+            Context.Entry(entity).State = EntityState.Modified;
+            return;
+        }
+
+        // Find() attached `existing` with OriginalValues from the database. Copying the
+        // incoming values into it preserves concurrency tokens (e.g. [Timestamp]) and lets
+        // EF generate the correct WHERE clause on UPDATE.
+        Context.Entry(existing).CurrentValues.SetValues(entity);
+    }
+
+    private static bool IsUnsetKeyValue(object value)
+    {
+        if (value is null) return true;
+        var type = value.GetType();
+        return type.IsValueType && value.Equals(Activator.CreateInstance(type));
     }
 
     public void Update(T entity)
@@ -156,16 +222,19 @@ public class EFRepository<T>(DbContext context) : IRepository<T> where T : class
         return Task.FromResult(entity);
     }
 
-    public Task<T> SaveOrUpdateAsync(T entity)
-    {
-        SaveOrUpdate(entity);
-        return Task.FromResult(entity);
-    }
+    public Task<T> SaveOrUpdateAsync(T entity) =>
+        SaveOrUpdateAsync(entity, CancellationToken.None);
 
-    public Task<T> SaveOrUpdateAsync(T entity, CancellationToken cancellationToken)
+    public async Task<T> SaveOrUpdateAsync(T entity, CancellationToken cancellationToken)
     {
-        SaveOrUpdate(entity);
-        return Task.FromResult(entity);
+        ArgumentNullException.ThrowIfNull(entity);
+
+        if (TryResolveTrackedOrAdd(entity, out var keyValues))
+            return entity;
+
+        var existing = await DbSet.FindAsync(keyValues, cancellationToken);
+        ApplySaveOrUpdate(entity, existing);
+        return entity;
     }
 
     public Task UpdateAsync(T entity)

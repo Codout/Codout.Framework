@@ -1,32 +1,32 @@
-# Guia de MigraÁ„o - Codout.Framework.EF v10.0
+# Guia de Migra√ß√£o - Codout.Framework.EF v10.0
 
 ## ?? Objetivo
 
-Este guia ajudar· vocÍ a migrar cÛdigo existente para a nova vers„o v10.0 do Codout.Framework.EF com melhorias enterprise.
+Este guia ajudar√° voc√™ a migrar c√≥digo existente para a nova vers√£o v10.0 do Codout.Framework.EF com melhorias enterprise.
 
-## ?? Sum·rio de MudanÁas
+## ?? Sum√°rio de Mudan√ßas
 
 ### ? Compatibilidade Mantida
-- ? Interface `IRepository<T>` n„o foi alterada
-- ? Interface `IUnitOfWork` n„o foi alterada (apenas adicionados mÈtodos async)
-- ? `EFRepository<T>` mantÈm todas as funcionalidades anteriores
-- ? `EFUnitOfWork<T>` mantÈm API existente
+- ? Interface `IRepository<T>` n√£o foi alterada
+- ? Interface `IUnitOfWork` n√£o foi alterada (apenas adicionados m√©todos async)
+- ? `EFRepository<T>` mant√©m todas as funcionalidades anteriores
+- ? `EFUnitOfWork<T>` mant√©m API existente
 
-### ? Melhorias CrÌticas
-- ?? **Bug crÌtico corrigido**: TransaÁıes no UnitOfWork agora funcionam corretamente
-- ?? **Memory leak resolvido**: Repository n„o faz mais dispose do DbContext
+### ? Melhorias Cr√≠ticas
+- ?? **Bug cr√≠tico corrigido**: Transa√ß√µes no UnitOfWork agora funcionam corretamente
+- ?? **Memory leak resolvido**: Repository n√£o faz mais dispose do DbContext
 - ? **Performance**: Melhorias em queries read-only
 
 ### ?? Novos Recursos
 - ? Specification Pattern
 - ? Interceptors (Auditoria e Soft Delete)
-- ? Builder fluente para configuraÁ„o
-- ? MÈtodos async adicionais no UnitOfWork
-- ? Extensıes com CancellationToken
+- ? Builder fluente para configura√ß√£o
+- ? M√©todos async adicionais no UnitOfWork
+- ? Extens√µes com CancellationToken
 
-## ?? MudanÁas Necess·rias
+## ?? Mudan√ßas Necess√°rias
 
-### 1. ConfiguraÁ„o do DbContext
+### 1. Configura√ß√£o do DbContext
 
 #### ? Antes (ainda funciona, mas deprecated)
 
@@ -43,30 +43,30 @@ services.AddEFCore<MyDbContext>(configuration)
     .Build();
 ```
 
-**Motivo**: Maior flexibilidade e suporte a configuraÁıes avanÁadas.
+**Motivo**: Maior flexibilidade e suporte a configura√ß√µes avan√ßadas.
 
-**AÁ„o**: Atualizar na primeira oportunidade. O mÈtodo antigo continuar· funcionando mas mostrar· warning.
+**A√ß√£o**: Atualizar na primeira oportunidade. O m√©todo antigo continuar√° funcionando mas mostrar√° warning.
 
 ---
 
-### 2. Unit of Work - TransaÁıes
+### 2. Unit of Work - Transa√ß√µes
 
-#### ? Antes (bug crÌtico)
+#### ? Antes (bug cr√≠tico)
 
 ```csharp
-// Commit() criava transaÁ„o automaticamente se n„o existisse
-// e engolia exceÁıes silenciosamente
+// Commit() criava transa√ß√£o automaticamente se n√£o existisse
+// e engolia exce√ß√µes silenciosamente
 uow.Commit(); // ?? COMPORTAMENTO INCORRETO
 ```
 
 #### ? Depois (correto)
 
 ```csharp
-// Agora vocÍ DEVE criar a transaÁ„o explicitamente
+// Agora voc√™ DEVE criar a transa√ß√£o explicitamente
 await uow.BeginTransactionAsync();
 try
 {
-    // operaÁıes...
+    // opera√ß√µes...
     await uow.CommitAsync();
 }
 catch
@@ -76,9 +76,9 @@ catch
 }
 ```
 
-**Motivo**: Prevenir commits acidentais e melhorar controle de transaÁıes.
+**Motivo**: Prevenir commits acidentais e melhorar controle de transa√ß√µes.
 
-**AÁ„o**: **CRÕTICO** - Revisar TODO cÛdigo que usa `Commit()` sem `BeginTransaction()` explÌcito.
+**A√ß√£o**: **CR√çTICO** - Revisar TODO c√≥digo que usa `Commit()` sem `BeginTransaction()` expl√≠cito.
 
 ---
 
@@ -89,7 +89,7 @@ catch
 ```csharp
 var result = uow.InTransaction(() =>
 {
-    // operaÁ„o sÌncrona
+    // opera√ß√£o s√≠ncrona
     return entity;
 });
 ```
@@ -99,14 +99,14 @@ var result = uow.InTransaction(() =>
 ```csharp
 var result = await uow.InTransactionAsync(async () =>
 {
-    // operaÁ„o assÌncrona
+    // opera√ß√£o ass√≠ncrona
     return entity;
 });
 ```
 
 **Motivo**: Suporte completo a async/await.
 
-**AÁ„o**: Considerar migrar para vers„o async para melhor performance.
+**A√ß√£o**: Considerar migrar para vers√£o async para melhor performance.
 
 ---
 
@@ -119,18 +119,18 @@ var products = await repository.GetAsync(p => p.IsActive);
 // Sem suporte a cancelamento
 ```
 
-#### ? Depois (com extensıes)
+#### ? Depois (com extens√µes)
 
 ```csharp
-using Codout.Framework.EF; // Para usar extensıes
+using Codout.Framework.EF; // Para usar extens√µes
 
 var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 var products = await repository.GetAsync(p => p.IsActive, cts.Token);
 ```
 
-**Motivo**: Permitir cancelamento de operaÁıes longas.
+**Motivo**: Permitir cancelamento de opera√ß√µes longas.
 
-**AÁ„o**: Opcional, mas recomendado para APIs web e operaÁıes longas.
+**A√ß√£o**: Opcional, mas recomendado para APIs web e opera√ß√µes longas.
 
 ---
 
@@ -138,7 +138,7 @@ var products = await repository.GetAsync(p => p.IsActive, cts.Token);
 
 ### Specification Pattern
 
-**Quando usar**: Queries complexas reutiliz·veis em m˙ltiplos lugares.
+**Quando usar**: Queries complexas reutiliz√°veis em m√∫ltiplos lugares.
 
 ```csharp
 // Criar specification
@@ -158,11 +158,11 @@ var spec = new ActiveProductsSpec();
 var products = await repository.ListAsync(spec);
 ```
 
-**BenefÌcio**: Queries complexas test·veis e reutiliz·veis.
+**Benef√≠cio**: Queries complexas test√°veis e reutiliz√°veis.
 
 ---
 
-### Auditoria Autom·tica
+### Auditoria Autom√°tica
 
 **Quando usar**: Entidades que precisam rastrear quem criou/modificou.
 
@@ -192,11 +192,11 @@ services.AddEFCore<MyDbContext>(configuration)
 services.AddSingleton<ICurrentUserProvider, HttpContextUserProvider>();
 ```
 
-**BenefÌcio**: Auditoria autom·tica sem cÛdigo manual.
+**Benef√≠cio**: Auditoria autom√°tica sem c√≥digo manual.
 
 ---
 
-### Soft Delete Autom·tico
+### Soft Delete Autom√°tico
 
 **Quando usar**: Nunca deletar dados fisicamente.
 
@@ -229,52 +229,52 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
 }
 ```
 
-**BenefÌcio**: Soft delete autom·tico + histÛrico preservado.
+**Benef√≠cio**: Soft delete autom√°tico + hist√≥rico preservado.
 
 ---
 
-## ?? Checklist de MigraÁ„o
+## ?? Checklist de Migra√ß√£o
 
-### Prioridade ALTA (Bugs CrÌticos)
+### Prioridade ALTA (Bugs Cr√≠ticos)
 
 - [ ] **Revisar todas chamadas a `Commit()` sem `BeginTransaction()`**
   - Arquivo: Buscar por `\.Commit\(\)` em todo projeto
-  - AÁ„o: Adicionar `BeginTransaction()` antes ou usar `InTransaction()`
+  - A√ß√£o: Adicionar `BeginTransaction()` antes ou usar `InTransaction()`
 
-- [ ] **Verificar dispose de DbContext em repositÛrios customizados**
-  - Se vocÍ sobrescreveu `Dispose()`, remova o dispose do DbContext
+- [ ] **Verificar dispose de DbContext em reposit√≥rios customizados**
+  - Se voc√™ sobrescreveu `Dispose()`, remova o dispose do DbContext
   
-### Prioridade M…DIA (Melhorias)
+### Prioridade M√âDIA (Melhorias)
 
-- [ ] Atualizar configuraÁ„o do DbContext para usar builder fluente
-- [ ] Adicionar suporte a CancellationToken em operaÁıes crÌticas
-- [ ] Migrar para mÈtodos async do UnitOfWork (`BeginTransactionAsync`, `CommitAsync`)
+- [ ] Atualizar configura√ß√£o do DbContext para usar builder fluente
+- [ ] Adicionar suporte a CancellationToken em opera√ß√µes cr√≠ticas
+- [ ] Migrar para m√©todos async do UnitOfWork (`BeginTransactionAsync`, `CommitAsync`)
 
 ### Prioridade BAIXA (Novos Recursos)
 
 - [ ] Avaliar uso de Specification Pattern para queries complexas
 - [ ] Implementar IAuditable em entidades importantes
-- [ ] Implementar ISoftDeletable em vez de delete fÌsico
-- [ ] Configurar retry policies para resiliÍncia
+- [ ] Implementar ISoftDeletable em vez de delete f√≠sico
+- [ ] Configurar retry policies para resili√™ncia
 - [ ] Adicionar telemetria e health checks
 
 ---
 
-## ?? Como Encontrar CÛdigo Afetado
+## ?? Como Encontrar C√≥digo Afetado
 
-### 1. Buscar transaÁıes sem BeginTransaction
+### 1. Buscar transa√ß√µes sem BeginTransaction
 
 ```regex
 \.Commit\(\)(?!.*BeginTransaction)
 ```
 
-### 2. Buscar uso de InTransaction sÌncrono
+### 2. Buscar uso de InTransaction s√≠ncrono
 
 ```regex
 \.InTransaction\((?!.*async)
 ```
 
-### 3. Buscar repositÛrios com dispose customizado
+### 3. Buscar reposit√≥rios com dispose customizado
 
 ```regex
 class.*Repository.*\n.*Dispose\(
@@ -286,11 +286,11 @@ class.*Repository.*\n.*Dispose\(
 
 ### Nenhum Breaking Change Real
 
-A vers„o v10.0 foi projetada para ser **100% retrocompatÌvel**. Todos os "breaking changes" s„o na verdade:
+A vers√£o v10.0 foi projetada para ser **100% retrocompat√≠vel**. Todos os "breaking changes" s√£o na verdade:
 
-1. **CorreÁıes de bugs** que j· deveriam funcionar assim
-2. **Deprecation warnings** para mÈtodos legados
-3. **Melhorias de design** que n„o quebram cÛdigo existente
+1. **Corre√ß√µes de bugs** que j√° deveriam funcionar assim
+2. **Deprecation warnings** para m√©todos legados
+3. **Melhorias de design** que n√£o quebram c√≥digo existente
 
 ### Deprecations (Warnings)
 
@@ -308,35 +308,35 @@ services.AddEFCore<MyDbContext>(configuration);
 
 ## ?? Recursos Adicionais
 
-- [README.md](README.md) - DocumentaÁ„o completa
-- [Interceptors](Interceptors/) - CÛdigo dos interceptors
-- [Specifications](Specifications/) - CÛdigo do Specification Pattern
+- [README.md](README.md) - Documenta√ß√£o completa
+- [Interceptors](Interceptors/) - C√≥digo dos interceptors
+- [Specifications](Specifications/) - C√≥digo do Specification Pattern
 
 ---
 
 ## ?? Suporte
 
-Se encontrar problemas durante a migraÁ„o:
+Se encontrar problemas durante a migra√ß√£o:
 
 1. Verifique se seguiu todos os passos do checklist
-2. Revise a documentaÁ„o no README.md
+2. Revise a documenta√ß√£o no README.md
 3. Consulte a equipe de arquitetura da Codout
 
 ---
 
 ## ?? Impacto Estimado
 
-| Projeto | EsforÁo de MigraÁ„o | Risco |
+| Projeto | Esfor√ßo de Migra√ß√£o | Risco |
 |---------|-------------------|-------|
 | Pequeno (<10 entidades) | 1-2 horas | Baixo |
-| MÈdio (10-50 entidades) | 4-8 horas | MÈdio |
-| Grande (>50 entidades) | 2-3 dias | MÈdio |
+| M√©dio (10-50 entidades) | 4-8 horas | M√©dio |
+| Grande (>50 entidades) | 2-3 dias | M√©dio |
 
-**Nota**: O maior esforÁo È na revis„o de transaÁıes. O resto È opcional.
+**Nota**: O maior esfor√ßo √© na revis√£o de transa√ß√µes. O resto √© opcional.
 
 ---
 
-## ? Exemplo Completo de MigraÁ„o
+## ? Exemplo Completo de Migra√ß√£o
 
 ### Antes
 
@@ -348,7 +348,7 @@ services.AddEFCore<MyDbContext>(configuration);
 public void CreateProduct(Product product)
 {
     repository.Save(product);
-    uow.Commit(); // ?? Bug: n„o chamou BeginTransaction
+    uow.Commit(); // ?? Bug: n√£o chamou BeginTransaction
 }
 ```
 
@@ -400,5 +400,5 @@ public async Task CreateProductAsync(Product product, CancellationToken ct = def
 ---
 
 **Data**: Janeiro 2025  
-**Vers„o**: v10.0.0  
-**Status**: Est·vel para produÁ„o
+**Vers√£o**: v10.0.0  
+**Status**: Est√°vel para produ√ß√£o

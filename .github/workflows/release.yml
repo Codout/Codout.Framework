@@ -1,0 +1,170 @@
+name: Package Release
+
+# Generic release workflow for the Codout.Framework packages, one package at a
+# time. Mapping from short name to .csproj lives in .github/release-packages.json.
+#
+# Trigger by pushing a tag in the form "<short>-v<version>", e.g. "ef-v6.3.0",
+# "mongo-v6.2.3", "mailer-razor-v6.2.2". The Codout.Framework.Mcp package keeps
+# its own dedicated workflow (mcp-release.yml), so "mcp-v*" tags are excluded
+# here to avoid a double release.
+#
+# workflow_dispatch builds and packs without publishing, useful for smoke-
+# testing a package locally before tagging.
+
+on:
+  push:
+    tags:
+      - '*-v*.*.*'
+      - '!mcp-v*'
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package short name (see .github/release-packages.json).'
+        type: string
+        required: true
+      version:
+        description: 'Optional version override (e.g. 6.3.1). Leave empty to use the <Version> from the .csproj.'
+        required: false
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  CONFIGURATION: Release
+  MAPPING: .github/release-packages.json
+
+jobs:
+  build-pack:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      package: ${{ steps.resolve.outputs.package }}
+      project: ${{ steps.resolve.outputs.project }}
+      version: ${{ steps.resolve.outputs.version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Full history so the master-ancestry gate can resolve merge-base.
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Verify tag is on master
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          set -euo pipefail
+          git fetch origin master --quiet
+          if ! git merge-base --is-ancestor HEAD origin/master; then
+            echo "::error::Tag '${GITHUB_REF_NAME}' is not an ancestor of origin/master."
+            echo "Releases must be cut from commits that have been merged into master."
+            exit 1
+          fi
+          echo "Tag '${GITHUB_REF_NAME}' is on master: OK"
+
+      - name: Resolve package and version
+        id: resolve
+        run: |
+          set -euo pipefail
+          if [ -n "${{ github.event.inputs.package }}" ]; then
+            PKG="${{ github.event.inputs.package }}"
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            TAG="${GITHUB_REF#refs/tags/}"
+            PKG="${TAG%-v*}"
+            VERSION="${TAG##*-v}"
+          fi
+
+          PROJECT=$(jq -r --arg p "$PKG" '.[$p] // empty' "$MAPPING")
+          if [ -z "$PROJECT" ]; then
+            echo "::error::Unknown package '$PKG'."
+            echo "Known packages:"
+            jq -r 'keys[]' "$MAPPING" | sed 's/^/  - /'
+            exit 1
+          fi
+          if [ ! -f "$PROJECT" ]; then
+            echo "::error::Mapped project not found on disk: $PROJECT"
+            exit 1
+          fi
+
+          echo "package=$PKG"     | tee -a "$GITHUB_OUTPUT"
+          echo "project=$PROJECT" | tee -a "$GITHUB_OUTPUT"
+          echo "version=$VERSION" | tee -a "$GITHUB_OUTPUT"
+
+      # Build + test the whole solution as a safety net. The solution currently
+      # has no tests registered in it (tests live in side projects with external
+      # infra dependencies, see appsettings.json), so `dotnet test` here is a
+      # no-op today and will pick up tests automatically once they are added.
+      - name: Restore (solution)
+        run: dotnet restore Codout.Framework.sln
+
+      - name: Build (solution)
+        run: dotnet build Codout.Framework.sln --configuration "$CONFIGURATION" --no-restore
+
+      - name: Test (solution)
+        run: dotnet test Codout.Framework.sln --configuration "$CONFIGURATION" --no-build --verbosity normal
+
+      - name: Pack
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.resolve.outputs.version }}"
+          PROJECT="${{ steps.resolve.outputs.project }}"
+          # Pack performs its own restore/build for the target. Some packages
+          # (Cosmos, DocumentDB, etc.) are not part of Codout.Framework.sln, so
+          # we deliberately do NOT pass --no-build here.
+          if [ -n "$VERSION" ]; then
+            dotnet pack "$PROJECT" --configuration "$CONFIGURATION" \
+              -p:Version="$VERSION" \
+              -p:PackageVersion="$VERSION" \
+              --output ./artifacts
+          else
+            dotnet pack "$PROJECT" --configuration "$CONFIGURATION" \
+              --output ./artifacts
+          fi
+          ls -la ./artifacts
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.resolve.outputs.package }}-nupkg
+          path: ./artifacts/*.nupkg
+          if-no-files-found: error
+
+  publish:
+    needs: build-pack
+    runs-on: ubuntu-latest
+    # Only push to NuGet for real release tags. workflow_dispatch (manual) runs
+    # are build/pack-only smoke tests.
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: read
+
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build-pack.outputs.package }}-nupkg
+          path: ./artifacts
+
+      - name: Push to NuGet.org
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${NUGET_API_KEY:-}" ]; then
+            echo "::error::NUGET_API_KEY secret is not set; aborting."
+            exit 1
+          fi
+          dotnet nuget push "./artifacts/*.nupkg" \
+            --api-key "$NUGET_API_KEY" \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
