@@ -1,0 +1,17 @@
+# EditorConfig for Codout.Framework
+# https://editorconfig.org
+#
+# Repository convention: all text files are UTF-8 with LF line endings and a
+# trailing newline. Honored by Visual Studio, VS Code, JetBrains Rider, and
+# any editor with EditorConfig support.
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+
+# Windows-only batch/cmd scripts must stay CRLF.
+[*.{cmd,bat}]
+end_of_line = crlf
