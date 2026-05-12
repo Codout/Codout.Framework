@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<Version>6.2.2</Version>
 		<Description>Wrapper para datasource de lista paginada</Description>
 		<PackageTags>Codout;Framework;DynamicLinq</PackageTags>
 	</PropertyGroup>

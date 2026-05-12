@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<Version>6.2.2</Version>
 		<Description>Biblioteca de funcões comuns do Framework da Codout</Description>
 		<PackageTags>Codout;Framework</PackageTags>
 	</PropertyGroup>

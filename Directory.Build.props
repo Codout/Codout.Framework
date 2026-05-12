@@ -1,7 +1,9 @@
 <Project>
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
-		<Version>6.3.0</Version>
+		<!-- Version is intentionally NOT set here. Each packable project owns its own
+		     <Version> so that a bug fix in one package does not ship a new build of
+		     every other package. -->
 		<Authors>Clovis Coli Jr</Authors>
 		<Company>Codout</Company>
 		<Copyright>Codout</Copyright>

@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<Version>6.2.2</Version>
 		<Description>Sender da SendGrid para envio de E-mails utilizando a biblioteca Codout.Mailer</Description>
 		<PackageTags>Codout;Framework;Mail;Email;Mailer;SendGrid;</PackageTags>
 	</PropertyGroup>

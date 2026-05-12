@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<Version>6.2.2</Version>
 		<Description>Biblioteca extensível para envio de e-mails com suporte a múltiplos providers (SendGrid, AWS SES), health checks e observabilidade. O template engine é plugável via ITemplateEngine (veja Codout.Mailer.Razor).</Description>
 		<PackageTags>Codout;Framework;Mail;Email;Mailer;</PackageTags>
 	</PropertyGroup>

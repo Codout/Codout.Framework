@@ -5,16 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [6.3.0] - 2026-05-12
+A partir desta entrada cada pacote NuGet é versionado individualmente
+(`<Version>` declarado em cada `.csproj` em vez de centralizado em
+`Directory.Build.props`). As entradas abaixo identificam o pacote e a
+versão afetados.
 
-### Fixed
-- **Codout.Framework.EF** — `EFRepository.SaveOrUpdate` / `SaveOrUpdateAsync` decidiam insert vs. update via `IEntity.IsTransient()`, o que quebrava qualquer entidade que pré-atribuísse o `Id` no construtor (ex.: `Id = Guid.NewGuid()`). A entidade era marcada como `Modified` e o `SaveChanges` falhava ao tentar `UPDATE` em uma linha inexistente. Agora a decisão é feita inspecionando `Context.Entry(entity).State` e, para entidades `Detached` com chave atribuída, consultando o banco via `Find` / `FindAsync`.
-- **Codout.Framework.EF** — `SaveOrUpdateAsync` deixou de bloquear a thread chamando `Find` síncrono; agora usa `FindAsync` e respeita o `CancellationToken` recebido.
-- **Codout.Framework.EF** — Quando o `SaveOrUpdate` precisa atualizar uma entidade existente, os valores são copiados via `Entry(existing).CurrentValues.SetValues(entity)`, preservando os `OriginalValues` (e portanto tokens de concorrência como `[Timestamp]`/`RowVersion`) trazidos do banco.
+## 2026-05-12
 
-### Changed
-- **Codout.Framework.EF** — `SaveOrUpdate` em entidade já rastreada com estado `Unchanged` não força mais a transição para `Modified`. Confia no change tracker para detectar mutações. Consumidores que dependiam do "force full update" devem chamar `Update(entity)` explicitamente.
-- **Codout.Framework.EF** — `SaveOrUpdate` em entidade `Detached` com chave não-default agora executa um roundtrip ao banco (`Find` / `FindAsync`) para distinguir insert de update. Em hot paths onde a intenção é conhecida, prefira `Save(entity)` ou `Update(entity)` para evitar a query.
+### Build
+
+- **Repositório** — `<Version>` removido de `Directory.Build.props` e movido para cada `.csproj` publicável. Cada pacote agora evolui independentemente; alterações em um pacote não disparam mais um build novo dos demais. Pacotes que não tiveram alteração ficaram congelados em `6.2.2`.
+
+### Codout.Framework.EF 6.3.0
+
+#### Fixed
+- `EFRepository.SaveOrUpdate` / `SaveOrUpdateAsync` decidiam insert vs. update via `IEntity.IsTransient()`, o que quebrava qualquer entidade que pré-atribuísse o `Id` no construtor (ex.: `Id = Guid.NewGuid()`). A entidade era marcada como `Modified` e o `SaveChanges` falhava ao tentar `UPDATE` em uma linha inexistente. Agora a decisão é feita inspecionando `Context.Entry(entity).State` e, para entidades `Detached` com chave atribuída, consultando o banco via `Find` / `FindAsync`.
+- `SaveOrUpdateAsync` deixou de bloquear a thread chamando `Find` síncrono; agora usa `FindAsync` e respeita o `CancellationToken` recebido.
+- Quando o `SaveOrUpdate` precisa atualizar uma entidade existente, os valores são copiados via `Entry(existing).CurrentValues.SetValues(entity)`, preservando os `OriginalValues` (e portanto tokens de concorrência como `[Timestamp]`/`RowVersion`) trazidos do banco.
+
+#### Changed
+- `SaveOrUpdate` em entidade já rastreada com estado `Unchanged` não força mais a transição para `Modified`. Confia no change tracker para detectar mutações. Consumidores que dependiam do "force full update" devem chamar `Update(entity)` explicitamente.
+- `SaveOrUpdate` em entidade `Detached` com chave não-default agora executa um roundtrip ao banco (`Find` / `FindAsync`) para distinguir insert de update. Em hot paths onde a intenção é conhecida, prefira `Save(entity)` ou `Update(entity)` para evitar a query.
 
 ## [6.2.0] - 2025-07-17
 
