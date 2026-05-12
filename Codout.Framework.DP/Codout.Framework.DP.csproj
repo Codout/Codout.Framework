@@ -3,6 +3,15 @@
   <PropertyGroup>
     <Version>6.2.2</Version>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <!--
+      Unmaintained. Implementa uma versão antiga de IRepository<T> (Find em vez
+      de Where, sem AllReadOnly/WhereReadOnly/WherePaged/Refresh/overloads com
+      CancellationToken, FirstOrDefault/Any/Count/ToListAsync, etc.) e ainda
+      referencia a pasta legada Codout.Framework.DAL (renomeada para
+      Codout.Framework.Data há tempo). Não builda no estado atual. Para reviver
+      é preciso reescrever DPRepository contra o IRepository<T> atual.
+    -->
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

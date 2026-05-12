@@ -3,6 +3,14 @@
   <PropertyGroup>
     <Version>6.2.2</Version>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <!--
+      Unmaintained. Target netcoreapp2.0 saiu de suporte em 2018. Usa o SDK
+      legado Microsoft.Azure.DocumentDB.Core (substituído por
+      Microsoft.Azure.Cosmos). ProjectReferences apontam para projetos
+      Codout.Framework.NetStandard.* que não existem mais no repo. Não builda.
+      Excluído do release automatizado até ser revivido contra o stack atual.
+    -->
+    <IsPackable>false</IsPackable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Marcelo &amp; Clovis</Authors>
     <Company>Codout</Company>
