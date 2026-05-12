@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>6.2.2</Version>
+		<Version>6.3.0</Version>
 		<Description>Sender da Amazon Simple Email Service para envio de E-mails utilizando a biblioteca Codout.Mailer</Description>
 		<PackageTags>Codout;Framework;Mail;Email;Mailer;SendGrid;</PackageTags>
 	</PropertyGroup>

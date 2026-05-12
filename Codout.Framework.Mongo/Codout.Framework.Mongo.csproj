@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>6.2.2</Version>
+		<Version>6.3.0</Version>
 		<Description>Implementação da interface Codout.Framework.Data para MongoDB</Description>
 		<PackageTags>Codout;Framework;ORM;DAL;MongoDB;Repository;UnitOfWork;</PackageTags>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
