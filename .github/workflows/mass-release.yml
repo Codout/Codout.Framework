@@ -93,18 +93,41 @@ jobs:
           set -euo pipefail
           mkdir -p ./artifacts
 
+          # Build and pack each project in two explicit steps with --verbosity
+          # normal, so any build error (missing source, broken Import, etc.) is
+          # surfaced in the logs instead of being swallowed by `dotnet pack`'s
+          # implicit-build behavior.
+          #
           # Out-of-solution projects (Cosmos, DocumentDB, etc.) need their own
-          # restore/build, so we deliberately do NOT pass --no-build here.
+          # restore + build here.
           for pkg in $(jq -r 'keys[]' "$MAPPING"); do
             project=$(jq -r --arg p "$pkg" '.[$p]' "$MAPPING")
+            echo "::group::Build $pkg ($project)"
+            dotnet build "$project" \
+              --configuration "$CONFIGURATION" \
+              --verbosity normal
+            echo "::endgroup::"
+
             echo "::group::Pack $pkg ($project)"
-            dotnet pack "$project" --configuration "$CONFIGURATION" --output ./artifacts
+            dotnet pack "$project" \
+              --configuration "$CONFIGURATION" \
+              --no-build \
+              --output ./artifacts
             echo "::endgroup::"
           done
 
           if [ "${{ github.event.inputs.include_mcp }}" = "true" ]; then
+            echo "::group::Build mcp ($MCP_PROJECT)"
+            dotnet build "$MCP_PROJECT" \
+              --configuration "$CONFIGURATION" \
+              --verbosity normal
+            echo "::endgroup::"
+
             echo "::group::Pack mcp ($MCP_PROJECT)"
-            dotnet pack "$MCP_PROJECT" --configuration "$CONFIGURATION" --output ./artifacts
+            dotnet pack "$MCP_PROJECT" \
+              --configuration "$CONFIGURATION" \
+              --no-build \
+              --output ./artifacts
             echo "::endgroup::"
           fi
 
