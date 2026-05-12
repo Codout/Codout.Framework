@@ -64,11 +64,61 @@ public class EFRepository<T>(DbContext context) : IRepository<T> where T : class
     public T SaveOrUpdate(T entity)
     {
         ArgumentNullException.ThrowIfNull(entity);
-        if (entity.IsTransient())
+
+        var entry = Context.Entry(entity);
+
+        // Already tracked - EF knows what to do on SaveChanges.
+        if (entry.State != EntityState.Detached)
+            return entity;
+
+        // For detached entities, decide insert vs. update by looking at the actual
+        // primary key values rather than IEntity.IsTransient(), which is unreliable
+        // when callers pre-assign the Id (e.g. Guid.NewGuid() in the constructor).
+        var primaryKey = Context.Model.FindEntityType(typeof(T))?.FindPrimaryKey();
+
+        if (primaryKey == null)
+        {
             DbSet.Add(entity);
+            return entity;
+        }
+
+        var keyValues = primaryKey.Properties
+            .Select(p => entry.Property(p.Name).CurrentValue)
+            .ToArray();
+
+        if (keyValues.Any(IsUnsetKeyValue))
+        {
+            DbSet.Add(entity);
+            return entity;
+        }
+
+        var existing = DbSet.Find(keyValues);
+
+        if (existing == null)
+        {
+            // Non-transient Id but row doesn't exist yet - this is a new entity
+            // with a pre-assigned key (the case IsTransient() gets wrong).
+            DbSet.Add(entity);
+        }
+        else if (!ReferenceEquals(existing, entity))
+        {
+            // Find() attached a different instance; detach it and mark ours as Modified.
+            Context.Entry(existing).State = EntityState.Detached;
+            entry.State = EntityState.Modified;
+        }
         else
-            Update(entity);
+        {
+            entry.State = EntityState.Modified;
+        }
+
         return entity;
+    }
+
+    private static bool IsUnsetKeyValue(object value)
+    {
+        if (value is null) return true;
+        var type = value.GetType();
+        return type.IsValueType && value.Equals(Activator.CreateInstance(type));
     }
 
     public void Update(T entity)
