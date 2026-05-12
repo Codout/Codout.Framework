@@ -15,6 +15,13 @@ versão afetados.
 ### Build
 
 - **Repositório** — `<Version>` removido de `Directory.Build.props` e movido para cada `.csproj` publicável. Cada pacote agora evolui independentemente; alterações em um pacote não disparam mais um build novo dos demais. Pacotes que não tiveram alteração ficaram congelados em `6.2.2`.
+- **CI** — Workflows `release.yml` e `mcp-release.yml` passaram a usar **somente** `-p:PackageVersion=` no `dotnet pack`. O `-p:Version=` anterior cascateava para todos os projetos do build graph (incluindo `ProjectReference`), o que reescrevia silenciosamente a versão das dependências no `.nuspec` e produzia pacotes com referências quebradas — sintoma observado em `Codout.Framework.EF 6.3.0`, publicado declarando `Codout.Framework.Data >= 6.3.0` enquanto Data estava em 6.2.2 no csproj.
+- **Repositório** — Pacotes `Codout.Framework.DP`, `Codout.Framework.NetCore.Repository.Cosmos` e `Codout.Framework.NetCore.Repository.DocumentDB` marcados com `<IsPackable>false</IsPackable>` e removidos de `.github/release-packages.json`. Os três estão abandonados (DP implementa um `IRepository<T>` antigo e referencia a pasta `Codout.Framework.DAL` que não existe; Cosmos/DocumentDB targetam `netcoreapp2.0` e referenciam projetos `NetStandard.*` ausentes). Mass-release agora ignora os três; consulte `CLAUDE.md` antes de tentar revivê-los.
+
+### Codout.Framework.Data 6.3.0
+
+#### Changed
+- Bump de versão técnico para alinhar com `Codout.Framework.EF 6.3.0`. **Não há alterações de código ou contrato** em `Codout.Framework.Data` — esta versão existe para satisfazer a dependência `Codout.Framework.Data >= 6.3.0` declarada (incorretamente) pelo pacote EF 6.3.0 já publicado. Pacotes futuros do EF voltarão a depender da versão minor real de Data, agora que o workflow não cascateia mais o `-p:Version=`.
 
 ### Codout.Framework.EF 6.3.0
 

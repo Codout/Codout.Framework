@@ -70,9 +70,13 @@ jobs:
 
       - name: Pack
         run: |
+          # Mcp has no internal ProjectReferences today, so -p:Version would
+          # not actively break anything here, but we still use only
+          # -p:PackageVersion to stay consistent with release.yml and avoid
+          # reintroducing the cascade trap if a ProjectReference is added
+          # later. See release.yml for the full explanation.
           if [ -n "${{ steps.version.outputs.version }}" ]; then
             dotnet pack "$PROJECT" --configuration "$CONFIGURATION" --no-build \
-              -p:Version=${{ steps.version.outputs.version }} \
               -p:PackageVersion=${{ steps.version.outputs.version }} \
               --output ./artifacts
           else

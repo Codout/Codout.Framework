@@ -57,6 +57,20 @@ Quando o usuário pedir "gerar nova versão e publicar do pacote X" (ou equivale
 - **Codout.Framework.Mcp**: usa workflow próprio (`.github/workflows/mcp-release.yml`) com passo `--validate` específico do CLI. Tag deve ser `mcp-v<X.Y.Z>` (NÃO use `mcp` como short-name no `release.yml` — está intencionalmente bloqueado por padrão de tag para evitar duplo release).
 - **Mass release** (todos os pacotes de uma vez via `.github/workflows/mass-release.yml`): só execute se o usuário pedir explicitamente "mass release" ou "publicar todos". Mesmo assim, oriente o usuário a disparar via Actions UI com `dry_run: true` primeiro e revisar os artifacts antes de re-disparar com `dry_run: false`. Não tente disparar pela CLI sem autorização explícita.
 
+## Pacotes excluídos do release automatizado
+
+Os seguintes csproj têm `<IsPackable>false</IsPackable>` e **não** estão em `.github/release-packages.json`. Não tente publicá-los antes de modernizá-los:
+
+- `Codout.Framework.DP` — implementa um `IRepository<T>` antigo (sem `Where`, `AllReadOnly`, `WherePaged`, `Refresh`, overloads de `CancellationToken`, etc.) e referencia a pasta legada `Codout.Framework.DAL` que não existe mais.
+- `src/NetCore/Codout.Framework.NetCore.Repository.Cosmos` — `netcoreapp2.0` (fora de suporte), SDK legado `Microsoft.Azure.DocumentDB.Core`, refs pra projetos `NetStandard.*` que sumiram do repo.
+- `src/NetCore/Codout.Framework.NetCore.Repository.DocumentDB` — idem.
+
+Se o usuário pedir pra publicar um deles, **avise que está deprecated** e pergunte se quer fazer o port completo antes (não tente packar como está — vai falhar).
+
+## Cuidados ao usar `dotnet pack`
+
+**NUNCA passe `-p:Version=` no `dotnet pack`.** Essa propriedade cascateia para TODOS os projetos do build (incluindo `ProjectReference`), o que reescreve silenciosamente a versão das dependências no `.nuspec` gerado e produz pacotes com deps quebradas (ex.: `Codout.Framework.EF 6.3.0` declarando `Codout.Framework.Data >= 6.3.0` quando Data está em 6.2.2 no csproj). Para sobrescrever a versão do pacote alvo sem cascatear, use **apenas** `-p:PackageVersion=`. Os workflows já fazem assim — se for criar um novo, siga o mesmo padrão.
+
 ## O que NÃO fazer
 
 - ❌ Reintroduzir `<Version>` em `Directory.Build.props`.
