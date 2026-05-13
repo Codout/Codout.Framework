@@ -108,15 +108,25 @@ jobs:
       - name: Test (solution)
         run: dotnet test Codout.Framework.sln --configuration "$CONFIGURATION" --no-build --verbosity normal
 
+      - name: Build (target project)
+        run: |
+          # Build the target project explicitly with --verbosity normal. The
+          # solution build above does not cover out-of-solution packages
+          # (Cosmos, DocumentDB, etc.) and may leave the target unbuilt anyway,
+          # so we build it here and pack with --no-build below. Splitting
+          # build and pack also keeps build errors visible — relying on
+          # `dotnet pack`'s implicit build can silently swallow failures (see
+          # the api-dto NU5026 incident that motivated this pattern in
+          # mass-release.yml).
+          dotnet build "${{ steps.resolve.outputs.project }}" \
+            --configuration "$CONFIGURATION" \
+            --verbosity normal
+
       - name: Pack
         run: |
           set -euo pipefail
           VERSION="${{ steps.resolve.outputs.version }}"
           PROJECT="${{ steps.resolve.outputs.project }}"
-          # Pack performs its own restore/build for the target. Some packages
-          # (Cosmos, DocumentDB, etc.) are not part of Codout.Framework.sln, so
-          # we deliberately do NOT pass --no-build here.
-          #
           # IMPORTANT: when overriding the package version via workflow_dispatch,
           # use ONLY -p:PackageVersion=. Passing -p:Version= cascades to every
           # project in the build graph (including ProjectReferences), which
@@ -124,11 +134,11 @@ jobs:
           # produces broken packages. -p:PackageVersion only affects the
           # outgoing package and leaves ProjectReference resolution alone.
           if [ -n "$VERSION" ]; then
-            dotnet pack "$PROJECT" --configuration "$CONFIGURATION" \
+            dotnet pack "$PROJECT" --configuration "$CONFIGURATION" --no-build \
               -p:PackageVersion="$VERSION" \
               --output ./artifacts
           else
-            dotnet pack "$PROJECT" --configuration "$CONFIGURATION" \
+            dotnet pack "$PROJECT" --configuration "$CONFIGURATION" --no-build \
               --output ./artifacts
           fi
           ls -la ./artifacts
