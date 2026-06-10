@@ -2,15 +2,18 @@ name: Codout.Framework Core Release
 
 # Release per-package dos pacotes CORE do Framework (Data/Domain/EF e afins),
 # desacoplado do release da tool MCP. Resolve a divida "publish manual + versao
-# unica global": dispara por tag `core-v<versao>` (ou workflow_dispatch),
-# empacota SOMENTE os projetos informados com a versao da tag (-p:Version, sem
-# tocar o Directory.Build.props global) e publica no NuGet.org de forma
-# idempotente (--skip-duplicate). O secret NUGET_API_KEY ja existe no repo
-# (usado pelo mcp-release.yml).
+# unica global": dispara por tag `core-v<versao>` (ou workflow_dispatch para
+# dry-run), valida restore/build/test, empacota SOMENTE os projetos informados
+# com a versao da tag (-p:Version, sem tocar o Directory.Build.props global) e
+# publica no NuGet.org de forma idempotente (--skip-duplicate). O secret
+# NUGET_API_KEY ja existe no repo (usado pelo mcp-release.yml).
 #
 # Default packs o conjunto-kernel { Data, Domain, EF } — fechado por
 # ProjectReference (Domain->Data, EF->Data; Data folha). Para publicar outro
 # subconjunto, usar workflow_dispatch com o input `projects`.
+#
+# DRY-RUN: `workflow_dispatch` (ou push em qualquer ref que nao seja tag core-v*)
+# roda build-test-pack SEM publicar (o job publish so roda em refs/tags/core-v*).
 #
 # Exemplo: criar a tag `core-v6.4.0` publica Data/Domain/EF 6.4.0; Common/Storage
 # permanecem na versao anterior (sao folhas, sem conflito de dependencia).
@@ -33,6 +36,7 @@ env:
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   CONFIGURATION: Release
+  TEST_PROJECT: NetCore/Codout.Framework.EF.Tests/Codout.Framework.EF.Tests.csproj
   DEFAULT_PROJECTS: >-
     Codout.Framework.Data/Codout.Framework.Data.csproj
     Codout.Framework.Domain/Codout.Framework.Domain.csproj
@@ -76,21 +80,22 @@ jobs:
           echo "projects=$(echo $PROJECTS | xargs)" >> "$GITHUB_OUTPUT"
           echo "Projects: $(echo $PROJECTS | xargs)"
 
-      - name: Build (Release)
-        run: |
-          for proj in ${{ steps.projects.outputs.projects }}; do
-            dotnet build "$proj" --configuration "$CONFIGURATION" \
-              -p:Version=${{ steps.version.outputs.version }}
-          done
+      - name: Test (gate da convencao)
+        # Restaura+builda+roda os testes comportamentais da ClientGeneratedIdConvention
+        # (prova A/B do fix). Falha aqui = aborta o release antes de empacotar.
+        run: dotnet test "$TEST_PROJECT" --configuration "$CONFIGURATION"
 
       - name: Pack
         run: |
           for proj in ${{ steps.projects.outputs.projects }}; do
-            dotnet pack "$proj" --configuration "$CONFIGURATION" --no-build \
+            dotnet pack "$proj" --configuration "$CONFIGURATION" \
               -p:Version=${{ steps.version.outputs.version }} \
               -p:PackageVersion=${{ steps.version.outputs.version }} \
               --output ./artifacts
           done
+
+      - name: List artifacts (dry-run visibility)
+        run: ls -la ./artifacts
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -102,7 +107,7 @@ jobs:
   publish:
     needs: build-test-pack
     runs-on: ubuntu-latest
-    # So publica em tag (nao em workflow_dispatch de teste/dry-run).
+    # So publica em tag core-v* (workflow_dispatch = dry-run, NAO publica).
     if: startsWith(github.ref, 'refs/tags/core-v')
     permissions:
       contents: read

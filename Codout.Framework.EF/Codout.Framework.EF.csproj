@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>6.3.0</Version>
+		<Version>6.4.0</Version>
 		<Description>Implementação da interface Codout.Framework.DAL para EntityFrameworkCore</Description>
 		<PackageTags>Codout;Framework;ORM;DAL;EntityFrameworkCore;Repository;UnitOfWork;Specification</PackageTags>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
