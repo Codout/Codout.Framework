@@ -1,0 +1,132 @@
+name: Codout.Framework Core Release
+
+# Release per-package dos pacotes CORE do Framework (Data/Domain/EF e afins),
+# desacoplado do release da tool MCP. Resolve a divida "publish manual + versao
+# unica global": dispara por tag `core-v<versao>` (ou workflow_dispatch),
+# empacota SOMENTE os projetos informados com a versao da tag (-p:Version, sem
+# tocar o Directory.Build.props global) e publica no NuGet.org de forma
+# idempotente (--skip-duplicate). O secret NUGET_API_KEY ja existe no repo
+# (usado pelo mcp-release.yml).
+#
+# Default packs o conjunto-kernel { Data, Domain, EF } — fechado por
+# ProjectReference (Domain->Data, EF->Data; Data folha). Para publicar outro
+# subconjunto, usar workflow_dispatch com o input `projects`.
+#
+# Exemplo: criar a tag `core-v6.4.0` publica Data/Domain/EF 6.4.0; Common/Storage
+# permanecem na versao anterior (sao folhas, sem conflito de dependencia).
+
+on:
+  push:
+    tags:
+      - 'core-v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Versao dos pacotes (ex: 6.4.0)'
+        required: true
+      projects:
+        description: 'Projetos a empacotar (separados por espaco). Vazio = kernel Data+Domain+EF.'
+        required: false
+        default: ''
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  CONFIGURATION: Release
+  DEFAULT_PROJECTS: >-
+    Codout.Framework.Data/Codout.Framework.Data.csproj
+    Codout.Framework.Domain/Codout.Framework.Domain.csproj
+    Codout.Framework.EF/Codout.Framework.EF.csproj
+
+jobs:
+  build-test-pack:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Resolve version
+        id: version
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          elif [[ "${GITHUB_REF}" == refs/tags/core-v* ]]; then
+            VERSION="${GITHUB_REF#refs/tags/core-v}"
+          else
+            echo "Sem fonte de versao (nem input nem tag core-v*)." >&2
+            exit 1
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Resolved version: ${VERSION}"
+
+      - name: Resolve projects
+        id: projects
+        run: |
+          PROJECTS="${{ github.event.inputs.projects }}"
+          if [ -z "$PROJECTS" ]; then
+            PROJECTS="${DEFAULT_PROJECTS}"
+          fi
+          echo "projects=$(echo $PROJECTS | xargs)" >> "$GITHUB_OUTPUT"
+          echo "Projects: $(echo $PROJECTS | xargs)"
+
+      - name: Build (Release)
+        run: |
+          for proj in ${{ steps.projects.outputs.projects }}; do
+            dotnet build "$proj" --configuration "$CONFIGURATION" \
+              -p:Version=${{ steps.version.outputs.version }}
+          done
+
+      - name: Pack
+        run: |
+          for proj in ${{ steps.projects.outputs.projects }}; do
+            dotnet pack "$proj" --configuration "$CONFIGURATION" --no-build \
+              -p:Version=${{ steps.version.outputs.version }} \
+              -p:PackageVersion=${{ steps.version.outputs.version }} \
+              --output ./artifacts
+          done
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: codout-framework-core-nupkg
+          path: ./artifacts/*.nupkg
+          if-no-files-found: error
+
+  publish:
+    needs: build-test-pack
+    runs-on: ubuntu-latest
+    # So publica em tag (nao em workflow_dispatch de teste/dry-run).
+    if: startsWith(github.ref, 'refs/tags/core-v')
+    permissions:
+      contents: read
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: codout-framework-core-nupkg
+          path: ./artifacts
+
+      - name: Push to NuGet.org
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          if [ -z "$NUGET_API_KEY" ]; then
+            echo "NUGET_API_KEY secret nao configurado; abortando." >&2
+            exit 1
+          fi
+          dotnet nuget push "./artifacts/*.nupkg" \
+            --api-key "$NUGET_API_KEY" \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
