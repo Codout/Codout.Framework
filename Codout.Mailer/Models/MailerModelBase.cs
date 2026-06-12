@@ -4,5 +4,5 @@ namespace Codout.Mailer.Models;
 
 public class MailerModelBase
 {
-    public MailAddress To { get; set; }
+    public MailAddress To { get; set; } = null!;
 }

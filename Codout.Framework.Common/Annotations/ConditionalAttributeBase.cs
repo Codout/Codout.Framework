@@ -25,9 +25,9 @@ public abstract class ConditionalAttributeBase : ValidationAttribute
     /// <param name="validationContext"></param>
     /// <returns></returns>
     protected bool ShouldRunValidation(
-        object value,
+        object? value,
         string dependentProperty,
-        object targetValue,
+        object? targetValue,
         ValidationContext validationContext)
     {
         var dependentValue = GetDependentFieldValue(dependentProperty, validationContext);
@@ -47,7 +47,7 @@ public abstract class ConditionalAttributeBase : ValidationAttribute
     /// <param name="dependentProperty"></param>
     /// <param name="validationContext"></param>
     /// <returns></returns>
-    protected object GetDependentFieldValue(string dependentProperty, ValidationContext validationContext)
+    protected object? GetDependentFieldValue(string dependentProperty, ValidationContext validationContext)
     {
         // get a reference to the property this validation depends upon
         var containerType = validationContext.ObjectInstance.GetType();
@@ -77,8 +77,8 @@ public abstract class ConditionalAttributeBase : ValidationAttribute
     ///     Construtor com opção de mensagem de erro.
     /// </summary>
     /// <param name="errorMessage"></param>
-    protected ConditionalAttributeBase(string errorMessage)
-        : base(errorMessage)
+    protected ConditionalAttributeBase(string? errorMessage)
+        : base(errorMessage!)
     {
     }
 

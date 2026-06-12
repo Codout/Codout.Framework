@@ -19,7 +19,7 @@ public class CpfCnpjAttribute : ValidationAttribute
     ///     true se o valor especificado é válido; Caso contrário, false.
     /// </returns>
     /// <param name="value">O valor do objeto a ser validado. </param>
-    public override bool IsValid(object value)
+    public override bool IsValid(object? value)
     {
         var cpfCnpj = value as string;
 

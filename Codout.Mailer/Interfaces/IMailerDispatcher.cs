@@ -7,5 +7,5 @@ namespace Codout.Mailer.Interfaces;
 public interface IMailerDispatcher
 {
     Task<MailerResponse> Send(MailAddress from, MailAddress to, string subject, string htmlContent,
-        string plainTextContent = null, Attachment[] attachments = null);
+        string? plainTextContent = null, Attachment[]? attachments = null);
 }
