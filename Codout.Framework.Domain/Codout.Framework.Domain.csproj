@@ -2,6 +2,9 @@
 
 	<PropertyGroup>
 		<Version>6.4.0</Version>
+		<!-- Compat: o build do pack falha se a API quebrar vs. a versao publicada -->
+		<EnablePackageValidation>true</EnablePackageValidation>
+		<PackageValidationBaselineVersion>6.4.0</PackageValidationBaselineVersion>
 		<Description>Camada de Domínio do Framework da Codout</Description>
 		<PackageTags>Codout;Framework;Domain;</PackageTags>
 	</PropertyGroup>

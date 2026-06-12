@@ -115,12 +115,17 @@ public class LimitedList<T>(int maxsize) : IEnumerable<T>
 
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Enumerator<TItem> : IEnumerator<TItem>
+    // CS0693: o type parameter sombreia o T externo; o nome é preservado por
+    // compatibilidade binária com a API publicada (renomear quebra a baseline
+    // do package validation). Tratar apenas em um futuro major.
+#pragma warning disable CS0693
+    public struct Enumerator<T> : IEnumerator<T>
+#pragma warning restore CS0693
     {
-        private readonly LimitedList<TItem> thing;
+        private readonly LimitedList<T> thing;
         private int index;
 
-        internal Enumerator(LimitedList<TItem> thing)
+        internal Enumerator(LimitedList<T> thing)
         {
             this.thing = thing;
             index = 0;
@@ -146,7 +151,7 @@ public class LimitedList<T>(int maxsize) : IEnumerable<T>
             return false;
         }
 
-        public TItem Current { get; private set; }
+        public T Current { get; private set; }
 
         object? IEnumerator.Current => Current;
 

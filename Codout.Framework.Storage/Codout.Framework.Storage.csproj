@@ -2,6 +2,9 @@
 
 	<PropertyGroup>
 		<Version>6.3.0</Version>
+		<!-- Compat: o build do pack falha se a API quebrar vs. a versao publicada -->
+		<EnablePackageValidation>true</EnablePackageValidation>
+		<PackageValidationBaselineVersion>6.3.0</PackageValidationBaselineVersion>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<Title>Codout Framework Storage</Title>

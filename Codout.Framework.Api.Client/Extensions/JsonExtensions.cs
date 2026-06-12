@@ -27,6 +27,10 @@ public static class JsonExtensions
         return items!;
     }
 
+    // Oblivious de propósito: sob #nullable enable o compilador emite metadados
+    // que o ApiCompat lê como constraint 'notnull' nova em TModel (CP0021),
+    // quebrando a baseline publicada. Anotar apenas no próximo major.
+#nullable disable
     extension(HttpClient client)
     {
         public async Task<HttpResponseMessage> PostAsJsonAsync<TModel>(string requestUrl, TModel model)

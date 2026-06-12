@@ -13,6 +13,9 @@
 
   <PropertyGroup>
     <Version>6.3.0</Version>
+    <!-- Compat: o build do pack falha se a API quebrar vs. a versao publicada -->
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageValidationBaselineVersion>6.3.0</PackageValidationBaselineVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
     <!-- Excluir obj/bin do projeto irmão (Codout.Multitenancy) do glob de Compile -->
     <DefaultItemExcludes>$(DefaultItemExcludes);obj/**;bin/**</DefaultItemExcludes>
