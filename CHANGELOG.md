@@ -10,6 +10,19 @@ A partir desta entrada cada pacote NuGet é versionado individualmente
 `Directory.Build.props`). As entradas abaixo identificam o pacote e a
 versão afetados.
 
+## 2026-06-12
+
+### Repository
+
+- Removidas as árvores legadas `NetFull/`, `NetCore/`, `src/NetCore/` (Cosmos/DocumentDB em `netcoreapp2.0`, EOL), `Codout.Framework.DP` (quebrado, referenciava `Codout.Framework.DAL` inexistente), `Shared/Codout.Framework.Shared.Commom` e `Shared.msbuild`. Nenhum desses projetos era publicado no NuGet (`IsPackable=false` ou fora de `.github/release-packages.json`); o histórico permanece no git. O typo "Commom" deixa de existir no repositório.
+- Removido `appveyor.yml` (referenciava Visual Studio 2012; o pipeline real é GitHub Actions).
+- `Codout.Framework.Api.Dto` e `Softprime.Multitenancy` adicionados à `Codout.Framework.sln`; `Softprime.Multitenancy` passou a usar `obj`/`bin` isolados para coexistir com `Codout.Multitenancy` na mesma pasta sem corromper o restore.
+- Testes movidos para a pasta `tests/` na raiz e incluídos na solution — `dotnet test Codout.Framework.sln` (CI de PR e gate do `release.yml`) agora executa os testes de verdade. `core-release.yml` atualizado para o novo caminho.
+
+### Build
+
+- `dotnet.yml`: SDK do CI atualizado de 9.0.x para 10.0.x, alinhado ao `TargetFramework` `net10.0` do `Directory.Build.props`.
+
 ## 2026-05-12
 
 ### Build
