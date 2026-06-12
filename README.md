@@ -9,8 +9,8 @@
   </p>
 
   <p align="center">
-    <a href="https://github.com/Codout/Codout.Framework/actions/workflows/build.yml">
-      <img src="https://img.shields.io/github/actions/workflow/status/Codout/Codout.Framework/.github/workflows/dotnet.yml?label=build&logo=github&style=flat-square" alt="Build Status">
+    <a href="https://github.com/Codout/Codout.Framework/actions/workflows/dotnet.yml">
+      <img src="https://img.shields.io/github/actions/workflow/status/Codout/Codout.Framework/dotnet.yml?label=build&logo=github&style=flat-square" alt="Build Status">
     </a>
     <a href="https://www.nuget.org/packages/Codout.Framework.Domain">
       <img src="https://img.shields.io/nuget/v/Codout.Framework.Domain?style=flat-square" alt="NuGet Version">

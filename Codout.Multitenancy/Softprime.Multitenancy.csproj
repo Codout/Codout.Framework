@@ -1,8 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project>
+
+  <PropertyGroup>
+    <!-- Dois csproj compartilham esta pasta; isolar obj/bin evita que um
+         restore corrompa o assets.json do outro. Precisa vir antes do
+         Sdk.props, por isso os imports explícitos. -->
+    <MSBuildProjectExtensionsPath>obj\softprime\</MSBuildProjectExtensionsPath>
+    <BaseIntermediateOutputPath>obj\softprime\</BaseIntermediateOutputPath>
+    <BaseOutputPath>bin\softprime\</BaseOutputPath>
+  </PropertyGroup>
+
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
   <PropertyGroup>
     <Version>6.3.0</Version>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <!-- Excluir obj/bin do projeto irmão (Codout.Multitenancy) do glob de Compile -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj/**;bin/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,5 +26,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.1" />
   </ItemGroup>
+
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 
 </Project>
