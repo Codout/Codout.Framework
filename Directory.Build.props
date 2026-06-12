@@ -28,6 +28,8 @@
 		<NoWarn>$(NoWarn);CS1591</NoWarn>
 
 		<!-- Empacotamento (ROADMAP Fase 6): SourceLink + símbolos depuráveis -->
+		<!-- Build determinístico em CI (GitHub Actions exporta GITHUB_ACTIONS=true) -->
+		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<IncludeSymbols>true</IncludeSymbols>
