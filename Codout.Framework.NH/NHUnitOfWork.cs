@@ -1,10 +1,14 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using Codout.Framework.Data;
 using Codout.Framework.Data.Entity;
 using NHibernate;
+
+// CA1510: guard clauses originais mantidos para preservar o comportamento
+// byte a byte (política de zero mudança de comportamento).
+#pragma warning disable CA1510
 
 namespace Codout.Framework.NH;
 

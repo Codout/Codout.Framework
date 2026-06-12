@@ -1,4 +1,4 @@
-﻿using System.Net.Http;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -24,7 +24,7 @@ public static class JsonExtensions
 
         var items = JsonSerializer.Deserialize<TModel>(data, JsonSerializerOptions);
 
-        return items;
+        return items!;
     }
 
     extension(HttpClient client)

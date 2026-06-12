@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Mail;
@@ -24,8 +24,8 @@ public class AWSDispatcher(IOptions<AWSSettings> settings) : IMailerDispatcher
         MailAddress to,
         string subject,
         string htmlContent,
-        string plainTextContent = null,
-        System.Net.Mail.Attachment[] attachments = null)
+        string? plainTextContent = null,
+        System.Net.Mail.Attachment[]? attachments = null)
     {
         
         if (string.IsNullOrWhiteSpace(_settings.AccessKey))
@@ -61,7 +61,7 @@ public class AWSDispatcher(IOptions<AWSSettings> settings) : IMailerDispatcher
                 {
                     using var memoryStream = new MemoryStream();
                     await attachment.ContentStream.CopyToAsync(memoryStream);
-                    bodyBuilder.Attachments.Add(attachment.Name, memoryStream.ToArray(), ContentType.Parse(attachment.ContentType.MediaType));
+                    bodyBuilder.Attachments.Add(attachment.Name!, memoryStream.ToArray(), ContentType.Parse(attachment.ContentType.MediaType));
                 }
             }
 

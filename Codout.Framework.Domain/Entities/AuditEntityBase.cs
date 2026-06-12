@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Codout.Framework.Domain.Interfaces;
 
 namespace Codout.Framework.Domain.Entities;
@@ -10,7 +10,7 @@ public abstract class AuditEntityBase : EntityBase, IAudit
 
     public virtual DateTime? UpdatedAt { get; set; }
 
-    public virtual string CreatedBy { get; set; }
+    public virtual string? CreatedBy { get; set; }
 
-    public virtual string UpdatedBy { get; set; }
+    public virtual string? UpdatedBy { get; set; }
 }

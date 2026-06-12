@@ -39,7 +39,7 @@ public class MongoRepositoryAsyncTests
         var found = await _repository.GetAsync(seeded.Id);
 
         found.Should().NotBeNull();
-        found.Price.Should().Be(9);
+        found!.Price.Should().Be(9);
     }
 
     [SkippableFact]
@@ -142,7 +142,7 @@ public class MongoRepositoryAsyncTests
 
         await _repository.UpdateAsync(seeded);
 
-        (await _repository.GetAsync(seeded.Id)).Price.Should().Be(55);
+        (await _repository.GetAsync(seeded.Id))!.Price.Should().Be(55);
     }
 
     [SkippableFact]
@@ -157,7 +157,7 @@ public class MongoRepositoryAsyncTests
         await _repository.SaveOrUpdateAsync(inserted);
 
         (await _fixture.GadgetCollection.CountDocumentsAsync(g => g.Name == "SoU")).Should().Be(1);
-        (await _repository.GetAsync(inserted.Id)).Price.Should().Be(22);
+        (await _repository.GetAsync(inserted.Id))!.Price.Should().Be(22);
     }
 
     [SkippableFact]
@@ -170,7 +170,7 @@ public class MongoRepositoryAsyncTests
         var merged = await _repository.MergeAsync(seeded);
 
         merged.Should().BeSameAs(seeded);
-        (await _repository.GetAsync(seeded.Id)).Price.Should().Be(33);
+        (await _repository.GetAsync(seeded.Id))!.Price.Should().Be(33);
     }
 
     [SkippableFact]

@@ -1,4 +1,4 @@
-﻿namespace Codout.Framework.Api.Client;
+namespace Codout.Framework.Api.Client;
 
 /// <summary>
 ///     Classe DTO base para transporte com WebAPI
@@ -9,5 +9,5 @@ public abstract class EntityDtoBase<TId> : IEntityDto<TId>
     /// <summary>
     ///     Id do objeto
     /// </summary>
-    public TId Id { get; set; }
+    public TId Id { get; set; } = default!;
 }

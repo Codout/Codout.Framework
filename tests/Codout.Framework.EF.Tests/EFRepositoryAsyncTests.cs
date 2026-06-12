@@ -28,9 +28,9 @@ public class EFRepositoryAsyncTests : SqliteTestBase
         using var context = CreateContext();
         var repository = new EFRepository<Customer>(context);
 
-        (await repository.GetAsync(c => c.Name == "Ana")).Id.Should().Be(id);
-        (await repository.GetAsync((object)id)).Name.Should().Be("Ana");
-        (await repository.LoadAsync(id)).Name.Should().Be("Ana");
+        (await repository.GetAsync(c => c.Name == "Ana"))!.Id.Should().Be(id);
+        (await repository.GetAsync((object)id))!.Name.Should().Be("Ana");
+        (await repository.LoadAsync(id))!.Name.Should().Be("Ana");
         (await repository.GetAsync(c => c.Name == "Zoe")).Should().BeNull();
     }
 
@@ -126,7 +126,7 @@ public class EFRepositoryAsyncTests : SqliteTestBase
         using var context = CreateContext();
         var repository = new EFRepository<Customer>(context);
 
-        var entity = await repository.GetAsync((object)id);
+        var entity = (await repository.GetAsync((object)id))!;
         entity.Name = "Local";
 
         var refreshed = await repository.RefreshAsync(entity);
@@ -175,7 +175,7 @@ public class EFRepositoryAsyncTests : SqliteTestBase
         using var context = CreateContext();
         var repository = new EFRepository<Customer>(context);
 
-        var entity = await repository.GetAsync((object)id);
+        var entity = (await repository.GetAsync((object)id))!;
         entity.Name = "Local";
 
         var refreshed = await repository.RefreshAsync(entity, Cancelled);

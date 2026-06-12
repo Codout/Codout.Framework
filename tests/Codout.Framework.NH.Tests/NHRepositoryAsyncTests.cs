@@ -47,7 +47,7 @@ public class NHRepositoryAsyncTests : IDisposable
         var found = await _repository.GetAsync(seeded.Id);
 
         found.Should().NotBeNull();
-        found.Stock.Should().Be(9);
+        found!.Stock.Should().Be(9);
     }
 
     [Fact]
@@ -74,7 +74,7 @@ public class NHRepositoryAsyncTests : IDisposable
 
         var loaded = await _repository.LoadAsync(seeded.Id);
 
-        loaded.Name.Should().Be("LoadAsync");
+        loaded!.Name.Should().Be("LoadAsync");
     }
 
     [Fact]
@@ -127,7 +127,7 @@ public class NHRepositoryAsyncTests : IDisposable
     {
         var seeded = _fixture.Seed("UpAsync", 1);
 
-        var entity = await _repository.GetAsync(seeded.Id);
+        var entity = (await _repository.GetAsync(seeded.Id))!;
         entity.Stock = 55;
         await _repository.UpdateAsync(entity);
         await _session.FlushAsync();
@@ -157,7 +157,7 @@ public class NHRepositoryAsyncTests : IDisposable
     {
         var seeded = _fixture.Seed("DelAsync", 1);
 
-        var entity = await _repository.GetAsync(seeded.Id);
+        var entity = (await _repository.GetAsync(seeded.Id))!;
         await _repository.DeleteAsync(entity);
         await _session.FlushAsync();
 
@@ -200,7 +200,7 @@ public class NHRepositoryAsyncTests : IDisposable
     {
         var seeded = _fixture.Seed("RefAsync", 10);
 
-        var entity = await _repository.GetAsync(seeded.Id);
+        var entity = (await _repository.GetAsync(seeded.Id))!;
 
         using (var otherSession = _fixture.OpenSession())
         using (var tx = otherSession.BeginTransaction())

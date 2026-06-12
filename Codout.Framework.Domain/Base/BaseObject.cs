@@ -1,7 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
+// CA1860: padrões Any() mantidos como estão para preservar o comportamento
+// original byte a byte (política de zero mudança de comportamento).
+#pragma warning disable CA1860
 
 namespace Codout.Framework.Domain.Base;
 
@@ -35,14 +39,14 @@ public abstract class BaseObject
     ///     http://www.dotnetjunkies.com/WebLog/chris.taylor/archive/2005/08/18/132026.aspx
     /// </remarks>
     [ThreadStatic] 
-    private static Dictionary<Type, IEnumerable<PropertyInfo>> _signaturePropertiesDictionary;
+    private static Dictionary<Type, IEnumerable<PropertyInfo>>? _signaturePropertiesDictionary;
 
     /// <summary>
     ///     Determines whether the specified <see cref="object" /> is equal to this instance.
     /// </summary>
     /// <param name="obj">The <see cref="object" /> to compare with the current <see cref="object" />.</param>
     /// <returns><c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         var compareTo = obj as BaseObject;
 
@@ -79,7 +83,7 @@ public abstract class BaseObject
 
             hashCode = propertyInfos.Select(property => property.GetValue(this, null))
                 .Where(value => value != null)
-                .Aggregate(hashCode, (current, value) => current * HashMultiplier ^ value.GetHashCode());
+                .Aggregate(hashCode, (current, value) => current * HashMultiplier ^ value!.GetHashCode());
 
             if (propertyInfos.Any()) return hashCode;
 
@@ -95,7 +99,7 @@ public abstract class BaseObject
     /// <returns>A collection of <see cref="PropertyInfo" /> instances.</returns>
     public virtual IEnumerable<PropertyInfo> GetSignatureProperties()
     {
-        IEnumerable<PropertyInfo> properties;
+        IEnumerable<PropertyInfo>? properties;
 
         // Init the signaturePropertiesDictionary here due to reasons described at 
         // http://blogs.msdn.com/jfoscoding/archive/2006/07/18/670497.aspx

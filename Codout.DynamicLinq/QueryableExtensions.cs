@@ -1,9 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Reflection;
+
+// CA1860/CA2249: padrões Any()/IndexOf mantidos como estão para preservar o
+// comportamento original byte a byte (política de zero mudança de comportamento).
+#pragma warning disable CA1860, CA2249
 
 namespace Codout.DynamicLinq;
 
@@ -20,7 +24,7 @@ public static class QueryableExtensions
     /// <param name="filter">Specifies the current filter.</param>
     /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
     public static DataSourceResult ToDataSourceResult<T>(this IQueryable<T> queryable, int take, int skip,
-        IEnumerable<Sort> sort, Filter filter)
+        IEnumerable<Sort>? sort, Filter? filter)
     {
         return queryable.ToDataSourceResult(take, skip, sort, filter, null, null);
     }
@@ -51,7 +55,7 @@ public static class QueryableExtensions
     /// <param name="group">Specifies the current groups.</param>
     /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
     public static DataSourceResult ToDataSourceResult<T>(this IQueryable<T> queryable, int take, int skip,
-        IEnumerable<Sort> sort, Filter filter, IEnumerable<Aggregator> aggregates, IEnumerable<Group> group)
+        IEnumerable<Sort>? sort, Filter? filter, IEnumerable<Aggregator>? aggregates, IEnumerable<Group>? group)
     {
         var errors = new List<object>();
 
@@ -64,7 +68,7 @@ public static class QueryableExtensions
         // Calculate the aggregates
         var aggregate = Aggregates(queryable, aggregates);
 
-        var groupSelectors = group as Group[] ?? group.ToArray();
+        var groupSelectors = group as Group[] ?? group!.ToArray();
 
         if (groupSelectors?.Any() == true)
         {
@@ -104,7 +108,7 @@ public static class QueryableExtensions
         return result;
     }
 
-    private static IQueryable<T> Filters<T>(IQueryable<T> queryable, Filter filter, List<object> errors)
+    private static IQueryable<T> Filters<T>(IQueryable<T> queryable, Filter? filter, List<object> errors)
     {
         if (filter?.Logic != null)
         {
@@ -157,19 +161,19 @@ public static class QueryableExtensions
         return queryable;
     }
 
-    internal static object Aggregates<T>(IQueryable<T> queryable, IEnumerable<Aggregator> aggregates)
+    internal static object? Aggregates<T>(IQueryable<T> queryable, IEnumerable<Aggregator>? aggregates)
     {
-        var aggregators = aggregates as Aggregator[] ?? aggregates.ToArray();
+        var aggregators = aggregates as Aggregator[] ?? aggregates!.ToArray();
 
         if (aggregators?.Any() == true)
         {
-            var objProps = new Dictionary<DynamicProperty, object>();
+            var objProps = new Dictionary<DynamicProperty, object?>();
             var groups = aggregators.GroupBy(g => g.Field);
-            Type type = null;
+            Type type;
 
             foreach (var group in groups)
             {
-                var fieldProps = new Dictionary<DynamicProperty, object>();
+                var fieldProps = new Dictionary<DynamicProperty, object?>();
                 foreach (var aggregate in group)
                 {
                     var prop = typeof(T).GetProperty(aggregate.Field) ?? throw new ArgumentNullException("typeof(T).GetProperty(aggregate.Field)");
@@ -202,7 +206,7 @@ public static class QueryableExtensions
             type = DynamicClassFactory.CreateType(objProps.Keys.ToList());
 
             var obj = Activator.CreateInstance(type);
-            foreach (var p in objProps.Keys) type.GetProperty(p.Name).SetValue(obj, objProps[p], null);
+            foreach (var p in objProps.Keys) type.GetProperty(p.Name)!.SetValue(obj, objProps[p], null);
 
             return obj;
         }
@@ -210,9 +214,9 @@ public static class QueryableExtensions
         return null;
     }
 
-    private static IQueryable<T> Sort<T>(IQueryable<T> queryable, IEnumerable<Sort> sort)
+    private static IQueryable<T> Sort<T>(IQueryable<T> queryable, IEnumerable<Sort>? sort)
     {
-        var enumerable = sort as Sort[] ?? sort.ToArray();
+        var enumerable = sort as Sort[] ?? sort!.ToArray();
 
         if (enumerable?.Any() == true)
         {
@@ -234,6 +238,7 @@ public static class QueryableExtensions
     /// <summary>
     ///     Pretreatment of specific DateTime type and convert some illegal value type
     /// </summary>
+    /// <param name="type"></param>
     /// <param name="filter"></param>
     private static Filter PreliminaryWork(Type type, Filter filter)
     {
@@ -248,7 +253,7 @@ public static class QueryableExtensions
         if (filter.Value == null) return filter;
 
         // When we have a decimal value, it gets converted to an integer/double that will result in the query break
-        var currentPropertyType = Filter.GetLastPropertyType(type, filter.Field);
+        var currentPropertyType = Filter.GetLastPropertyType(type, filter.Field!);
         if (currentPropertyType == typeof(decimal) && decimal.TryParse(filter.Value.ToString(), out var number))
         {
             filter.Value = number;
@@ -311,7 +316,7 @@ public static class QueryableExtensions
     ///     The way this extension works it pages the records using skip and takes to do that we need at least one sort
     ///     property.
     /// </summary>
-    private static IEnumerable<Sort> GetDefaultSort(Type type, IEnumerable<Sort> sort)
+    private static IEnumerable<Sort> GetDefaultSort(Type type, IEnumerable<Sort>? sort)
     {
         if (sort == null)
         {
@@ -324,7 +329,7 @@ public static class QueryableExtensions
                 Dir = "desc"
             };
 
-            PropertyInfo propertyInfo;
+            PropertyInfo? propertyInfo;
             //look for property that is called id
             if (properties.Any(p => string.Equals(p.Name, "id", StringComparison.OrdinalIgnoreCase)))
                 propertyInfo =

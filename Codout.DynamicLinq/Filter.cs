@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -54,31 +54,31 @@ public class Filter
     ///     Gets or sets the name of the sorted field (property). Set to <c>null</c> if the <c>Filters</c> property is set.
     /// </summary>
     [DataMember(Name = "field")]
-    public string Field { get; set; }
+    public string? Field { get; set; }
 
     /// <summary>
     ///     Gets or sets the filtering operator. Set to <c>null</c> if the <c>Filters</c> property is set.
     /// </summary>
     [DataMember(Name = "operator")]
-    public string Operator { get; set; }
+    public string? Operator { get; set; }
 
     /// <summary>
     ///     Gets or sets the filtering value. Set to <c>null</c> if the <c>Filters</c> property is set.
     /// </summary>
     [DataMember(Name = "value")]
-    public object Value { get; set; }
+    public object? Value { get; set; }
 
     /// <summary>
     ///     Gets or sets the filtering logic. Can be set to "or" or "and". Set to <c>null</c> unless <c>Filters</c> is set.
     /// </summary>
     [DataMember(Name = "logic")]
-    public string Logic { get; set; }
+    public string? Logic { get; set; }
 
     /// <summary>
     ///     Gets or sets the child filter expressions. Set to <c>null</c> if there are no child expressions.
     /// </summary>
     [DataMember(Name = "filters")]
-    public IEnumerable<Filter> Filters { get; set; }
+    public IEnumerable<Filter>? Filters { get; set; }
 
     /// <summary>
     ///     Get a flattened list of all child filter expressions.
@@ -111,12 +111,12 @@ public class Filter
             return "(" + string.Join(" " + Logic + " ",
                 Filters.Select(filter => filter.ToExpression(type, filters)).ToArray()) + ")";
 
-        var currentPropertyType = GetLastPropertyType(type, Field);
+        var currentPropertyType = GetLastPropertyType(type, Field!);
         if (currentPropertyType != typeof(string) && StringOperators.Contains(Operator))
             throw new NotSupportedException($"Operator {Operator} not support non-string type");
 
         var index = filters.IndexOf(this);
-        var comparison = Operators[Operator];
+        var comparison = Operators[Operator!];
 
         //switch(Operator)
         //{
@@ -160,7 +160,7 @@ public class Filter
     {
         if (Filters?.Any() == true)
         {
-            Expression compositeExpression = null;
+            Expression? compositeExpression = null;
             if (Logic == "and")
                 foreach (var exp in Filters.Select(filter => filter.ToLambdaExpression<T>(parameter, filters))
                              .ToArray())
@@ -173,15 +173,15 @@ public class Filter
                     if (compositeExpression == null) compositeExpression = exp;
                     else compositeExpression = Expression.OrElse(compositeExpression, exp);
 
-            return compositeExpression;
+            return compositeExpression!;
         }
 
-        var currentPropertyType = GetLastPropertyType(typeof(T), Field);
+        var currentPropertyType = GetLastPropertyType(typeof(T), Field!);
         if (currentPropertyType != typeof(string) && StringOperators.Contains(Operator))
             throw new NotSupportedException($"Operator {Operator} not support non-string type");
 
-        var propertyChains = Field.Split('.');
-        Expression left = null;
+        var propertyChains = Field!.Split('.');
+        Expression left = null!;
         foreach (var f in propertyChains)
             Expression.PropertyOrField(parameter, f);
         Expression right = Expression.Constant(Value, currentPropertyType);
@@ -199,7 +199,7 @@ public class Filter
 
                 if (Operator == "contains" || Operator == "doesnotcontain")
                 {
-                    var containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                    var containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) })!;
                     var containsExpression = Expression.Call(left, containsMethod, right);
                     if (Operator == "contains")
                         resultExpression = Expression.AndAlso(Expression.Not(nullCheckExpression), containsExpression);
@@ -209,13 +209,13 @@ public class Filter
                 }
                 else if (Operator == "startswith")
                 {
-                    var startswithMethod = typeof(string).GetMethod("StartsWith", new[] { typeof(string) });
+                    var startswithMethod = typeof(string).GetMethod("StartsWith", new[] { typeof(string) })!;
                     var startswithExpression = Expression.Call(left, startswithMethod, right);
                     resultExpression = Expression.AndAlso(Expression.Not(nullCheckExpression), startswithExpression);
                 }
                 else if (Operator == "endswith")
                 {
-                    var endswithMethod = typeof(string).GetMethod("EndsWith", new[] { typeof(string) });
+                    var endswithMethod = typeof(string).GetMethod("EndsWith", new[] { typeof(string) })!;
                     var endswithExpression = Expression.Call(left, endswithMethod, right);
                     resultExpression = Expression.AndAlso(Expression.Not(nullCheckExpression), endswithExpression);
                 }
@@ -242,7 +242,7 @@ public class Filter
 
             case "isnullorempty":
             case "isnotnullorempty":
-                var nullOrEmptyMethod = typeof(string).GetMethod("IsNullOrEmpty", new[] { typeof(string) });
+                var nullOrEmptyMethod = typeof(string).GetMethod("IsNullOrEmpty", new[] { typeof(string) })!;
                 var nullOrEmptyExpression = Expression.Call(left, nullOrEmptyMethod, right);
                 if (Operator == "isnullorempty")
                     resultExpression = nullOrEmptyExpression;

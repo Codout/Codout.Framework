@@ -25,7 +25,7 @@ public abstract class Entity<TId> : ValidatableObject, IEntity<TId>
     private const int HashMultiplier = 31;
 
     private int? _cachedHashcode;
-    private TId _id;
+    private TId _id = default!;
 
     /// <summary>
     ///     Gets or sets the ID.
@@ -71,7 +71,7 @@ public abstract class Entity<TId> : ValidatableObject, IEntity<TId>
     /// </summary>
     /// <param name="obj">The <see cref="object" /> to compare with the current <see cref="object" />.</param>
     /// <returns><c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         var compareTo = obj as Entity<TId>;
 
@@ -112,7 +112,7 @@ public abstract class Entity<TId> : ValidatableObject, IEntity<TId>
                 // identically valued properties, even if they're of two different types, 
                 // so we include the object's type in the hash calculation
                 var hashCode = GetType().GetHashCode();
-                _cachedHashcode = hashCode * HashMultiplier ^ Id.GetHashCode();
+                _cachedHashcode = hashCode * HashMultiplier ^ Id!.GetHashCode();
             }
 
         return _cachedHashcode.Value;
@@ -143,6 +143,6 @@ public abstract class Entity<TId> : ValidatableObject, IEntity<TId>
     /// </returns>
     private bool HasSameNonDefaultIdAs(Entity<TId> compareTo)
     {
-        return !IsTransient() && !compareTo.IsTransient() && Id.Equals(compareTo.Id);
+        return !IsTransient() && !compareTo.IsTransient() && Id!.Equals(compareTo.Id);
     }
 }

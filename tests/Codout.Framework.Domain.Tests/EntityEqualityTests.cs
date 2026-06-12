@@ -106,8 +106,8 @@ public class EntityEqualityTests
     {
         var a = new Person { Name = "Ana" };
 
-        a.Equals(null).Should().BeFalse();
-        a.Equals("Ana").Should().BeFalse();
+        a.Equals((object?)null).Should().BeFalse();
+        a!.Equals((object)"Ana").Should().BeFalse();
     }
 
     [Fact]

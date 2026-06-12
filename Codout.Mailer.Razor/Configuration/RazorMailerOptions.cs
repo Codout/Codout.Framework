@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 
 namespace Codout.Mailer.Razor.Configuration;
@@ -11,12 +11,12 @@ public class RazorMailerOptions
     /// <summary>
     /// Assembly que contém os templates Razor embarcados como recursos
     /// </summary>
-    public Assembly TemplateAssembly { get; set; }
+    public Assembly TemplateAssembly { get; set; } = null!;
 
     /// <summary>
     /// Namespace raiz dos templates embarcados no assembly
     /// </summary>
-    public string RootNamespace { get; set; }
+    public string RootNamespace { get; set; } = null!;
 
     /// <summary>
     /// Habilita o cache de templates compilados em memória

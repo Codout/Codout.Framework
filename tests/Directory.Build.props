@@ -1,0 +1,17 @@
+<Project>
+	<!-- Este arquivo SOMBREIA o Directory.Build.props da raiz para os projetos
+	     de teste; o import abaixo traz as propriedades globais de volta. -->
+	<Import Project="$(MSBuildThisFileDirectory)../Directory.Build.props" />
+
+	<PropertyGroup>
+		<!-- Código de teste não é distribuído: analyzers de design/perf geram
+		     ruído sem valor aqui (CA1852, CA1816, CA1711, ...). Warnings do
+		     compilador continuam como erro (TreatWarningsAsErrors herdado). -->
+		<EnableNETAnalyzers>false</EnableNETAnalyzers>
+		<AnalysisLevel>none</AnalysisLevel>
+		<!-- Testes exercitam APIs [Obsolete] de propósito (characterization). -->
+		<NoWarn>$(NoWarn);CS0618;CS0612</NoWarn>
+		<IsPackable>false</IsPackable>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+	</PropertyGroup>
+</Project>

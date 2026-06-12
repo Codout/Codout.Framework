@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 
+// CA1829: Count() mantido como está para preservar o comportamento original
+// byte a byte (política de zero mudança de comportamento).
+#pragma warning disable CA1829
+
 namespace Codout.DynamicLinq;
 
 public static class EnumerableExtensions

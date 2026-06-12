@@ -6,6 +6,10 @@ using Codout.Framework.Data;
 using Codout.Framework.Data.Entity;
 using MongoDB.Driver;
 
+// CA1510: guard clauses originais mantidos para preservar o comportamento
+// byte a byte (política de zero mudança de comportamento).
+#pragma warning disable CA1510
+
 namespace Codout.Framework.Mongo;
 
 /// <summary>

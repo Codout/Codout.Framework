@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -16,20 +16,20 @@ public class Aggregator
     ///     Gets or sets the name of the aggregated field (property).
     /// </summary>
     [DataMember(Name = "field")]
-    public string Field { get; set; }
+    public string Field { get; set; } = null!;
 
     /// <summary>
     ///     Gets or sets the aggregate.
     /// </summary>
     [DataMember(Name = "aggregate")]
-    public string Aggregate { get; set; }
+    public string Aggregate { get; set; } = null!;
 
     /// <summary>
     ///     Get MethodInfo.
     /// </summary>
     /// <param name="type">Specifies the type of querable data.</param>
     /// <returns>A MethodInfo for field.</returns>
-    public MethodInfo MethodInfo(Type type)
+    public MethodInfo? MethodInfo(Type type)
     {
         if (type == null)
             throw new ArgumentNullException(nameof(type), "Type cannot be null.");
@@ -48,8 +48,8 @@ public class Aggregator
             case "average":
             case "sum":
                 return GetMethod(ConvertTitleCase(Aggregate),
-                    ((Func<Type, Type[]>)GetType().GetMethod("SumAvgFunc", BindingFlags.Static | BindingFlags.NonPublic)
-                        .MakeGenericMethod(propType).Invoke(null, null))
+                    ((Func<Type, Type[]>)GetType().GetMethod("SumAvgFunc", BindingFlags.Static | BindingFlags.NonPublic)!
+                        .MakeGenericMethod(propType).Invoke(null, null)!)
                     .GetMethodInfo(), 1).MakeGenericMethod(type);
             case "count":
                 return GetMethod(ConvertTitleCase(Aggregate),
@@ -81,9 +81,9 @@ public class Aggregator
                       where method.Name == methodName &&
                             genericArguments.Length == genericArgumentsCount &&
                             parameters.Select(p => p.ParameterType)
-                                .SequenceEqual((Type[])methodTypes.Invoke(null, genericArguments))
+                                .SequenceEqual((Type[])methodTypes.Invoke(null, genericArguments)!)
                       select method;
-        return methods.FirstOrDefault();
+        return methods.FirstOrDefault()!;
     }
 
     private static Func<Type, Type[]> CountNullableFunc()

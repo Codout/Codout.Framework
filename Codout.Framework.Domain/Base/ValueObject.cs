@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -23,9 +23,9 @@ public abstract class ValueObject : BaseObject
     /// <param name="valueObject1">The first value object.</param>
     /// <param name="valueObject2">The second value object.</param>
     /// <returns>The result of the operator.</returns>
-    public static bool operator ==(ValueObject valueObject1, ValueObject valueObject2)
+    public static bool operator ==(ValueObject? valueObject1, ValueObject? valueObject2)
     {
-        if ((object)valueObject1 == null) return (object)valueObject2 == null;
+        if ((object?)valueObject1 == null) return (object?)valueObject2 == null;
 
         return valueObject1.Equals(valueObject2);
     }
@@ -36,7 +36,7 @@ public abstract class ValueObject : BaseObject
     /// <param name="valueObject1">The first value object.</param>
     /// <param name="valueObject2">The second value object.</param>
     /// <returns>The result of the operator.</returns>
-    public static bool operator !=(ValueObject valueObject1, ValueObject valueObject2)
+    public static bool operator !=(ValueObject? valueObject1, ValueObject? valueObject2)
     {
         return !(valueObject1 == valueObject2);
     }
@@ -46,7 +46,7 @@ public abstract class ValueObject : BaseObject
     /// </summary>
     /// <param name="obj">The <see cref="object" /> to compare with the current <see cref="object" />.</param>
     /// <returns><c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return base.Equals(obj);
     }
