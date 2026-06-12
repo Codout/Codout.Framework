@@ -10,6 +10,7 @@
 
   <PropertyGroup>
     <Description>Biblioteca de funções para classes DTO da Api do Framework da Codout</Description>
+    <PackageTags>Codout;Framework;DTO;REST</PackageTags>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 

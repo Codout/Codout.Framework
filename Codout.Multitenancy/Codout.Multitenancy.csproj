@@ -7,7 +7,7 @@
 		<PackageValidationBaselineVersion>6.3.0</PackageValidationBaselineVersion>
 		<Product></Product>
 		<Description>Modulo Multitenancy da Codout para aplicações Asp.net Core</Description>
-		<PackageTags>Codout;Framework</PackageTags>
+		<PackageTags>Codout;Multitenancy;MultiTenant;SaaS;AspNetCore</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>

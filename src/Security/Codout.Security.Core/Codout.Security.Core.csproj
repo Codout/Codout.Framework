@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <Version>6.3.0</Version>
+    <Description>Abstrações de hash de senha com upgrade incremental de algoritmo/parâmetros (rehash transparente no login). Use com Codout.Security.Argon2, Bcrypt ou Scrypt.</Description>
+    <PackageTags>Codout;Security;PasswordHash;Hashing;Rehash</PackageTags>
     <!-- Compat: o build do pack falha se a API quebrar vs. a versao publicada -->
     <EnablePackageValidation>true</EnablePackageValidation>
     <PackageValidationBaselineVersion>6.3.0</PackageValidationBaselineVersion>

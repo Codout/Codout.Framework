@@ -110,6 +110,21 @@ dotnet add package Codout.Framework.EF   # ou .Mongo / .NH
 
 ---
 
+## 🧭 Qual pacote eu instalo?
+
+| Cenário | Pacotes |
+| ------- | ------- |
+| API REST com EF Core | `Codout.Framework.Domain` + `Codout.Framework.EF` + `Codout.Framework.Api` |
+| Backend com MongoDB | `Codout.Framework.Domain` + `Codout.Framework.Mongo` |
+| Sistema legado com NHibernate | `Codout.Framework.Domain` + `Codout.Framework.NH` |
+| SaaS multi-tenant | adicione `Codout.Multitenancy` |
+| Envio de e-mail transacional | `Codout.Mailer` + um dispatcher (`.SendGrid` ou `.AWS`) + `Codout.Mailer.Razor` para templates |
+| Upload/armazenamento de arquivos | `Codout.Framework.Storage` + `Codout.Framework.Storage.Azure` |
+| Hash de senhas | `Codout.Security.Core` + um provider (`.Argon2`, `.Bcrypt` ou `.Scrypt`) |
+| Grids com filtro/paginação dinâmicos | `Codout.DynamicLinq` |
+
+---
+
 ## 🏗️ Exemplo de Uso
 
 ```csharp

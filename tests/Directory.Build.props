@@ -14,4 +14,9 @@
 		<IsPackable>false</IsPackable>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Cobertura: usada pelo CI via coleta "XPlat Code Coverage" no dotnet test -->
+		<PackageReference Include="coverlet.collector" Version="6.0.4" PrivateAssets="all" />
+	</ItemGroup>
 </Project>

@@ -101,7 +101,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: codout-framework-core-nupkg
-          path: ./artifacts/*.nupkg
+          path: |
+            ./artifacts/*.nupkg
+            ./artifacts/*.snupkg
           if-no-files-found: error
 
   publish:

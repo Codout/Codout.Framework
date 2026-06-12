@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <Version>6.3.0</Version>
+    <Description>Provider Argon2id para Codout.Security.Core (libsodium): hash e verificação de senhas com parâmetros configuráveis e rehash incremental.</Description>
+    <PackageTags>Codout;Security;PasswordHash;Argon2;Argon2id;libsodium</PackageTags>
     <!-- Compat: o build do pack falha se a API quebrar vs. a versao publicada -->
     <EnablePackageValidation>true</EnablePackageValidation>
     <PackageValidationBaselineVersion>6.3.0</PackageValidationBaselineVersion>

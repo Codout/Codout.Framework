@@ -6,7 +6,7 @@
 		<EnablePackageValidation>true</EnablePackageValidation>
 		<PackageValidationBaselineVersion>6.3.0</PackageValidationBaselineVersion>
 		<Description>Biblioteca de funções para imagens</Description>
-		<PackageTags>Codout;Framework;Images;</PackageTags>
+		<PackageTags>Codout;Imaging;ImageSharp;Crop;Extensions</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>

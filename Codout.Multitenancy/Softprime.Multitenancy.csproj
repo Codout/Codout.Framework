@@ -13,6 +13,8 @@
 
   <PropertyGroup>
     <Version>6.3.0</Version>
+    <Description>Build netstandard2.0 de compatibilidade do Codout.Multitenancy (resolução de tenant por request para ASP.NET Core 2.x). Para projetos novos use Codout.Multitenancy.</Description>
+    <PackageTags>Codout;Multitenancy;MultiTenant;SaaS</PackageTags>
     <!-- Compat: o build do pack falha se a API quebrar vs. a versao publicada -->
     <EnablePackageValidation>true</EnablePackageValidation>
     <PackageValidationBaselineVersion>6.3.0</PackageValidationBaselineVersion>

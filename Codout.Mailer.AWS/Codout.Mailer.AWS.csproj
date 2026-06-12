@@ -6,7 +6,7 @@
 		<EnablePackageValidation>true</EnablePackageValidation>
 		<PackageValidationBaselineVersion>6.3.0</PackageValidationBaselineVersion>
 		<Description>Sender da Amazon Simple Email Service para envio de E-mails utilizando a biblioteca Codout.Mailer</Description>
-		<PackageTags>Codout;Framework;Mail;Email;Mailer;SendGrid;</PackageTags>
+		<PackageTags>Codout;Framework;Mail;Email;Mailer;AWS;SES</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>

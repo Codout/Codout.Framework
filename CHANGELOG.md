@@ -12,6 +12,25 @@ versão afetados.
 
 ## 2026-06-12
 
+> Mudanças abaixo ainda **não publicadas** no NuGet.org — os bumps de versão
+> acontecerão na próxima release de cada pacote.
+
+### Tests
+
+- Fase 4 do ROADMAP concluída: **921 testes** em 18 projetos sob `tests/`, cobrindo os 24 pacotes publicáveis (Common, Security, Image, Data, Domain, EF com SQLite, Mongo com mongod efêmero + replica set, NH com SQLite, Mailer + AWS/SendGrid/Razor com mocks e Razor real, Storage, Storage.Azure, DynamicLinq, Api.Dto, Application, Api.Client, Api, Multitenancy). Bugs pré-existentes encontrados foram **caracterizados** (testes documentam o comportamento atual, sem alterá-lo) e catalogados em `tests/FINDINGS-{A..E}.md` para triagem.
+
+### Build
+
+- `Directory.Build.props`: ligados globalmente `Nullable`, `TreatWarningsAsErrors`, analyzers .NET (`latest-recommended`), `GenerateDocumentationFile` (CS1591 suprimido até completar as docs por pacote), SourceLink (GitHub), símbolos `snupkg`, `PackageLicenseExpression MIT` e build determinístico em CI. `.editorconfig` calibra regras CA de estilo/perf como suggestion (subir severidade é trabalho incremental).
+- **Package validation**: todos os 24 csproj publicáveis têm `EnablePackageValidation` + `PackageValidationBaselineVersion` apontando para a última versão no NuGet.org — o `pack` falha se a API pública quebrar vs. a baseline. A validação já reverteu duas quebras acidentais durante a anotação nullable (CP0001 em `LimitedList.Enumerator`, CP0021 em `JsonExtensions`).
+- `Directory.Build.targets`: `README.md` de cada pasta de pacote é embarcado automaticamente como `PackageReadmeFile` no nupkg.
+- Anotações **nullable** em todos os pacotes refletindo o contrato real (ex.: `IRepository<T>.GetAsync`/`LoadAsync` agora declaram `Task<T?>`). Sem mudança de comportamento — apenas metadados; consumidores com nullable habilitado podem ver warnings novos (e verdadeiros).
+
+### Codout.Framework.Mongo (não publicado)
+
+#### Fixed
+- `MongoDB.Driver` 3.7.0 → 3.9.0, eliminando vulnerabilidades conhecidas nos transitivos `SharpCompress` 0.30.1 (moderada) e `Snappier` 1.0.0 (alta).
+
 ### Repository
 
 - Removidas as árvores legadas `NetFull/`, `NetCore/`, `src/NetCore/` (Cosmos/DocumentDB em `netcoreapp2.0`, EOL), `Codout.Framework.DP` (quebrado, referenciava `Codout.Framework.DAL` inexistente), `Shared/Codout.Framework.Shared.Commom` e `Shared.msbuild`. Nenhum desses projetos era publicado no NuGet (`IsPackable=false` ou fora de `.github/release-packages.json`); o histórico permanece no git. O typo "Commom" deixa de existir no repositório.

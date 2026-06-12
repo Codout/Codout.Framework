@@ -6,6 +6,7 @@
 		<EnablePackageValidation>true</EnablePackageValidation>
 		<PackageValidationBaselineVersion>6.3.0</PackageValidationBaselineVersion>
 		<Description>Biblioteca de funções para Cliente Api do Framework da Codout</Description>
+    <PackageTags>Codout;Framework;ApiClient;HttpClient;REST</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>

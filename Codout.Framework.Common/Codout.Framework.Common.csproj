@@ -10,7 +10,7 @@
 		     próximo major. -->
 		<NoWarn>$(NoWarn);SYSLIB0021;SYSLIB0023</NoWarn>
 		<Description>Biblioteca de funcões comuns do Framework da Codout</Description>
-		<PackageTags>Codout;Framework</PackageTags>
+		<PackageTags>Codout;Framework;Extensions;Helpers;Validation;CPF;CNPJ</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>
