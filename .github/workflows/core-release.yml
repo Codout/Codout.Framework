@@ -36,7 +36,7 @@ env:
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   CONFIGURATION: Release
-  TEST_PROJECT: NetCore/Codout.Framework.EF.Tests/Codout.Framework.EF.Tests.csproj
+  TEST_PROJECT: tests/Codout.Framework.EF.Tests/Codout.Framework.EF.Tests.csproj
   DEFAULT_PROJECTS: >-
     Codout.Framework.Data/Codout.Framework.Data.csproj
     Codout.Framework.Domain/Codout.Framework.Domain.csproj
