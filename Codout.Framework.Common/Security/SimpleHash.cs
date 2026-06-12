@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Buffers;
 using System.IO;
 using System.Linq;
@@ -232,16 +232,11 @@ public static class SecureHash
         var allAlgorithms = Enum.GetValues<SecureHashAlgorithm>();
         return allAlgorithms.Where(IsAlgorithmSupported).ToArray();
     }
-    /// <param name="filePath">Caminho do arquivo</param>
-    /// <param name="expectedHash">Hash esperado em hexadecimal</param>
-    /// <param name="algorithm">Algoritmo de hash</param>
-    /// <param name="cancellationToken">Token de cancelamento</param>
-    /// <returns>True se o arquivo está íntegro</returns>
 
     /// <summary>
     /// Implementação interna para computar hash
     /// </summary>
-    private static string ComputeHashInternal(string plainText, 
+    private static string ComputeHashInternal(string plainText,
         SecureHashAlgorithm algorithm, 
         ReadOnlySpan<byte> salt, 
         HashOptions options)

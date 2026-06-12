@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -30,7 +30,7 @@ public class JsonStringEnumConverter<TEnum> : JsonConverter<TEnum> where TEnum :
     public JsonStringEnumConverter()
     {
         var type = typeof(TEnum);
-        foreach (TEnum value in Enum.GetValues(typeof(TEnum)))
+        foreach (var value in Enum.GetValues<TEnum>())
         {
             var enumMember = type.GetMember(value.ToString())[0];
             var attr = enumMember.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false)

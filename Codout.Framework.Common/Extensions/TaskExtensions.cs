@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -16,7 +16,7 @@ public static class TaskExtensions
     /// <param name="task">A task a ser executada em background</param>
     /// <param name="logger">Logger opcional para registrar exceções</param>
     /// <param name="continueOnCapturedContext">Define se deve capturar o contexto de sincronização</param>
-    public static void Forget(this Task task, ILogger logger = null, bool continueOnCapturedContext = false)
+    public static void Forget(this Task task, ILogger? logger = null, bool continueOnCapturedContext = false)
     {
         if (task == null) return;
 
@@ -31,7 +31,7 @@ public static class TaskExtensions
     /// <param name="task">A task a ser executada em background</param>
     /// <param name="logger">Logger opcional para registrar exceções</param>
     /// <param name="continueOnCapturedContext">Define se deve capturar o contexto de sincronização</param>
-    public static void Forget<T>(this Task<T> task, ILogger logger = null, bool continueOnCapturedContext = false)
+    public static void Forget<T>(this Task<T> task, ILogger? logger = null, bool continueOnCapturedContext = false)
     {
         if (task == null) return;
 
@@ -55,7 +55,7 @@ public static class TaskExtensions
     /// <summary>
     /// Implementação interna assíncrona para capturar exceções
     /// </summary>
-    private static async Task ForgetAsync(Task task, ILogger logger, bool continueOnCapturedContext)
+    private static async Task ForgetAsync(Task task, ILogger? logger, bool continueOnCapturedContext)
     {
         try
         {

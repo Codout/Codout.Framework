@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Security.Cryptography;
 
 namespace Codout.Framework.Common.Security;
@@ -78,8 +78,11 @@ public class RandomPassword
         int maxLength)
     {
         // Make sure that input parameters are valid.
+        // Nota nullable: retorna null com parâmetros inválidos (comportamento
+        // preservado); a assinatura permanece não-anulável porque o caminho
+        // normal nunca retorna null.
         if (minLength <= 0 || maxLength <= 0 || minLength > maxLength)
-            return null;
+            return null!;
 
         // Create a local array containing supported password characters
         // grouped by types. You can remove character groups from this

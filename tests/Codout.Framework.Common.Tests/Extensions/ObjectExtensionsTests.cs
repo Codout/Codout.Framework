@@ -6,7 +6,7 @@ namespace Codout.Framework.Common.Tests.Extensions;
 
 public class ObjectExtensionsTests
 {
-    private class Pessoa
+    private sealed class Pessoa
     {
         public string? Nome { get; set; }
         public int Idade { get; set; }

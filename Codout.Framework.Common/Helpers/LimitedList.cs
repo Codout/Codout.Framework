@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -115,16 +115,16 @@ public class LimitedList<T>(int maxsize) : IEnumerable<T>
 
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Enumerator<T> : IEnumerator<T>
+    public struct Enumerator<TItem> : IEnumerator<TItem>
     {
-        private readonly LimitedList<T> thing;
+        private readonly LimitedList<TItem> thing;
         private int index;
 
-        internal Enumerator(LimitedList<T> thing)
+        internal Enumerator(LimitedList<TItem> thing)
         {
             this.thing = thing;
             index = 0;
-            Current = default;
+            Current = default!;
         }
 
         public void Dispose()
@@ -142,18 +142,18 @@ public class LimitedList<T>(int maxsize) : IEnumerable<T>
             }
 
             index = thing.MaxSize + 1;
-            Current = default;
+            Current = default!;
             return false;
         }
 
-        public T Current { get; private set; }
+        public TItem Current { get; private set; }
 
-        object IEnumerator.Current => Current;
+        object? IEnumerator.Current => Current;
 
         void IEnumerator.Reset()
         {
             index = 0;
-            Current = default;
+            Current = default!;
         }
     }
 }

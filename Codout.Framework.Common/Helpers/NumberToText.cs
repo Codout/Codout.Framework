@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -24,7 +24,7 @@ public class NumberToText
         { "decilhão", "decilhões" }
     };
 
-    private static readonly string[,] Numeros =
+    private static readonly string?[,] Numeros =
     {
         {
             "zero", "um", "dois", "três", "quatro",
@@ -173,7 +173,7 @@ public class NumberToText
                 buf.Append(Numeros[0, dezena]);
             }
 
-            buf.Append(" ");
+            buf.Append(' ');
 
             buf.Append(numero == 1
                 ? Qualificadores[escala, 0]
@@ -197,7 +197,7 @@ public class NumberToText
 
         if (buf.Length > 0)
         {
-            while (buf.ToString().EndsWith(" "))
+            while (buf.ToString().EndsWith(' '))
                 buf.Length -= 1;
 
             if (EhUnicoGrupo())

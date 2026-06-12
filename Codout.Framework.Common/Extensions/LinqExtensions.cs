@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 
 namespace Codout.Framework.Common.Extensions;
 
@@ -56,9 +56,9 @@ public static class LinqExtensions
     /// </summary>
     /// <param name="exp">The exp.</param>
     /// <returns></returns>
-    public static object GetConstantValue(this Expression exp)
+    public static object? GetConstantValue(this Expression exp)
     {
-        object result = null;
+        object? result = null;
         if (exp is ConstantExpression expression)
             result = expression.Value;
         return result;

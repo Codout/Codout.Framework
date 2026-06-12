@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -158,7 +158,7 @@ public class WebPageOptions
     /// <summary>
     /// Encoding forçado para o conteúdo
     /// </summary>
-    public Encoding ForceEncoding { get; set; }
+    public Encoding? ForceEncoding { get; set; }
 
     /// <summary>
     /// Headers HTTP customizados
@@ -168,7 +168,7 @@ public class WebPageOptions
     /// <summary>
     /// Logger para registrar operações
     /// </summary>
-    public ILogger Logger { get; set; }
+    public ILogger? Logger { get; set; }
 
     /// <summary>
     /// Opções padrão otimizadas
