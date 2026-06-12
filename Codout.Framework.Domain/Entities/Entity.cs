@@ -9,9 +9,16 @@ using Codout.Framework.Domain.Base;
 namespace Codout.Framework.Domain.Entities;
 
 /// <summary>
+///     Classe base para entidades de domínio com identificador tipado. Implementa
+///     igualdade por Id quando a entidade está persistida e por assinatura de domínio
+///     (propriedades com <see cref="DomainSignatureAttribute" />) quando ainda é
+///     transient, com hash code estável durante o ciclo de vida da instância.
+/// </summary>
+/// <typeparam name="TId">Tipo do identificador da entidade (int, long, Guid, string, etc.).</typeparam>
+/// <remarks>
 ///     For a discussion of this object, see
 ///     http://devlicio.us/blogs/billy_mccafferty/archive/2007/04/25/using-equals-gethashcode-effectively.aspx
-/// </summary>
+/// </remarks>
 [Serializable]
 public abstract class Entity<TId> : ValidatableObject, IEntity<TId>
 {
@@ -61,6 +68,13 @@ public abstract class Entity<TId> : ValidatableObject, IEntity<TId>
         return Id == null || Id.Equals(default(TId));
     }
 
+    /// <summary>
+    ///     Define explicitamente o Id da entidade (assigned/client-generated id).
+    ///     Use quando a identidade é atribuída pela aplicação (ex.:
+    ///     <see cref="ClientGeneratedEntity" />); em cenários store-generated o Id é
+    ///     preenchido pela infraestrutura de persistência e este método não deve ser chamado.
+    /// </summary>
+    /// <param name="id">Identificador a atribuir à entidade.</param>
     public virtual void SetId(TId id)
     {
         Id = id;

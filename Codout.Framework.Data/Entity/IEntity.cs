@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Codout.Framework.Data.Entity;
 
 /// <summary>
-///     This serves as a base interface for <see cref="IEntity{TId}" /> and
+///     Interface base (não genérica) de toda entidade do framework: expõe os membros
+///     de identidade que não dependem do tipo do Id, permitindo que repositórios e
+///     infraestrutura tratem entidades de forma polimórfica. Para acesso tipado ao
+///     Id, use <see cref="IEntity{TId}" />.
 /// </summary>
 public interface IEntity
 {

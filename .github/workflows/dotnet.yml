@@ -29,6 +29,26 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+    - name: Coverage gate
+      # Ratchet: começa em 45% (cobertura atual ~47%) e deve SUBIR conforme a
+      # suíte crescer — nunca baixar. Falha o CI se a cobertura de linhas dos
+      # assemblies Codout.* cair abaixo do piso.
+      run: |
+        python3 - <<'EOF'
+        import glob, sys, xml.etree.ElementTree as ET
+        THRESHOLD = 45.0
+        hit = total = 0
+        for f in glob.glob('coverage/**/coverage.cobertura.xml', recursive=True):
+            for pkg in ET.parse(f).getroot().iter('package'):
+                if not pkg.get('name', '').startswith(('Codout', 'Softprime')):
+                    continue
+                for line in pkg.iter('line'):
+                    total += 1
+                    hit += int(line.get('hits', '0')) > 0
+        pct = 100 * hit / total if total else 0.0
+        print(f'Cobertura de linhas (Codout.*): {pct:.1f}% (piso: {THRESHOLD}%)')
+        sys.exit(0 if pct >= THRESHOLD else 1)
+        EOF
     - name: Upload coverage
       uses: actions/upload-artifact@v4
       if: always()

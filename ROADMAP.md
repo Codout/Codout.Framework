@@ -93,10 +93,13 @@ risco × facilidade, em `tests/<Pacote>.Tests`:
 - [x] Onda 2 concluída (Testcontainers exige Docker no runner — `ubuntu-latest` já tem).
 - [x] Onda 3 concluída.
 - [x] Onda 4 concluída.
-- [ ] Coleta de cobertura com `coverlet.collector` + publicação de relatório
+- [x] Coleta de cobertura com `coverlet.collector` + publicação de relatório
       no CI (artifact ou Codecov + badge no README).
-- [ ] Meta de cobertura: ≥ 70 % nos pacotes core (Data/Domain/Common/EF),
-      ≥ 50 % nos demais.
+- [ ] Meta de cobertura: ≥ 70 % nos pacotes core, ≥ 50 % nos demais.
+      *Status 2026-06-12: 47,4% total com gate ratchet de 45% no CI; EF 73%,
+      Mongo 96%, NH 79%, Multitenancy 99% — pendências principais: Domain
+      (22%), DynamicLinq (28%), Common (44%). Subir o piso junto com a
+      cobertura.*
 
 **Critério de aceite**: todo pacote publicável tem projeto de teste; metas de
 cobertura atingidas e visíveis no CI.
@@ -134,8 +137,8 @@ Tudo no `Directory.Build.props`, exceto onde indicado:
 - [x] `PackageReadmeFile`: criar `README.md` curto por pacote (o que é,
       instalação, exemplo mínimo) e empacotar — hoje 19/20 pacotes têm página
       vazia no NuGet.org.
-- [ ] `Description` e `PackageTags` individualizados em cada csproj.
-- [ ] Publicar os snupkg no fluxo de release (NuGet.org aceita no mesmo
+- [x] `Description` e `PackageTags` individualizados em cada csproj.
+- [x] Publicar os snupkg no fluxo de release (NuGet.org aceita no mesmo
       `dotnet nuget push`).
 - [ ] Republicar pacotes com bump **patch** (mudança só de empacotamento) —
       confirmar com o usuário antes, pois publicar exige tag.
@@ -148,7 +151,7 @@ e símbolos depuráveis (F12 no código do framework a partir de um consumidor).
 - [x] Reescrever a tabela de módulos do README: remover "Zenvia", "DAL",
       "Kendo.DynamicLinq", "DP", "Shared"; incluir Security.*, Storage,
       Storage.Azure, Application, Mcp, Image.Extensions.
-- [ ] Seção "Qual pacote eu instalo?" com cenários comuns (EF + API,
+- [x] Seção "Qual pacote eu instalo?" com cenários comuns (EF + API,
       Mongo, multitenancy, mailer).
 - [x] `GenerateDocumentationFile=true` global (via `Directory.Build.props`)
       e completar XML docs nos tipos públicos de `Domain`, `Common`, `Data`

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<Version>6.4.0</Version>
@@ -7,6 +7,12 @@
 		<PackageValidationBaselineVersion>6.4.0</PackageValidationBaselineVersion>
 		<Description>Camada de Domínio do Framework da Codout</Description>
 		<PackageTags>Codout;Framework;Domain;</PackageTags>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<!-- XML docs completas neste pacote: CS1591 volta a ser erro -->
+		<NoWarn>$(NoWarn.Replace(';CS1591', ''))</NoWarn>
+		<WarningsAsErrors>$(WarningsAsErrors);CS1591</WarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<Version>6.4.0</Version>
@@ -8,9 +8,14 @@
 		<Description>Interface da Biblioteca de persistência do Framework da Codout</Description>
 		<PackageTags>Codout;Framework;ORM;DAL;Repository;UnitOfWork;Specification;Auditing</PackageTags>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<NoWarn>$(NoWarn);CS1591</NoWarn>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<!-- XML docs completas neste pacote: CS1591 volta a ser erro -->
+		<NoWarn>$(NoWarn.Replace(';CS1591', ''))</NoWarn>
+		<WarningsAsErrors>$(WarningsAsErrors);CS1591</WarningsAsErrors>
 	</PropertyGroup>
 
 </Project>
