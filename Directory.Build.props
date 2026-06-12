@@ -14,9 +14,24 @@
 		<TargetFramework>net10.0</TargetFramework>
 		<RepositoryType>git</RepositoryType>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-
-		<!-- Add other global properties as needed -->
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>logo-nuget.png</PackageIcon>
+
+		<!-- Qualidade estática (ROADMAP Fase 5) -->
+		<Nullable>enable</Nullable>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<AnalysisLevel>latest-recommended</AnalysisLevel>
+		<!-- CS1591 (membro público sem XML doc): suprimido globalmente enquanto a
+		     documentação XML é completada pacote a pacote (ROADMAP Fase 7). -->
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
+
+		<!-- Empacotamento (ROADMAP Fase 6): SourceLink + símbolos depuráveis -->
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -24,5 +39,9 @@
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
 	</ItemGroup>
 </Project>

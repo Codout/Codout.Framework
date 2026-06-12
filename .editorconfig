@@ -15,3 +15,56 @@ insert_final_newline = true
 # Windows-only batch/cmd scripts must stay CRLF.
 [*.{cmd,bat}]
 end_of_line = crlf
+
+# ---------------------------------------------------------------------------
+# C#: indentação e analisadores .NET (ROADMAP Fase 5)
+# ---------------------------------------------------------------------------
+[*.cs]
+indent_style = space
+indent_size = 4
+
+# Regras de design/perf/estilo rebaixadas para suggestion: corrigi-las exige
+# mudanças de código que ficam para PRs incrementais dedicados (visíveis na
+# IDE, sem quebrar o build). Subir a severidade conforme forem resolvidas.
+dotnet_diagnostic.CA1304.severity = suggestion
+dotnet_diagnostic.CA1305.severity = suggestion
+dotnet_diagnostic.CA1310.severity = suggestion
+dotnet_diagnostic.CA1311.severity = suggestion
+dotnet_diagnostic.CA1707.severity = suggestion
+dotnet_diagnostic.CA1822.severity = suggestion
+dotnet_diagnostic.CA1845.severity = suggestion
+dotnet_diagnostic.CA1848.severity = suggestion
+dotnet_diagnostic.CA1051.severity = suggestion
+dotnet_diagnostic.CA2201.severity = suggestion
+
+# Criptografia fraca (MD5/SHA1/DES): usada apenas nos utilitários legados já
+# marcados [Obsolete] em Codout.Framework.Common (Crypto). Não introduzir
+# novos usos; remoção planejada para o próximo major.
+dotnet_diagnostic.CA5350.severity = suggestion
+dotnet_diagnostic.CA5351.severity = suggestion
+
+[tests/**.cs]
+# Projetos de teste: convenções de naming xUnit (underscores) e padrões de
+# teste tornam várias regras CA inadequadas.
+dotnet_analyzer_diagnostic.category-Design.severity = none
+dotnet_analyzer_diagnostic.category-Naming.severity = none
+dotnet_analyzer_diagnostic.category-Performance.severity = none
+dotnet_analyzer_diagnostic.category-Usage.severity = suggestion
+dotnet_analyzer_diagnostic.category-Globalization.severity = none
+dotnet_analyzer_diagnostic.category-Security.severity = none
+dotnet_analyzer_diagnostic.category-Reliability.severity = suggestion
+
+[*.cs]
+# Naming de API pública (renomear seria breaking change) e micro-otimizações:
+# suggestion até serem tratados em PRs dedicados (idealmente no próximo major).
+dotnet_diagnostic.CA1716.severity = suggestion
+dotnet_diagnostic.CA1720.severity = suggestion
+dotnet_diagnostic.CA1200.severity = suggestion
+dotnet_diagnostic.CA1309.severity = suggestion
+dotnet_diagnostic.CA1507.severity = suggestion
+dotnet_diagnostic.CA1850.severity = suggestion
+dotnet_diagnostic.CA1859.severity = suggestion
+dotnet_diagnostic.CA1861.severity = suggestion
+dotnet_diagnostic.CA1862.severity = suggestion
+dotnet_diagnostic.CA1873.severity = suggestion
+dotnet_diagnostic.CA2208.severity = suggestion
