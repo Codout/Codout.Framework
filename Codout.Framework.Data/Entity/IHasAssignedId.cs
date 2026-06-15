@@ -1,4 +1,4 @@
-﻿namespace Codout.Framework.Data.Entity;
+namespace Codout.Framework.Data.Entity;
 
 /// <summary>
 ///     Defines the public members of a class that supports setting an assigned ID of an object.
@@ -10,7 +10,7 @@ internal interface IHasAssignedId<in TId>
     ///     Sets the assigned ID of an object.
     /// </summary>
     /// <remarks>
-    ///     This is not part of <see cref="Entity" /> since most entities do not have assigned
+    ///     This is not part of <see cref="IEntity{TId}" /> since most entities do not have assigned
     ///     IDs and since business rules will certainly vary as to what constitutes a valid,
     ///     assigned ID for one object but not for another.
     /// </remarks>

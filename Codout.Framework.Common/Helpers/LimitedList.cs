@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -115,7 +115,12 @@ public class LimitedList<T>(int maxsize) : IEnumerable<T>
 
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
+    // CS0693: o type parameter sombreia o T externo; o nome é preservado por
+    // compatibilidade binária com a API publicada (renomear quebra a baseline
+    // do package validation). Tratar apenas em um futuro major.
+#pragma warning disable CS0693
     public struct Enumerator<T> : IEnumerator<T>
+#pragma warning restore CS0693
     {
         private readonly LimitedList<T> thing;
         private int index;
@@ -124,7 +129,7 @@ public class LimitedList<T>(int maxsize) : IEnumerable<T>
         {
             this.thing = thing;
             index = 0;
-            Current = default;
+            Current = default!;
         }
 
         public void Dispose()
@@ -142,18 +147,18 @@ public class LimitedList<T>(int maxsize) : IEnumerable<T>
             }
 
             index = thing.MaxSize + 1;
-            Current = default;
+            Current = default!;
             return false;
         }
 
         public T Current { get; private set; }
 
-        object IEnumerator.Current => Current;
+        object? IEnumerator.Current => Current;
 
         void IEnumerator.Reset()
         {
             index = 0;
-            Current = default;
+            Current = default!;
         }
     }
 }

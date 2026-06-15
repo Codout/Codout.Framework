@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -24,7 +24,7 @@ public static class EnumHelper
 
         var field = value.GetType().GetField(value.ToString());
 
-        return Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is not DescriptionAttribute attribute
+        return Attribute.GetCustomAttribute(field!, typeof(DescriptionAttribute)) is not DescriptionAttribute attribute
             ? value.ToString()
             : attribute.Description;
     }
@@ -43,7 +43,7 @@ public static class EnumHelper
 
         var field = value.GetField(name);
 
-        var attributes = (DescriptionAttribute[])field.GetCustomAttributes(typeof(DescriptionAttribute), false);
+        var attributes = (DescriptionAttribute[])field!.GetCustomAttributes(typeof(DescriptionAttribute), false);
         return attributes.Length > 0 ? attributes[0].Description : name;
     }
 
@@ -53,7 +53,7 @@ public static class EnumHelper
     /// <typeparam name="T">Tipo do enumerador</typeparam>
     /// <param name="description">Descrição do Enumerador</param>
     /// <returns>Valor do Enumerador</returns>
-    public static T GetValueFromDescription<T>(string description)
+    public static T? GetValueFromDescription<T>(string description)
     {
         var type = typeof(T);
         if (!type.IsEnum) throw new InvalidOperationException();
@@ -61,29 +61,29 @@ public static class EnumHelper
             if (Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
             {
                 if (attribute.Description == description)
-                    return (T)field.GetValue(null);
+                    return (T)field.GetValue(null)!;
             }
             else
             {
                 if (field.Name == description)
-                    return (T)field.GetValue(null);
+                    return (T)field.GetValue(null)!;
             }
 
         return default;
     }
 
-    public static string GetLocalizedName(this Enum @enum)
+    public static string? GetLocalizedName(this Enum @enum)
     {
         if (@enum == null)
             return null;
 
-        var description = @enum.ToString();
+        string? description = @enum.ToString();
         var fieldInfo = @enum.GetType().GetField(description);
 
         var attributes =
-            (DisplayAttribute[])fieldInfo.GetCustomAttributes(typeof(DisplayAttribute), false);
+            (DisplayAttribute[])fieldInfo!.GetCustomAttributes(typeof(DisplayAttribute), false);
 
-        if (attributes.Any())
+        if (attributes.Length > 0)
             description = attributes[0].GetDescription();
 
         return description;
@@ -116,9 +116,9 @@ public static class EnumHelper
 
             if (attributes.Length > 0)
                 if (attributes[0].Description == description)
-                    return fi.GetValue(fi.Name);
+                    return fi.GetValue(fi.Name)!;
 
-            if (fi.Name == description) return fi.GetValue(fi.Name);
+            if (fi.Name == description) return fi.GetValue(fi.Name)!;
         }
 
         return description;

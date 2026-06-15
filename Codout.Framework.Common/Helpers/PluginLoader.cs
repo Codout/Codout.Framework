@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -12,7 +12,11 @@ namespace Codout.Framework.Common.Helpers;
 /// <typeparam name="T">Interface do Plugin</typeparam>
 public static class PluginLoader<T>
 {
+    // CA1000: membro estático em tipo genérico faz parte da API pública atual;
+    // alterar a forma de chamada seria breaking change (tratar no próximo major).
+#pragma warning disable CA1000
     public static ICollection<T> LoadPlugins(string path)
+#pragma warning restore CA1000
     {
         if (!Directory.Exists(path))
             return new List<T>();
@@ -47,14 +51,14 @@ public static class PluginLoader<T>
             {
                 if (type.IsInterface || type.IsAbstract) continue;
 
-                if (type.GetInterface(pluginType.FullName) != null) pluginTypes.Add(type);
+                if (type.GetInterface(pluginType.FullName!) != null) pluginTypes.Add(type);
             }
         }
 
         ICollection<T> plugins = new List<T>(pluginTypes.Count);
         foreach (var type in pluginTypes)
         {
-            var plugin = (T)Activator.CreateInstance(type);
+            var plugin = (T)Activator.CreateInstance(type)!;
             plugins.Add(plugin);
         }
 

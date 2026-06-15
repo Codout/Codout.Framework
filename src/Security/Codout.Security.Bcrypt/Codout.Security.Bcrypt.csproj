@@ -1,7 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>6.3.0</Version>
+    <Version>6.4.0</Version>
+    <Description>Provider BCrypt para Codout.Security.Core: hash e verificação de senhas com work factor configurável e rehash incremental.</Description>
+    <PackageTags>Codout;Security;PasswordHash;BCrypt</PackageTags>
+    <!-- Compat: o build do pack falha se a API quebrar vs. a versao publicada -->
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageValidationBaselineVersion>6.3.0</PackageValidationBaselineVersion>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>

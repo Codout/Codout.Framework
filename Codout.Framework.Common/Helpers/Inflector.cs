@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Codout.Framework.Common.Extensions;
@@ -407,7 +407,7 @@ public static class Inflector
     /// <summary>
     ///     Summary for the InflectorRule class
     /// </summary>
-    private class InflectorRule
+    private sealed class InflectorRule
     {
         #region Construtores
 
@@ -431,7 +431,7 @@ public static class Inflector
         /// </summary>
         /// <param name="word">The word.</param>
         /// <returns></returns>
-        public string Apply(string word)
+        public string? Apply(string word)
         {
             if (!_regex.IsMatch(word))
                 return null;

@@ -6,6 +6,6 @@ namespace Codout.Mailer.Interfaces;
 
 public interface IMailerService
 {
-    Task<MailerResponse> Send<T>(string templateKey, T model, string subject, Attachment[] attachments = null)
+    Task<MailerResponse> Send<T>(string templateKey, T model, string subject, Attachment[]? attachments = null)
         where T : MailerModelBase;
 }

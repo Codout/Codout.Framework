@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -13,17 +13,17 @@ public class DataSourceResult
     /// <summary>
     ///     Represents a single page of processed data.
     /// </summary>
-    public object Data { get; set; }
+    public object? Data { get; set; }
 
     /// <summary>
     ///     Represents a single page of processed grouped data.
     /// </summary>
-    public object Groups { get; set; }
+    public object? Groups { get; set; }
 
     /// <summary>
     ///     Represents a requested aggregates.
     /// </summary>
-    public object Aggregates { get; set; }
+    public object? Aggregates { get; set; }
 
     /// <summary>
     ///     The total number of records available.
@@ -33,7 +33,7 @@ public class DataSourceResult
     /// <summary>
     ///     Represents error information from server-side.
     /// </summary>
-    public object Errors { get; set; }
+    public object? Errors { get; set; }
 
     /// <summary>
     ///     Used by the KnownType attribute which is required for WCF serialization support

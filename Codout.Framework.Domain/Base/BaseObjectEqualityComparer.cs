@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Codout.Framework.Domain.Base;
 
@@ -16,8 +16,10 @@ namespace Codout.Framework.Domain.Base;
 ///         use IEqualityComparer's GetHashCode() method.
 ///     </para>
 /// </remarks>
+#pragma warning disable CA1852 // Mantido não-selado para preservar a forma original do tipo.
 internal class BaseObjectEqualityComparer<T> : IEqualityComparer<T>
     where T : BaseObject
+#pragma warning restore CA1852
 {
     /// <summary>
     ///     Compares the specified objects for equality.
@@ -25,7 +27,7 @@ internal class BaseObjectEqualityComparer<T> : IEqualityComparer<T>
     /// <param name="firstObject">The first object.</param>
     /// <param name="secondObject">The second object.</param>
     /// <returns><c>true</c> if the objects are equal, <c>false</c> otherwise.</returns>
-    public bool Equals(T firstObject, T secondObject)
+    public bool Equals(T? firstObject, T? secondObject)
     {
         // While SQL would return false for the following condition, returning true when 
         // comparing two null values is consistent with the C# language
@@ -33,7 +35,7 @@ internal class BaseObjectEqualityComparer<T> : IEqualityComparer<T>
 
         if (firstObject == null ^ secondObject == null) return false;
 
-        return firstObject.Equals(secondObject);
+        return firstObject!.Equals(secondObject);
     }
 
     /// <summary>

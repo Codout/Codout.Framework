@@ -1,21 +1,9 @@
-version: '{build}'
-image: Visual Studio 2012
-
-init:
-  - git config --global core.autocrlf true
-  
-pull_requests:
-  do_not_increment_build_number: true
-
-environment:
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  DOTNET_CLI_TELEMETRY_OPTOUT: true
-
-before_build:
-  - cmd: dotnet restore
-  
-branches:
-  only:
-    - master
-    
+# O CI real deste repositório é GitHub Actions (.github/workflows/dotnet.yml).
+# A integração do AppVeyor permaneceu conectada no nível do serviço após a
+# remoção do appveyor.yml legado, e o auto-build falhava porque a raiz tem
+# várias solutions/projetos. Este arquivo desliga build e testes para que o
+# AppVeyor reporte sucesso sem rodar nada. Para remover o check de vez,
+# desconecte o AppVeyor nas configurações do GitHub/AppVeyor.
+build: off
 test: off
+deploy: off

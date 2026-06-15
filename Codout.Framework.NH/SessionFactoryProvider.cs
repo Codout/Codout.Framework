@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -64,7 +64,7 @@ public class SessionFactoryProvider : IHostedService, IDisposable
         var fluent = Fluently.Configure(baseCfg);
 
         var assemblyNames = _configuration.GetSection("NHibernate:MappingAssemblies").Get<string[]>();
-        var assemblies = assemblyNames.Select(name => Assembly.Load(new AssemblyName(name))).ToArray();
+        var assemblies = assemblyNames!.Select(name => Assembly.Load(new AssemblyName(name))).ToArray();
 
         foreach (var assembly in assemblies)
             fluent.Mappings(m => m.FluentMappings.AddFromAssembly(assembly));
@@ -90,9 +90,11 @@ public class SessionFactoryProvider : IHostedService, IDisposable
         return Task.CompletedTask;
     }
 
+#pragma warning disable CA1816 // Dispose original mantido sem GC.SuppressFinalize para preservar o comportamento.
     public void Dispose()
     {
         if (_factory.IsValueCreated)
             _factory.Value.Dispose();
     }
+#pragma warning restore CA1816
 }

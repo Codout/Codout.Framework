@@ -1,4 +1,4 @@
-﻿using System.Net.Http;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -24,9 +24,13 @@ public static class JsonExtensions
 
         var items = JsonSerializer.Deserialize<TModel>(data, JsonSerializerOptions);
 
-        return items;
+        return items!;
     }
 
+    // Oblivious de propósito: sob #nullable enable o compilador emite metadados
+    // que o ApiCompat lê como constraint 'notnull' nova em TModel (CP0021),
+    // quebrando a baseline publicada. Anotar apenas no próximo major.
+#nullable disable
     extension(HttpClient client)
     {
         public async Task<HttpResponseMessage> PostAsJsonAsync<TModel>(string requestUrl, TModel model)

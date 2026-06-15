@@ -9,14 +9,14 @@
   </p>
 
   <p align="center">
-    <a href="https://github.com/Codout/Codout.Framework/actions/workflows/build.yml">
-      <img src="https://img.shields.io/github/actions/workflow/status/Codout/Codout.Framework/.github/workflows/dotnet.yml?label=build&logo=github&style=flat-square" alt="Build Status">
+    <a href="https://github.com/Codout/Codout.Framework/actions/workflows/dotnet.yml">
+      <img src="https://img.shields.io/github/actions/workflow/status/Codout/Codout.Framework/dotnet.yml?label=build&logo=github&style=flat-square" alt="Build Status">
     </a>
     <a href="https://www.nuget.org/packages/Codout.Framework.Domain">
       <img src="https://img.shields.io/nuget/v/Codout.Framework.Domain?style=flat-square" alt="NuGet Version">
     </a>
     <a href="https://www.nuget.org/packages/Codout.Framework.Domain">
-      <img src="https://img.shields.io/nuget/dt/Codout.Framework.Domain?style=flat-square" alt="NuGet Version">
+      <img src="https://img.shields.io/nuget/dt/Codout.Framework.Domain?style=flat-square" alt="NuGet Downloads">
     </a>
     <a href="LICENSE">
       <img src="https://img.shields.io/badge/license-MIT-green.svg?style=flat-square" alt="License">
@@ -31,37 +31,55 @@
 
 ## 🎯 Visão Geral
 
-O **Codout.Framework** é um *starter kit* de Clean Architecture para aplicações .NET, projetado para fornecer:
+O **Codout.Framework** é um conjunto de pacotes NuGet para aplicações .NET em
+Clean Architecture, projetado para fornecer:
 
-* **Modularidade**: Selecione apenas os módulos que você precisa (EF Core, MongoDB, NHibernate, Multi-Tenancy, etc.).
-* **Escalabilidade**: Arquitetura preparada para crescer junto com seu produto.
-* **Manutenibilidade**: Código limpo, separação de responsabilidades e padrões de projeto consolidados.
+* **Modularidade**: instale apenas os pacotes que você precisa (EF Core, MongoDB, NHibernate, Multi-Tenancy, Storage, Mailer, Security, etc.).
+* **Escalabilidade**: abstrações de repositório/Unit of Work independentes de ORM.
+* **Manutenibilidade**: separação de responsabilidades e padrões consolidados (DDD, Repository, UoW).
 
-Use-o como base para APIs RESTful, microsserviços, backends de aplicações corporativas e mais.
+Use-o como base para APIs RESTful, microsserviços e backends corporativos.
 
 ---
 
-## 📦 Estrutura de Módulos
+## 📦 Pacotes
 
-| Projeto               | Responsabilidade                                                               |
-| --------------------- | ------------------------------------------------------------------------------ |
-| **Domain**            | Entidades, objetos de valor, interfaces de repositório e regras de negócio.    |
-| **Common**            | Helpers, extensões, logging, validações e abstrações de uso geral.             |
-| **DAL**               | Interfaces de Unit of Work e repositórios gerais.                              |
-| **EF**                | Implementação de repositórios com Entity Framework Core.                       |
-| **Mongo**             | Implementação de Unit of Work e repositórios para MongoDB.                     |
-| **NH**                | Repositórios baseados em NHibernate.                                           |
-| **Api**               | Projeto ASP.NET Core com controllers, middleware, autenticação e configuração. |
-| **Api.Dto**           | Data Transfer Objects para requests e responses da API.                        |
-| **Api.Client**        | Cliente HTTP tipado para consumo de APIs (interna/externa).                    |
-| **Kendo.DynamicLinq** | Extensões para consultas dinâmicas LINQ com componentes Kendo UI.              |
-| **Multitenancy**      | Suporte para aplicações multi-tenant, resolução de conexão por cliente.        |
-| **Mailer**            | Abstrações e implementações de envio de e-mail (AWS SES, SendGrid).            |
-| **Zenvia**            | Integração com Zenvia para envio de SMS e notificações.                        |
-| **DP**                | Data Processors genéricos para pipelines de transformação de dados.            |
-| **Shared**            | Código compartilhado entre .NET Core e .NET Framework Full.                    |
-| **UML**               | Diagramas de pacotes e classes para referência arquitetural.                   |
-| **Tests**             | Projetos de teste unitário e de integração para cada módulo.                   |
+### Núcleo
+
+| Pacote | Responsabilidade |
+| ------ | ---------------- |
+| `Codout.Framework.Domain` | Entidades DDD, value objects, identidade client-generated, auditoria. |
+| `Codout.Framework.Data` | Abstrações de `IRepository<T>` / `IUnitOfWork` independentes de ORM. |
+| `Codout.Framework.Common` | Extensões, helpers, validações (CPF/CNPJ, e-mail), criptografia utilitária. |
+
+### Persistência (escolha uma implementação)
+
+| Pacote | Responsabilidade |
+| ------ | ---------------- |
+| `Codout.Framework.EF` | Repositórios e Unit of Work com Entity Framework Core. |
+| `Codout.Framework.Mongo` | Repositórios e Unit of Work para MongoDB. |
+| `Codout.Framework.NH` | Repositórios e Unit of Work com NHibernate/FluentNHibernate. |
+
+### Camada de API
+
+| Pacote | Responsabilidade |
+| ------ | ---------------- |
+| `Codout.Framework.Api` | Base de controllers, middleware e configuração ASP.NET Core. |
+| `Codout.Framework.Api.Dto` | DTOs de request/response. |
+| `Codout.Framework.Api.Client` | Cliente HTTP tipado para consumo de APIs. |
+| `Codout.Framework.Application` | Serviços de aplicação (CRUD genérico sobre repositórios). |
+| `Codout.DynamicLinq` | Consultas dinâmicas LINQ (filtro/ordenação/paginação/agregação). |
+
+### Transversais
+
+| Pacote | Responsabilidade |
+| ------ | ---------------- |
+| `Codout.Multitenancy` | Resolução de tenant por request, cache e pipeline per-tenant. (`Softprime.Multitenancy` é o build netstandard2.0 de compatibilidade.) |
+| `Codout.Mailer` (+ `.AWS`, `.SendGrid`, `.Razor`) | Abstração de envio de e-mail, dispatchers SES/SendGrid e templates Razor. |
+| `Codout.Framework.Storage` (+ `.Azure`) | Abstração de storage de arquivos e implementação Azure Blob. |
+| `Codout.Security.Core` (+ `.Argon2`, `.Bcrypt`, `.Scrypt`) | Hash de senhas com upgrade incremental de algoritmo/parâmetros. |
+| `Codout.Image.Extensions` | Extração/manipulação de regiões de imagens. |
+| `Codout.Framework.Mcp` | Servidor MCP com o conhecimento do framework para agentes de IA. |
 
 ---
 
@@ -69,68 +87,72 @@ Use-o como base para APIs RESTful, microsserviços, backends de aplicações cor
 
 ### Pré-requisitos
 
-* .NET SDK 9.x ou superior
+* .NET SDK 10.x
 * IDE de sua preferência (Visual Studio, VS Code, Rider)
-* (Opcional) Docker para MongoDB ou outros serviços auxiliares
 
-### Passos
+### Build e testes do repositório
 
-1. **Clone o repositório**
+```bash
+git clone https://github.com/Codout/Codout.Framework.git
+cd Codout.Framework
+dotnet build Codout.Framework.sln --configuration Release
+dotnet test Codout.Framework.sln --configuration Release
+```
 
-   ```bash
-   git clone https://github.com/Codout/Codout.Framework.git
-   cd Codout.Framework
-   ```
+Os projetos de teste vivem em `tests/` e rodam na solution.
 
-2. **Compile e execute testes**
+### Instalação via NuGet
 
-   ```bash
-   dotnet build Codout.Framework.sln --configuration Release
-   dotnet test tests/**/*.Test.csproj
-   ```
+```bash
+dotnet add package Codout.Framework.Domain
+dotnet add package Codout.Framework.EF   # ou .Mongo / .NH
+```
 
-3. **Adicione ao seu projeto via NuGet**
+---
 
-   ```powershell
-   Install-Package Codout.Framework.Common
-   Install-Package Codout.Framework.EF
-   Install-Package Codout.Framework.Api
-   ```
+## 🧭 Qual pacote eu instalo?
+
+| Cenário | Pacotes |
+| ------- | ------- |
+| API REST com EF Core | `Codout.Framework.Domain` + `Codout.Framework.EF` + `Codout.Framework.Api` |
+| Backend com MongoDB | `Codout.Framework.Domain` + `Codout.Framework.Mongo` |
+| Sistema legado com NHibernate | `Codout.Framework.Domain` + `Codout.Framework.NH` |
+| SaaS multi-tenant | adicione `Codout.Multitenancy` |
+| Envio de e-mail transacional | `Codout.Mailer` + um dispatcher (`.SendGrid` ou `.AWS`) + `Codout.Mailer.Razor` para templates |
+| Upload/armazenamento de arquivos | `Codout.Framework.Storage` + `Codout.Framework.Storage.Azure` |
+| Hash de senhas | `Codout.Security.Core` + um provider (`.Argon2`, `.Bcrypt` ou `.Scrypt`) |
+| Grids com filtro/paginação dinâmicos | `Codout.DynamicLinq` |
 
 ---
 
 ## 🏗️ Exemplo de Uso
 
 ```csharp
-// Startup.cs (ASP.NET Core)
-public void ConfigureServices(IServiceCollection services)
+// Entidade de domínio com Id gerado no cliente
+public class Cliente : ClientGeneratedEntity
 {
-    // Configura Domain e Common
-    services.AddCodoutDomain();
-    services.AddCodoutCommon(Configuration);
+    public string Nome { get; set; } = string.Empty;
+}
 
-    // Opte pela implementação de dados: EF, Mongo ou NH
-    services.AddCodoutEf(options => options.UseSqlServer(connectionString));
-    // ou
-    // services.AddCodoutMongo(options => options.ConnectionString = mongoUri);
-
-    // API
-    services.AddCodoutApi();
+// Repositório + Unit of Work (implementação EF Core)
+public class ClienteService(IRepository<Cliente> repository, IUnitOfWork uow)
+{
+    public async Task CadastrarAsync(string nome, CancellationToken ct)
+    {
+        await repository.SaveAsync(new Cliente { Nome = nome }, ct);
+        await uow.CommitAsync(ct);
+    }
 }
 ```
 
+Cada pacote tem um README próprio com exemplos específicos — veja a página do
+pacote no NuGet.org ou a pasta correspondente neste repositório.
+
 ---
 
-## 🎨 Roadmap
+## 🗺️ Roadmap
 
-* [x] Domain & Common Essentials
-* [x] EF Core & Migrations
-* [x] MongoDB e replicação automática
-* [x] NHibernate + FluentMigrator
-* [ ] Suporte a gRPC e mensageria (RabbitMQ, Kafka)
-* [ ] Dashboard de monitoramento e métricas
-
-Contribuições e sugestões são muito bem-vindas!
+O plano de evolução de qualidade do repositório está em [ROADMAP.md](ROADMAP.md).
 
 ---
 
@@ -152,5 +174,5 @@ Este projeto está licenciado sob a [MIT License](LICENSE).
 ---
 
 <p align="center">
-  Desenvolvido com ❤️ por **Codout**
+  Desenvolvido com ❤️ por <strong>Codout</strong>
 </p>

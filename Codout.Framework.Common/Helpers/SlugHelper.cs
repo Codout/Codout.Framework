@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -191,7 +191,7 @@ public class SlugConfig
     /// <summary>
     /// NOVO: Permitir slug vazio
     /// </summary>
-    public bool AllowEmptySlug { get; set; } = false;
+    public bool AllowEmptySlug { get; set; }
 
     /// <summary>
     /// NOVO: Fallback quando slug fica vazio (use {hash} para incluir hash do original)

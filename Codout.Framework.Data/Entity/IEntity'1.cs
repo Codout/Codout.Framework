@@ -1,8 +1,10 @@
-﻿namespace Codout.Framework.Data.Entity;
+namespace Codout.Framework.Data.Entity;
 
 /// <summary>
-///     This serves as a base interface for <see cref="IEntity{TId}" /> and
+///     Entidade com identificador tipado: estende <see cref="IEntity" /> expondo o
+///     Id de forma covariante (<c>out TId</c>).
 /// </summary>
+/// <typeparam name="TId">Tipo do identificador da entidade.</typeparam>
 public interface IEntity<out TId> : IEntity
 {
     /// <summary>

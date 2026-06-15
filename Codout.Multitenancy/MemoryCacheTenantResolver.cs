@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -27,7 +27,7 @@ public abstract class MemoryCacheTenantResolver : ITenantResolver
     {
         var cacheKey = GetContextIdentifier(context);
 
-        if (cacheKey == null) return null;
+        if (cacheKey == null) return null!;
 
         var tenantContext = Cache.Get(cacheKey) as TenantContext;
 
@@ -48,7 +48,7 @@ public abstract class MemoryCacheTenantResolver : ITenantResolver
             }
         }
 
-        return tenantContext;
+        return tenantContext!;
     }
 
     protected virtual MemoryCacheEntryOptions CreateCacheEntryOptions()
@@ -56,13 +56,13 @@ public abstract class MemoryCacheTenantResolver : ITenantResolver
         return new MemoryCacheEntryOptions().SetSlidingExpiration(new TimeSpan(1, 0, 0));
     }
 
-    protected virtual void DisposeTenantContext(object cacheKey, TenantContext tenantContext)
+    protected virtual void DisposeTenantContext(object cacheKey, TenantContext? tenantContext)
     {
         tenantContext?.Dispose();
     }
 
-    protected abstract string GetContextIdentifier(HttpContext context);
-    protected abstract string GetTenantIdentifier(TenantContext context);
+    protected abstract string? GetContextIdentifier(HttpContext context);
+    protected abstract string? GetTenantIdentifier(TenantContext context);
     protected abstract Task<TenantContext> ResolveAsync(HttpContext context);
 
     private MemoryCacheEntryOptions GetCacheEntryOptions()

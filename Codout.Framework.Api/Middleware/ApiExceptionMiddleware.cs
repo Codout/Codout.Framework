@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Codout.Framework.Api.Client;
 using Microsoft.AspNetCore.Builder;
@@ -17,7 +17,9 @@ public class ApiExceptionMiddleware(RequestDelegate next, ILogger<ApiExceptionMi
         }
         catch (Exception ex)
         {
+#pragma warning disable CA2254 // Chamada original mantida para preservar o comportamento de log.
             logger.LogError(ex.Message, ex);
+#pragma warning restore CA2254
             await HandleExceptionAsync(httpContext, ex);
         }
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -110,24 +110,24 @@ public interface IRepository<T> : IDisposable where T : class, IEntity
     Task<T> GetAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken);
     
     /// <summary>
-    /// Gets an entity by its key asynchronously
+    /// Gets an entity by its key asynchronously, or <c>null</c> when not found
     /// </summary>
-    Task<T> GetAsync(object key);
-    
+    Task<T?> GetAsync(object key);
+
     /// <summary>
-    /// Gets an entity by its key asynchronously with cancellation support
+    /// Gets an entity by its key asynchronously with cancellation support, or <c>null</c> when not found
     /// </summary>
-    Task<T> GetAsync(object key, CancellationToken cancellationToken);
-    
+    Task<T?> GetAsync(object key, CancellationToken cancellationToken);
+
     /// <summary>
-    /// Loads an entity by its key asynchronously
+    /// Loads an entity by its key asynchronously, or <c>null</c> when not found
     /// </summary>
-    Task<T> LoadAsync(object key);
-    
+    Task<T?> LoadAsync(object key);
+
     /// <summary>
-    /// Loads an entity by its key asynchronously with cancellation support
+    /// Loads an entity by its key asynchronously with cancellation support, or <c>null</c> when not found
     /// </summary>
-    Task<T> LoadAsync(object key, CancellationToken cancellationToken);
+    Task<T?> LoadAsync(object key, CancellationToken cancellationToken);
     
     /// <summary>
     /// Gets the first entity matching the predicate or null asynchronously

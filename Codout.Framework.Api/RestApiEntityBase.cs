@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Codout.DynamicLinq;
 using Codout.Framework.Api.Client;
 using Codout.Framework.Application.Interfaces;
@@ -64,7 +64,9 @@ public abstract class RestApiEntityBase<TEntity, TDto, TId>(ICrudAppService<TEnt
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiException))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ApiException))]
+#pragma warning disable CA1725 // Nome do parâmetro preservado para não quebrar chamadas com argumento nomeado.
     public virtual async Task<IActionResult> GetAll([FromBody] DataSourceRequest value)
+#pragma warning restore CA1725
     {
         var result = await AppService.GetAllAsync(value);
         return Ok(result);

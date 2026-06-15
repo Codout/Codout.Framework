@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -35,10 +35,10 @@ public class EFRepository<T>(DbContext context) : IRepository<T> where T : class
     }
 
     public T Get(Expression<Func<T, bool>> predicate) =>
-        DbSet.SingleOrDefault(predicate);
+        DbSet.SingleOrDefault(predicate)!;
 
     public T Get(object key) =>
-        DbSet.Find(key);
+        DbSet.Find(key)!;
 
     public T Load(object key) => Get(key);
 
@@ -75,7 +75,7 @@ public class EFRepository<T>(DbContext context) : IRepository<T> where T : class
 
     // Returns true if no DB lookup is needed (already tracked, no PK metadata, or key unset → Add).
     // When false, keyValues contains the primary-key values to look up.
-    private bool TryResolveTrackedOrAdd(T entity, out object[] keyValues)
+    private bool TryResolveTrackedOrAdd(T entity, out object?[]? keyValues)
     {
         keyValues = null;
 
@@ -108,7 +108,7 @@ public class EFRepository<T>(DbContext context) : IRepository<T> where T : class
         return false;
     }
 
-    private void ApplySaveOrUpdate(T entity, T existing)
+    private void ApplySaveOrUpdate(T entity, T? existing)
     {
         if (existing == null)
         {
@@ -130,7 +130,7 @@ public class EFRepository<T>(DbContext context) : IRepository<T> where T : class
         Context.Entry(existing).CurrentValues.SetValues(entity);
     }
 
-    private static bool IsUnsetKeyValue(object value)
+    private static bool IsUnsetKeyValue(object? value)
     {
         if (value is null) return true;
         var type = value.GetType();
@@ -171,20 +171,20 @@ public class EFRepository<T>(DbContext context) : IRepository<T> where T : class
     }
 
     public async Task<T> GetAsync(Expression<Func<T, bool>> predicate) =>
-        await DbSet.SingleOrDefaultAsync(predicate);
+        (await DbSet.SingleOrDefaultAsync(predicate))!;
 
     public async Task<T> GetAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken) =>
-        await DbSet.SingleOrDefaultAsync(predicate, cancellationToken);
+        (await DbSet.SingleOrDefaultAsync(predicate, cancellationToken))!;
 
-    public async Task<T> GetAsync(object key) =>
+    public async Task<T?> GetAsync(object key) =>
         await DbSet.FindAsync(key);
 
-    public async Task<T> GetAsync(object key, CancellationToken cancellationToken) =>
+    public async Task<T?> GetAsync(object key, CancellationToken cancellationToken) =>
         await DbSet.FindAsync([key], cancellationToken);
 
-    public Task<T> LoadAsync(object key) => GetAsync(key);
+    public Task<T?> LoadAsync(object key) => GetAsync(key);
 
-    public Task<T> LoadAsync(object key, CancellationToken cancellationToken) => GetAsync(key, cancellationToken);
+    public Task<T?> LoadAsync(object key, CancellationToken cancellationToken) => GetAsync(key, cancellationToken);
 
     public Task DeleteAsync(T entity)
     {
@@ -262,7 +262,7 @@ public class EFRepository<T>(DbContext context) : IRepository<T> where T : class
     }
 
     public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default) =>
-        await DbSet.FirstOrDefaultAsync(predicate, cancellationToken);
+        (await DbSet.FirstOrDefaultAsync(predicate, cancellationToken))!;
 
     public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default) =>
         await DbSet.AnyAsync(predicate, cancellationToken);

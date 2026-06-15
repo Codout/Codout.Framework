@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -40,7 +40,7 @@ public static class HttpClientExtensions
 
     private static async Task<TDto> CallClientAsync<TDto>(Func<Task<HttpResponseMessage>> client)
     {
-        HttpResponseMessage response = null;
+        HttpResponseMessage? response = null;
 
         try
         {
@@ -56,7 +56,7 @@ public static class HttpClientExtensions
 
     private static async Task CallClientAsync(Func<Task<HttpResponseMessage>> client)
     {
-        HttpResponseMessage response = null;
+        HttpResponseMessage? response = null;
 
         try
         {

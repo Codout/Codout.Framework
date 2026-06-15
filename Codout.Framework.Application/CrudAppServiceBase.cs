@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using Codout.DynamicLinq;
@@ -25,10 +25,10 @@ public class CrudAppServiceBase<TEntity, TDto, TId>(
 
     public virtual async Task<TDto> GetAsync(TId id)
     {
-        var entity = await Repository.GetAsync(id);
+        var entity = await Repository.GetAsync(id!);
 
         if (entity == null)
-            return null;
+            return null!;
 
         var output = Mapper.Map<TDto>(entity);
 
@@ -53,12 +53,14 @@ public class CrudAppServiceBase<TEntity, TDto, TId>(
 
     public virtual async Task<TDto> UpdateAsync(TDto input)
     {
-        var entity = await Repository.GetAsync(input.Id);
+        var entity = await Repository.GetAsync(input.Id!);
 
         if (entity == null)
-            return null;
+            return null!;
 
+#pragma warning disable CA2263 // Overload não-genérico mantido para preservar o comportamento original.
         entity = Mapper.Map(input, entity, typeof(TDto), typeof(TEntity)) as TEntity;
+#pragma warning restore CA2263
 
         UnitOfWork.Commit();
 
@@ -67,7 +69,7 @@ public class CrudAppServiceBase<TEntity, TDto, TId>(
 
     public virtual async Task DeleteAsync(TId id)
     {
-        var entity = await Repository.LoadAsync(id);
+        var entity = await Repository.LoadAsync(id!);
 
         if (entity == null)
             return;

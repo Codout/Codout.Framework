@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,10 +6,10 @@ namespace Codout.Framework.Common.Helpers;
 
 public static class RunSafeHelper
 {
-    public static async Task RunSafe(this Task task, Action<Exception> onError = null,
+    public static async Task RunSafe(this Task task, Action<Exception>? onError = null,
         CancellationToken token = default)
     {
-        Exception exception = null;
+        Exception? exception = null;
         try
         {
             if (!token.IsCancellationRequested)

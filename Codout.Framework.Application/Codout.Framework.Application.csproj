@@ -1,9 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>6.3.0</Version>
+		<Version>6.4.0</Version>
+		<!-- Compat: o build do pack falha se a API quebrar vs. a versao publicada -->
+		<EnablePackageValidation>true</EnablePackageValidation>
+		<PackageValidationBaselineVersion>6.3.0</PackageValidationBaselineVersion>
 		<Description>Bliblioteca de implementação base da camada Application Service</Description>
-		<PackageTags>Codout</PackageTags>
+		<PackageTags>Codout;Framework;Application;CRUD;DDD</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>

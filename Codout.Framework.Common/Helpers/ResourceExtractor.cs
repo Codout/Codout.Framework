@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Reflection;
 
 namespace Codout.Framework.Common.Helpers;
@@ -21,10 +21,10 @@ public static class ResourceExtractor
             return;
 
         using var s = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
-        if (filename == null) 
+        if (filename == null)
             return;
         using var fs = new FileStream(filename, FileMode.Create);
-        var b = new byte[s.Length];
+        var b = new byte[s!.Length];
         s.ReadExactly(b, 0, b.Length);
         fs.Write(b, 0, b.Length);
     }
@@ -38,7 +38,7 @@ public static class ResourceExtractor
     /// </summary>
     /// <param name="resourceName"></param>
     /// <returns></returns>
-    internal static string ExtractResourceString(string resourceName)
+    internal static string? ExtractResourceString(string resourceName)
     {
         using var s = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
 
@@ -68,7 +68,7 @@ public static class ResourceExtractor
         using var s = assembly.GetManifestResourceStream(resourceName);
         if (filename == null) return;
         using var fs = new FileStream(filename, FileMode.Create);
-        var b = new byte[s.Length];
+        var b = new byte[s!.Length];
         s.ReadExactly(b, 0, b.Length);
         fs.Write(b, 0, b.Length);
     }
@@ -83,7 +83,7 @@ public static class ResourceExtractor
     /// <param name="assembly"></param>
     /// <param name="resourceName"></param>
     /// <returns></returns>
-    public static string ExtractResourceString(this Assembly assembly, string resourceName)
+    public static string? ExtractResourceString(this Assembly assembly, string resourceName)
     {
         using var s = assembly.GetManifestResourceStream(resourceName);
 

@@ -1,12 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>6.3.0</Version>
+    <Version>6.4.0</Version>
+    <!-- Compat: o build do pack falha se a API quebrar vs. a versao publicada -->
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageValidationBaselineVersion>6.3.0</PackageValidationBaselineVersion>
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup>
     <Description>Biblioteca de funções para classes DTO da Api do Framework da Codout</Description>
+    <PackageTags>Codout;Framework;DTO;REST</PackageTags>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 

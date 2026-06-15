@@ -1,8 +1,12 @@
-﻿using System;
+using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NHibernate;
+
+// CA1510: guard clauses originais mantidos para preservar o comportamento
+// byte a byte (política de zero mudança de comportamento).
+#pragma warning disable CA1510
 
 namespace Codout.Framework.NH;
 

@@ -25,7 +25,7 @@ public class RequiredIfAttribute : ConditionalAttributeBase
     /// </returns>
     /// <param name="value">The value to validate.</param>
     /// <param name="validationContext">The context information about the validation operation.</param>
-    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         // check if the current value matches the target value
         if (ShouldRunValidation(value, DependentProperty, TargetValue, validationContext))
@@ -33,7 +33,7 @@ public class RequiredIfAttribute : ConditionalAttributeBase
             if (!_innerAttribute.IsValid(value))
                 // validation failed - return an error
                 return new ValidationResult(FormatErrorMessage(validationContext.DisplayName),
-                    new[] { validationContext.MemberName });
+                    new[] { validationContext.MemberName! });
 
         return ValidationResult.Success;
     }
@@ -50,7 +50,7 @@ public class RequiredIfAttribute : ConditionalAttributeBase
     /// <summary>
     ///     Alvo.
     /// </summary>
-    public object TargetValue { get; set; }
+    public object? TargetValue { get; set; }
 
     #endregion
 
@@ -61,7 +61,7 @@ public class RequiredIfAttribute : ConditionalAttributeBase
     /// </summary>
     /// <param name="dependentProperty"></param>
     /// <param name="targetValue"></param>
-    public RequiredIfAttribute(string dependentProperty, object targetValue)
+    public RequiredIfAttribute(string dependentProperty, object? targetValue)
         : this(dependentProperty, targetValue, null)
     {
     }
@@ -72,7 +72,7 @@ public class RequiredIfAttribute : ConditionalAttributeBase
     /// <param name="dependentProperty"></param>
     /// <param name="targetValue"></param>
     /// <param name="errorMessage"></param>
-    public RequiredIfAttribute(string dependentProperty, object targetValue, string errorMessage)
+    public RequiredIfAttribute(string dependentProperty, object? targetValue, string? errorMessage)
         : base(errorMessage)
     {
         DependentProperty = dependentProperty;

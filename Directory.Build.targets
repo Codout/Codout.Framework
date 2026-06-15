@@ -1,0 +1,13 @@
+<Project>
+	<!-- Avaliado depois do csproj: embarca o README.md da pasta do pacote como
+	     PackageReadmeFile quando o projeto ainda não definiu um (ROADMAP Fase 6).
+	     Projetos que já configuram o próprio README (ex.: Codout.Framework.Mcp)
+	     ficam de fora pela condição de propriedade vazia. -->
+	<PropertyGroup Condition="'$(IsPackable)' != 'false' and '$(PackageReadmeFile)' == '' and Exists('$(MSBuildProjectDirectory)/README.md')">
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<CodoutAutoPackReadme>true</CodoutAutoPackReadme>
+	</PropertyGroup>
+	<ItemGroup Condition="'$(CodoutAutoPackReadme)' == 'true'">
+		<None Include="$(MSBuildProjectDirectory)/README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+</Project>

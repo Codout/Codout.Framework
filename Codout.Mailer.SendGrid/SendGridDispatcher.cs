@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
@@ -19,7 +19,7 @@ public class SendGridDispatcher(IOptions<SendGridSettings> sendGridSettings) : I
     private readonly SendGridSettings _sendGridSettings = sendGridSettings.Value;
 
     public async Task<MailerResponse> Send(MailAddress from, MailAddress to, string subject, string htmlContent,
-        string plainTextContent = null, Attachment[] attachments = null)
+        string? plainTextContent = null, Attachment[]? attachments = null)
     {
         var client = new SendGridClient(_sendGridSettings.ApiKey);
 

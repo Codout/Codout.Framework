@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -28,7 +28,7 @@ public static class ObjectExtensions
     ///     This method was written by Peter Johnson at:
     ///     http://aspalliance.com/author.aspx?uId=1026.
     /// </remarks>
-    public static object ChangeTypeTo<T>(this object value)
+    public static object? ChangeTypeTo<T>(this object? value)
     {
         var conversionType = typeof(T);
         return ChangeTypeTo(value, conversionType);
@@ -48,12 +48,11 @@ public static class ObjectExtensions
     ///     is Nullable&lt;&gt;) and whose value is equivalent to value. -or- a null reference, if value is a null
     ///     reference and conversionType is not a value type.
     /// </returns>
-    public static object ChangeTypeTo(this object value, Type conversionType)
+    public static object? ChangeTypeTo(this object? value, Type conversionType)
     {
         // Note: This if block was taken from Convert.ChangeType as is, and is needed here since we're
         // checking properties on conversionType below.
-        if (conversionType == null)
-            throw new ArgumentNullException("conversionType");
+        ArgumentNullException.ThrowIfNull(conversionType);
 
         // If it's not a nullable type, just pass through the parameters to Convert.ChangeType
 
@@ -77,7 +76,7 @@ public static class ObjectExtensions
         }
         else if (conversionType == typeof(Guid))
         {
-            return new Guid(value.ToString() ?? string.Empty);
+            return new Guid(value!.ToString() ?? string.Empty);
         }
         else if (conversionType == typeof(long) && value is int)
         {
@@ -110,7 +109,7 @@ public static class ObjectExtensions
         foreach (var pi in props)
             try
             {
-                result.Add(pi.Name, pi.GetValue(value, null));
+                result.Add(pi.Name, pi.GetValue(value, null)!);
             }
             catch
             {

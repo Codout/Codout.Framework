@@ -18,6 +18,11 @@ namespace Codout.Framework.Domain.Entities;
 [Serializable]
 public abstract class ClientGeneratedEntity : Entity<Guid?>, IClientGeneratedId
 {
+    /// <summary>
+    ///     Atribui <c>Guid.NewGuid()</c> ao Id quando a instância ainda é transient.
+    ///     Na materialização pelo EF o comportamento é preservado: o Id atribuído
+    ///     aqui é sobrescrito em seguida pelos valores vindos do banco.
+    /// </summary>
     protected ClientGeneratedEntity()
     {
         // Só atribui na criação real. Na materialização do EF a instância ainda é

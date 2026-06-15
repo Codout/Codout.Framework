@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -9,8 +9,12 @@ namespace Codout.Framework.Common.Security;
 public class CryptoFile
 {
     //  Call this function to remove the key from memory after use for security
+    // CA1401: P/Invoke público faz parte da API atual deste helper legado;
+    // mudar a visibilidade seria breaking change (tratar no próximo major).
+#pragma warning disable CA1401
     [DllImport("KERNEL32.DLL", EntryPoint = "RtlZeroMemory")]
     public static extern bool ZeroMemory(IntPtr destination, int length);
+#pragma warning restore CA1401
 
     // Function to Generate a 64 bits Key.
     public static string GenerateKey()
@@ -41,7 +45,11 @@ public class CryptoFile
             CryptoStreamMode.Write);
 
         var bytearrayinput = new byte[fsInput.Length];
+        // CA2022: leitura possivelmente inexata mantida como está — trocar por
+        // ReadExactly mudaria o comportamento deste helper legado.
+#pragma warning disable CA2022
         fsInput.Read(bytearrayinput, 0, bytearrayinput.Length);
+#pragma warning restore CA2022
         cryptostream.Write(bytearrayinput, 0, bytearrayinput.Length);
         cryptostream.Close();
         fsInput.Close();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -52,7 +52,9 @@ public class MongoRepository<T>(IMongoDatabase database) : IRepository<T> where 
     /// <summary>
     /// Retorna uma lista de objetos do repositório de acordo com o filtro e com opção de paginação
     /// </summary>
+#pragma warning disable CA1725 // Nome do parâmetro preservado para não quebrar chamadas com argumento nomeado.
     public virtual IQueryable<T> WherePaged(Expression<Func<T, bool>> filter, out int total, int index = 0, int size = 50)
+#pragma warning restore CA1725
     {
         var skipCount = index * size;
 
@@ -74,7 +76,7 @@ public class MongoRepository<T>(IMongoDatabase database) : IRepository<T> where 
     /// </summary>
     public virtual T Get(Expression<Func<T, bool>> predicate)
     {
-        return Where(predicate).SingleOrDefault();
+        return Where(predicate).SingleOrDefault()!;
     }
 
     /// <summary>
@@ -83,7 +85,7 @@ public class MongoRepository<T>(IMongoDatabase database) : IRepository<T> where 
     public virtual T Get(object key)
     {
         if (!ObjectId.TryParse(key?.ToString(), out var id))
-            return null;
+            return null!;
 
         return _collection.Find(Builders<T>.Filter.Eq("_id", BsonValue.Create(id))).FirstOrDefault();
     }
@@ -190,12 +192,12 @@ public class MongoRepository<T>(IMongoDatabase database) : IRepository<T> where 
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public virtual async Task<T> GetAsync(object key)
+    public virtual async Task<T?> GetAsync(object key)
     {
         return await GetAsync(key, CancellationToken.None);
     }
 
-    public virtual async Task<T> GetAsync(object key, CancellationToken cancellationToken)
+    public virtual async Task<T?> GetAsync(object key, CancellationToken cancellationToken)
     {
         if (!ObjectId.TryParse(key?.ToString(), out var id))
             return null;
@@ -206,12 +208,12 @@ public class MongoRepository<T>(IMongoDatabase database) : IRepository<T> where 
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public virtual Task<T> LoadAsync(object key)
+    public virtual Task<T?> LoadAsync(object key)
     {
         return GetAsync(key);
     }
 
-    public virtual Task<T> LoadAsync(object key, CancellationToken cancellationToken)
+    public virtual Task<T?> LoadAsync(object key, CancellationToken cancellationToken)
     {
         return GetAsync(key, cancellationToken);
     }
@@ -336,7 +338,7 @@ public class MongoRepository<T>(IMongoDatabase database) : IRepository<T> where 
     public virtual async Task<T> RefreshAsync(T entity, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(entity);
-        return await GetAsync(GetIdValue(entity), cancellationToken);
+        return (await GetAsync(GetIdValue(entity), cancellationToken))!;
     }
 
     #endregion
@@ -383,9 +385,9 @@ public class MongoRepository<T>(IMongoDatabase database) : IRepository<T> where 
     private static object GetIdValue(T entity)
     {
         var key = entity.GetType().GetTypeInfo().GetProperty("Id")?.GetValue(entity);
-        
+
         if (key == null)
-            return null;
+            return null!;
 
         if (ObjectId.TryParse(key.ToString(), out var id))
             return id;

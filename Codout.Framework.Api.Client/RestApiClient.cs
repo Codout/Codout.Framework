@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Codout.DynamicLinq;
 using Codout.Framework.Api.Client.Extensions;
 
@@ -63,7 +63,9 @@ public class RestApiClient<T, TId> : ApiClientBase, IRestApi<T, TId> where T : I
         await Client.DeleteAsync($"{UriService}/{id}");
     }
 
+#pragma warning disable CA1725 // Nome do parâmetro preservado para não quebrar chamadas com argumento nomeado.
     public async Task<DataSourceResult> GetAllAsync(DataSourceRequest obj)
+#pragma warning restore CA1725
     {
         return await Client.PostAsync<DataSourceResult, DataSourceRequest>($"{UriService}/get-all", obj);
     }

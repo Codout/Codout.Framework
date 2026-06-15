@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 
 namespace Codout.Multitenancy;
 
@@ -14,7 +14,7 @@ public static class MultitenancyHttpContextExtensions
         context.Items[TenantContextKey] = tenantContext;
     }
 
-    public static TenantContext GetTenantContext(this HttpContext context)
+    public static TenantContext? GetTenantContext(this HttpContext context)
     {
         if (context.Items.TryGetValue(TenantContextKey, out var tenantContext))
             return tenantContext as TenantContext;
@@ -22,9 +22,9 @@ public static class MultitenancyHttpContextExtensions
         return null;
     }
 
-    public static TTenant GetTenant<TTenant>(this HttpContext context) where TTenant : IAppTenant
+    public static TTenant? GetTenant<TTenant>(this HttpContext context) where TTenant : IAppTenant
     {
         var tenantContext = GetTenantContext(context);
-        return (TTenant)(tenantContext != null ? tenantContext.Tenant : default(TTenant));
+        return tenantContext != null ? (TTenant)tenantContext.Tenant : default;
     }
 }

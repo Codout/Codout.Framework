@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -51,7 +51,7 @@ public class NHRepository<T>(ISession session) : IRepository<T> where T : class,
     }
 
     public T Get(Expression<Func<T, bool>> predicate) =>
-        All().SingleOrDefault(predicate);
+        All().SingleOrDefault(predicate)!;
 
     public T Get(object key) =>
         Session.Get<T>(key);
@@ -123,25 +123,25 @@ public class NHRepository<T>(ISession session) : IRepository<T> where T : class,
         return await All().SingleOrDefaultAsync(predicate, cancellationToken);
     }
 
-    public async Task<T> GetAsync(object key)
+    public async Task<T?> GetAsync(object key)
     {
         return await GetAsync(key, CancellationToken.None);
     }
 
-    public async Task<T> GetAsync(object key, CancellationToken cancellationToken)
+    public async Task<T?> GetAsync(object key, CancellationToken cancellationToken)
     {
         return await Session.GetAsync<T>(key, cancellationToken);
     }
 
-    public Task<T> LoadAsync(object key)
+    public Task<T?> LoadAsync(object key)
     {
         return LoadAsync(key, CancellationToken.None);
     }
 
-    public Task<T> LoadAsync(object key, CancellationToken cancellationToken)
+    public Task<T?> LoadAsync(object key, CancellationToken cancellationToken)
     {
         // NHibernate Load retorna proxy, não é async
-        return Task.FromResult(Session.Load<T>(key));
+        return Task.FromResult<T?>(Session.Load<T>(key));
     }
 
     public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -259,7 +259,7 @@ public static class StringExtensions
     /// <param name="pattern">The pattern.</param>
     /// <param name="replacement">The replacement.</param>
     /// <returns></returns>
-    public static string FastReplace(this string original, string pattern, string replacement)
+    public static string? FastReplace(this string? original, string pattern, string replacement)
     {
         return FastReplace(original, pattern, replacement, StringComparison.InvariantCultureIgnoreCase);
     }
@@ -276,7 +276,7 @@ public static class StringExtensions
     /// <param name="replacement">The replacement.</param>
     /// <param name="comparisonType">Type of the comparison.</param>
     /// <returns></returns>
-    public static string FastReplace(this string original, string pattern, string replacement,
+    public static string? FastReplace(this string? original, string pattern, string replacement,
         StringComparison comparisonType)
     {
         if (original == null)
@@ -586,13 +586,13 @@ public static class StringExtensions
     /// <typeparam name="T"></typeparam>
     /// <param name="value">The value.</param>
     /// <returns></returns>
-    public static T ToEnum<T>(this string value)
+    public static T? ToEnum<T>(this string value)
     {
         var oOut = default(T);
         var t = typeof(T);
         foreach (var fi in t.GetFields())
             if (fi.Name.Matches(value))
-                oOut = (T)fi.GetValue(null);
+                oOut = (T)fi.GetValue(null)!;
 
         return oOut;
     }

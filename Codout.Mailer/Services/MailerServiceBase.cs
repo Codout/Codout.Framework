@@ -20,7 +20,7 @@ public abstract class MailerServiceBase(
 {
     private readonly MailerSettings _mailerSettings = mailerSettings.Value;
 
-    public virtual async Task<MailerResponse> Send<T>(string templateKey, T model, string subject, Attachment[] attachments = null) where T : MailerModelBase
+    public virtual async Task<MailerResponse> Send<T>(string templateKey, T model, string subject, Attachment[]? attachments = null) where T : MailerModelBase
     {
         using var activity = MailerActivitySource.StartActivity("MailerService.Send");
         logger.LogInformation("Sending email with template {TemplateKey} to {Recipient}", templateKey, model.To.Address);

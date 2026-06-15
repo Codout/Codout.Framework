@@ -1,4 +1,4 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 
 namespace Codout.DynamicLinq;
 
@@ -12,13 +12,13 @@ public class Sort
     ///     Gets or sets the name of the sorted field (property).
     /// </summary>
     [DataMember(Name = "field")]
-    public string Field { get; set; }
+    public string Field { get; set; } = null!;
 
     /// <summary>
     ///     Gets or sets the sort direction. Should be either "asc" or "desc".
     /// </summary>
     [DataMember(Name = "dir")]
-    public string Dir { get; set; }
+    public string Dir { get; set; } = null!;
 
     /// <summary>
     ///     Converts to form required by Dynamic Linq e.g. "Field1 desc"

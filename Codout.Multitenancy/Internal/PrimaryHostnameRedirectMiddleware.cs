@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -30,7 +30,7 @@ public class PrimaryHostnameRedirectMiddleware<TTenant> where TTenant : IAppTena
             var primaryHostname = _primaryHostnameAccessor((TTenant)tenantContext.Tenant);
 
             if (!string.IsNullOrWhiteSpace(primaryHostname))
-                if (!context.Request.Host.Value.Equals(primaryHostname, StringComparison.OrdinalIgnoreCase))
+                if (!context.Request.Host.Value!.Equals(primaryHostname, StringComparison.OrdinalIgnoreCase))
                 {
                     Redirect(context, primaryHostname);
                     return;

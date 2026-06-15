@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Codout.Multitenancy;
@@ -37,7 +37,7 @@ public class TenantContext : IDisposable
         _disposed = true;
     }
 
-    private void TryDisposeProperty(IDisposable obj)
+    private void TryDisposeProperty(IDisposable? obj)
     {
         if (obj == null) return;
 

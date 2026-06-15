@@ -1,7 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>6.4.0</Version>
+		<Version>6.5.0</Version>
+		<!-- Compat: o build do pack falha se a API quebrar vs. a versao publicada -->
+		<EnablePackageValidation>true</EnablePackageValidation>
+		<PackageValidationBaselineVersion>6.4.0</PackageValidationBaselineVersion>
 		<Description>Implementação da interface Codout.Framework.DAL para EntityFrameworkCore</Description>
 		<PackageTags>Codout;Framework;ORM;DAL;EntityFrameworkCore;Repository;UnitOfWork;Specification</PackageTags>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>

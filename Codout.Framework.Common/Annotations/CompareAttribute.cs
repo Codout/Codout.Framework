@@ -41,7 +41,7 @@ public class CompareAttribute : ValidationAttribute
     /// </returns>
     /// <param name="value">The value to validate.</param>
     /// <param name="validationContext">The context information about the validation operation.</param>
-    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         var otherPropertyInfo = validationContext.ObjectType.GetProperty(OtherProperty);
         if (otherPropertyInfo == null)
