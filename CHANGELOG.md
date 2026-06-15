@@ -10,6 +10,22 @@ A partir desta entrada cada pacote NuGet é versionado individualmente
 `Directory.Build.props`). As entradas abaixo identificam o pacote e a
 versão afetados.
 
+## 2026-06-15
+
+> Bump **minor** coordenado de todos os pacotes publicáveis, preparando o
+> release das melhorias descritas em 2026-06-12 (testes, nullable, SourceLink,
+> READMEs, package validation, correção de vulnerabilidade do Mongo). **Ainda
+> não publicado** — as tags só serão criadas após merge na master e revisão.
+> O `PackageValidationBaselineVersion` de cada pacote permanece apontando para
+> a última versão publicada (6.3.0 / 6.4.0), garantindo a checagem de
+> compatibilidade no `pack`.
+
+### Versionamento
+
+- `6.3.0 → 6.4.0`: Api, Api.Client, Api.Dto, Application, Common, DynamicLinq, Image.Extensions, Mailer, Mailer.AWS, Mailer.Razor, Mailer.SendGrid, Mongo, Multitenancy, Softprime.Multitenancy, NH, Security.Core, Security.Argon2, Security.Bcrypt, Security.Scrypt, Storage, Storage.Azure.
+- `6.4.0 → 6.5.0`: Data, Domain, EF.
+- `Codout.Framework.Mcp` segue o próprio ciclo (`mcp-release.yml`) e não foi bumpado aqui.
+
 ## 2026-06-12
 
 > Mudanças abaixo ainda **não publicadas** no NuGet.org — os bumps de versão

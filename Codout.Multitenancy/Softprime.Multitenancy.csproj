@@ -12,7 +12,7 @@
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
   <PropertyGroup>
-    <Version>6.3.0</Version>
+    <Version>6.4.0</Version>
     <Description>Build netstandard2.0 de compatibilidade do Codout.Multitenancy (resolução de tenant por request para ASP.NET Core 2.x). Para projetos novos use Codout.Multitenancy.</Description>
     <PackageTags>Codout;Multitenancy;MultiTenant;SaaS</PackageTags>
     <!-- Compat: o build do pack falha se a API quebrar vs. a versao publicada -->
