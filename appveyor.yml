@@ -1,0 +1,9 @@
+# O CI real deste repositório é GitHub Actions (.github/workflows/dotnet.yml).
+# A integração do AppVeyor permaneceu conectada no nível do serviço após a
+# remoção do appveyor.yml legado, e o auto-build falhava porque a raiz tem
+# várias solutions/projetos. Este arquivo desliga build e testes para que o
+# AppVeyor reporte sucesso sem rodar nada. Para remover o check de vez,
+# desconecte o AppVeyor nas configurações do GitHub/AppVeyor.
+build: off
+test: off
+deploy: off
