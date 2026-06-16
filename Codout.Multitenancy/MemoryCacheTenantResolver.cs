@@ -43,7 +43,10 @@ public abstract class MemoryCacheTenantResolver : ITenantResolver
                 {
                     var cacheEntryOptions = GetCacheEntryOptions();
 
-                    Cache.Set(tenantIdentifier, tenantContext, cacheEntryOptions);
+                    // tenantIdentifier é não-nulo aqui (guard IsNullOrWhiteSpace acima);
+                    // o '!' cobre o netstandard2.0, cujo IsNullOrWhiteSpace não tem
+                    // a anotação [NotNullWhen(false)] que o net10 usa para inferir isso.
+                    Cache.Set(tenantIdentifier!, tenantContext, cacheEntryOptions);
                 }
             }
         }
