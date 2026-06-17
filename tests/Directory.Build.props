@@ -17,6 +17,6 @@
 
 	<ItemGroup>
 		<!-- Cobertura: usada pelo CI via coleta "XPlat Code Coverage" no dotnet test -->
-		<PackageReference Include="coverlet.collector" Version="6.0.4" PrivateAssets="all" />
+		<PackageReference Include="coverlet.collector" Version="10.0.1" PrivateAssets="all" />
 	</ItemGroup>
 </Project>
