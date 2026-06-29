@@ -10,7 +10,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.7.1" />
+		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.7.2" />
 	</ItemGroup>
 
 </Project>
